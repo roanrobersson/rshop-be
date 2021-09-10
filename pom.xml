@@ -9,11 +9,11 @@
 		<version>2.4.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.devsuperior</groupId>
+	<groupId>com.rshop</groupId>
 	<artifactId>dscatalog</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dscatalog</name>
-	<description>DSCatalog Bootcamp DevSuperior</description>
+	<name>rshop</name>
+	<description>rShop</description>
 
 	<properties>
 		<java.version>11</java.version>
