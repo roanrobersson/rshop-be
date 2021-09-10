@@ -16,7 +16,7 @@ public class ProductFactory {
 	
 	public static ProductDTO createProductDTO() {
 		Product product = createProduct();
-		return new ProductDTO(product, product.getCategories());
+		return new ProductDTO(product);
 	}
 	
 	public static ProductDTO createProductDTO(Long id) {

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -32,6 +33,7 @@ public class ProductDTO implements Serializable{
 	@PastOrPresent(message = "A data do produto não pode ser futura")
 	private Instant date;
 	
+	@NotEmpty(message = "Produto sem categoria não é permitido")
 	private List<CategoryDTO> categories = new ArrayList<>();
 	
 	public ProductDTO() {
@@ -54,11 +56,6 @@ public class ProductDTO implements Serializable{
 		this.imgUrl = entity.getImgUrl();
 		this.date = entity.getDate();
 		this.categories = entity.getCategories().stream().map((x) -> new CategoryDTO(x)).collect(Collectors.toList());
-	}
-	
-	public ProductDTO(Product entity, Set<Category> categories) {
-		this(entity);
-		categories.forEach(cat -> this.categories.add(new CategoryDTO(cat)));
 	}
 
 	public Long getId() {

@@ -44,14 +44,14 @@ public class ProductService {
 		Page<Product> page = repository.search(categories, name, pageRequest);
 		System.out.println(page.toList()); 
 		repository.findProductsWithCategories(page.toList());
-		return page.map(x -> new ProductDTO(x, x.getCategories()));
+		return page.map(x -> new ProductDTO(x));
 	}
 	
 	@Transactional(readOnly = true)
 	public ProductDTO findById(Long id) {
 		Optional<Product> obj = repository.findById(id);
 		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new ProductDTO(entity, entity.getCategories());
+		return new ProductDTO(entity);
 	}
 
 	@Transactional
