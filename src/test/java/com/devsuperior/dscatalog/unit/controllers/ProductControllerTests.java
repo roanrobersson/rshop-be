@@ -1,4 +1,4 @@
-package com.devsuperior.dscatalog.unit.resources;
+package com.devsuperior.dscatalog.unit.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ProductResourceTests {
+public class ProductControllerTests {
 
 	@Autowired
 	private MockMvc mockMvc;
