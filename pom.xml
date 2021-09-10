@@ -93,6 +93,7 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>2.9.2</version>
 		</dependency>
+
 		<!-- https://docs.aws.amazon.com/pt_br/sdk-for-java/v1/developer-guide/setup-project-maven.html -->
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-bom -->
 		<dependency>

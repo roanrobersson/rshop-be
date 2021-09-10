@@ -43,7 +43,7 @@ public class ProductResource {
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy
 			) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		
+
 		Page<ProductDTO> list = service.findAllPaged(categoryId, name.trim(), pageRequest);
 		return ResponseEntity.ok().body(list);
 	}
