@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,7 +19,7 @@ import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
-public class ResourceExceptionHandler {
+public class ControllerExceptionHandler {
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardError> entityNotFound(ResourceNotFoundException e, HttpServletRequest request) {
@@ -93,6 +94,20 @@ public class ResourceExceptionHandler {
 		err.setStatus(status.value());
 		err.setError("Bad request");
 		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler(SizeLimitExceededException.class)
+	public ResponseEntity<StandardError> illegalArgument(SizeLimitExceededException e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError();
+		String message = "The request was rejected because its size ( " + e.getActualSize() + " Bytes ) "
+				+ "exceeds the maximum ( " + e.getPermittedSize() + " Bytes )";
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Bad request");
+		err.setMessage(message);
 		err.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
