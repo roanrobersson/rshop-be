@@ -31,7 +31,7 @@ public class S3Service {
 		try {
 			String originalName = file.getOriginalFilename();
 			String extension = FilenameUtils.getExtension(originalName);
-			String fileName = Instant.now().toDate().getTime() + '.' + extension;
+			String fileName = Instant.now().toDate().getTime() + "." + extension;
 			
 			InputStream is = file.getInputStream();
 			String contentType = file.getContentType();
