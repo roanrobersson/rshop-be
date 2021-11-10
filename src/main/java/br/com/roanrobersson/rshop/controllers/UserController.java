@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
 import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
 import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
 import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
@@ -69,8 +71,15 @@ public class UserController {
 	
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN')")
-	public ResponseEntity<UserResponseDTO> delete(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping(value = "/{id}/password")
+	@PreAuthorize("isAuthenticated() or hasAnyRole('ADMIN')")
+	public ResponseEntity<Void> changePassword(@PathVariable Long id, @Valid @RequestBody UserChangePasswordDTO dto) {
+		service.changePassword(id, dto);
 		return ResponseEntity.noContent().build();
 	}
 }

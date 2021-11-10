@@ -33,6 +33,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.dto.user.AbstractUserDTO;
+import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
 import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
 import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
 import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
@@ -64,8 +65,10 @@ public class UserServiceTests {
 	private long dependentId;
 	private String existingEmail;
 	private String nonExistingEmail;
+	private String validPassword;
 	private User user;
 	private PageImpl<User> page;
+	private UserChangePasswordDTO changePasswordDTO;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -75,10 +78,12 @@ public class UserServiceTests {
 		dependentId = 4L;
 		existingEmail = "alex@gmail.com";
 		nonExistingEmail = "a1b2c3d4e5f6@gmail.com";
+		validPassword = "123456";
 		
 		user = UserFactory.createUser();
 		page = new PageImpl<>(List.of(user));
-		
+		changePasswordDTO = new UserChangePasswordDTO(validPassword); 
+				
 		// findAllPaged
 		when(repository.findAll(any(PageRequest.class))).thenReturn(page);
 		
@@ -186,6 +191,26 @@ public class UserServiceTests {
 		});
 
 		verify(repository, times(1)).deleteById(dependentId);
+	}
+	
+	@Test
+	public void changePasswordShouldDoNothingWhenIdExists() {
+
+		assertDoesNotThrow(() -> {
+			service.changePassword(existingId, changePasswordDTO);
+		});
+		
+		verify(repository, times(1)).save(user);
+	}
+
+	@Test
+	public void changePasswordShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+		
+		assertThrows(ResourceNotFoundException.class, () -> {
+			service.changePassword(nonExistingId, changePasswordDTO);
+		});
+		
+		verify(repository, times(1)).getById(nonExistingId);
 	}
 	
 	@Test

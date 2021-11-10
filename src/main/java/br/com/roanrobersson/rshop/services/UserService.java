@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
 import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
 import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
 import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
@@ -86,15 +87,16 @@ public class UserService implements UserDetailsService{
 		}
 	}
 	
-	private void copyInsertDtoToEntity(UserInsertDTO dto, User entity) {
-		entity.setFirstName(dto.getFirstName());
-		entity.setLastName(dto.getLastName());
-		entity.setEmail(dto.getEmail());
-	}
-	
-	private void copyUpdateDtoToEntity(UserUpdateDTO dto, User entity) {
-		entity.setFirstName(dto.getFirstName());
-		entity.setLastName(dto.getLastName());
+	@Transactional
+	public void changePassword(Long id, UserChangePasswordDTO dto) {
+		authService.validateSelfOrAdmin(id);
+		try {
+			User entity = repository.getById(id);
+			entity.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+			repository.save(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id " + id + " not found");
+		}
 	}
 
 	@Override
@@ -106,5 +108,16 @@ public class UserService implements UserDetailsService{
 		}
 		logger.info("User found: " + username);
 		return user;
+	}
+	
+	private void copyInsertDtoToEntity(UserInsertDTO dto, User entity) {
+		entity.setFirstName(dto.getFirstName());
+		entity.setLastName(dto.getLastName());
+		entity.setEmail(dto.getEmail());
+	}
+	
+	private void copyUpdateDtoToEntity(UserUpdateDTO dto, User entity) {
+		entity.setFirstName(dto.getFirstName());
+		entity.setLastName(dto.getLastName());
 	}
 }
