@@ -72,8 +72,8 @@ public class ProductServiceTests {
 		when(repository.save(any())).thenReturn(product);
 		
 		// update
-		when(repository.getOne(existingId)).thenReturn(product);
-		doThrow(EntityNotFoundException.class).when(repository).getOne(nonExistingId);
+		when(repository.getById(existingId)).thenReturn(product);
+		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
 		
 		// delete
 		doNothing().when(repository).deleteById(existingId);

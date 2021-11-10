@@ -11,7 +11,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,13 +18,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.RoleDTO;
-import br.com.roanrobersson.rshop.dto.UserDTO;
-import br.com.roanrobersson.rshop.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
-import br.com.roanrobersson.rshop.entities.Role;
+import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
+import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
+import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
 import br.com.roanrobersson.rshop.entities.User;
-import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
@@ -42,37 +38,39 @@ public class UserService implements UserDetailsService{
 	private UserRepository repository;
 	
 	@Autowired
-	private RoleRepository roleRepository;
+	private AuthService authService;
 	
 	@Transactional(readOnly = true)
-	public Page<UserDTO> findAllPaged(PageRequest pageRequest) {
+	public Page<UserResponseDTO> findAllPaged(PageRequest pageRequest) {
 		Page<User> list = repository.findAll(pageRequest);
-		return list.map(x -> new UserDTO(x));
+		return list.map(x -> new UserResponseDTO(x));
 	}
 	
 	@Transactional(readOnly = true)
-	public UserDTO findById(Long id) {
+	public UserResponseDTO findById(Long id) {
+		authService.validateSelfOrAdmin(id);
 		Optional<User> obj = repository.findById(id);
 		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Id " + id + " not found"));
-		return new UserDTO(entity);
+		return new UserResponseDTO(entity);
 	}
 
 	@Transactional
-	public UserDTO insert(UserInsertDTO dto) {
+	public UserResponseDTO insert(UserInsertDTO dto) {
 		User entity = new User();
-		copyDtoToEntity(dto, entity);
+		copyInsertDtoToEntity(dto, entity);
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		entity = repository.save(entity);
-		return new UserDTO(entity);
+		return new UserResponseDTO(entity);
 	}
 	
 	@Transactional
-	public UserDTO update(Long id, UserUpdateDTO dto) {
+	public UserResponseDTO update(Long id, UserUpdateDTO dto) {
+		authService.validateSelfOrAdmin(id);
 		try {
 			User entity = repository.getById(id);
-			copyDtoToEntity(dto, entity);
+			copyUpdateDtoToEntity(dto, entity);
 			repository.save(entity);
-			return new UserDTO(entity);
+			return new UserResponseDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id " + id + " not found");
 		}
@@ -88,16 +86,15 @@ public class UserService implements UserDetailsService{
 		}
 	}
 	
-	private void copyDtoToEntity(UserDTO dto, User entity) {
+	private void copyInsertDtoToEntity(UserInsertDTO dto, User entity) {
 		entity.setFirstName(dto.getFirstName());
 		entity.setLastName(dto.getLastName());
 		entity.setEmail(dto.getEmail());
-		
-		entity.getRoles().clear();
-		for(RoleDTO roleDto : dto.getRoles()) {
-			Role role = roleRepository.getById(roleDto.getId());
-			entity.getRoles().add(role);
-		}
+	}
+	
+	private void copyUpdateDtoToEntity(UserUpdateDTO dto, User entity) {
+		entity.setFirstName(dto.getFirstName());
+		entity.setLastName(dto.getLastName());
 	}
 
 	@Override

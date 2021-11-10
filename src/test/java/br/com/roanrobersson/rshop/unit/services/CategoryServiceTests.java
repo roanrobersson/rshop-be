@@ -72,8 +72,8 @@ public class CategoryServiceTests {
 		when(repository.save(any())).thenReturn(category);
 		
 		// update
-		when(repository.getOne(existingId)).thenReturn(category);
-		doThrow(EntityNotFoundException.class).when(repository).getOne(nonExistingId);
+		when(repository.getById(existingId)).thenReturn(category);
+		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
 		
 		// delete
 		doNothing().when(repository).deleteById(existingId);

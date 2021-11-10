@@ -1,15 +1,12 @@
-package br.com.roanrobersson.rshop.dto;
+package br.com.roanrobersson.rshop.dto.user;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import br.com.roanrobersson.rshop.entities.User;
 
-public class UserDTO implements Serializable{
+public abstract class AbstractUserDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
@@ -20,27 +17,19 @@ public class UserDTO implements Serializable{
 	@NotEmpty(message = "Campo obrigatório")
 	private String lastName;
 	
-	@Email(message = "Favor entrar um email válido")
-	private String email;
-	
-	private Set<RoleDTO> roles = new HashSet<>();
-	
-	public UserDTO() {
+	public AbstractUserDTO() {
 	}
 	
-	public UserDTO(Long id, String firstName, String lastName, String email) {
+	public AbstractUserDTO(Long id, String firstName, String lastName) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.email = email;
 	}
 	
-	public UserDTO(User entity) {
+	public AbstractUserDTO(User entity) {
 		this.id = entity.getId();
 		this.firstName = entity.getFirstName();
 		this.lastName = entity.getLastName();
-		this.email = entity.getEmail();
-		entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
 	}
 	
 	public Long getId() {
@@ -65,17 +54,5 @@ public class UserDTO implements Serializable{
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Set<RoleDTO> getRoles() {
-		return roles;
 	}
 }

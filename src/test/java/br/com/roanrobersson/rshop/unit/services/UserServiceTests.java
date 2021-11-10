@@ -1,16 +1,16 @@
 package br.com.roanrobersson.rshop.unit.services;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +32,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.UserDTO;
-import br.com.roanrobersson.rshop.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.dto.user.AbstractUserDTO;
+import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
+import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
+import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
 import br.com.roanrobersson.rshop.entities.User;
 import br.com.roanrobersson.rshop.factories.UserFactory;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
+import br.com.roanrobersson.rshop.services.AuthService;
 import br.com.roanrobersson.rshop.services.UserService;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
@@ -53,6 +55,9 @@ public class UserServiceTests {
 	
 	@Mock
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Mock
+	private AuthService authService;
 	
 	private long existingId;
 	private long nonExistingId;
@@ -86,9 +91,9 @@ public class UserServiceTests {
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
 		
 		// update
-		when(repository.getOne(existingId)).thenReturn(user);
-		doThrow(EntityNotFoundException.class).when(repository).getOne(nonExistingId);
-		
+		when(repository.getById(existingId)).thenReturn(user);
+		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
+
 		// delete
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
@@ -103,7 +108,7 @@ public class UserServiceTests {
 	public void findAllPagedShouldReturnPage() {
 		PageRequest pageRequest = PageRequest.of(0, 10);
 		
-		Page<UserDTO> result = service.findAllPaged(pageRequest);
+		Page<UserResponseDTO> result = service.findAllPaged(pageRequest);
 		
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
@@ -113,7 +118,7 @@ public class UserServiceTests {
 	@Test
 	public void findByIdShouldReturnUserDTOWhenIdExist() {
 
-		UserDTO result = service.findById(existingId);
+		UserResponseDTO result = service.findById(existingId);
 		
 		assertNotNull(result);
 	}
@@ -130,7 +135,7 @@ public class UserServiceTests {
 	public void insertShouldReturnUserDTO( ) {
 		UserInsertDTO dto = new UserInsertDTO();
 		
-		UserDTO result = service.insert(dto);
+		AbstractUserDTO result = service.insert(dto);
 		
 		assertNotNull(result);
 	}
@@ -139,7 +144,7 @@ public class UserServiceTests {
 	public void updateShouldReturnUserDTOWhenIdExist() {
 		UserUpdateDTO dto = new UserUpdateDTO();
 		
-		UserDTO result = service.update(existingId, dto);
+		UserResponseDTO result = service.update(existingId, dto);
 		
 		assertNotNull(result);
 	}

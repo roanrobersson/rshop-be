@@ -16,7 +16,9 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
+import br.com.roanrobersson.rshop.services.exceptions.ForbiddenException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.services.exceptions.UnauthorizedException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -109,6 +111,20 @@ public class ControllerExceptionHandler {
 		err.setError("Bad request");
 		err.setMessage(message);
 		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e, HttpServletRequest request) {
+		OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<OAuthCustomError> anauthorized(UnauthorizedException e, HttpServletRequest request) {
+		OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
 		return ResponseEntity.status(status).body(err);
 	}
 }

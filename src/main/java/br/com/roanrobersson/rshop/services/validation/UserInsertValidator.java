@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.roanrobersson.rshop.controllers.exceptions.FieldMessage;
-import br.com.roanrobersson.rshop.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
 import br.com.roanrobersson.rshop.entities.User;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 
