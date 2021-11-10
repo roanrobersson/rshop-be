@@ -28,6 +28,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	@Autowired
 	private JwtTokenStore tokenStore;
 	
+	private static final String[] ADMIN = { "/roles/**" };	
+	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.tokenStore(tokenStore);
@@ -42,6 +44,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		}
 		
 		http.authorizeRequests()
+		.antMatchers(ADMIN).hasRole("ADMIN")
 		.antMatchers("/**").permitAll();
 		
 		http.cors().configurationSource(corsConfigurationSource());

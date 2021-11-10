@@ -12,46 +12,46 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.entities.Category;
-import br.com.roanrobersson.rshop.repositories.CategoryRepository;
+import br.com.roanrobersson.rshop.dto.RoleDTO;
+import br.com.roanrobersson.rshop.entities.Role;
+import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class CategoryService {
+public class RoleService {
 	
 	@Autowired
-	private CategoryRepository repository;
+	private RoleRepository repository;
 	
 	@Transactional(readOnly = true)
-	public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
-		Page<Category> list = repository.findAll(pageRequest);
-		return list.map(x -> new CategoryDTO(x));
+	public Page<RoleDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Role> list = repository.findAll(pageRequest);
+		return list.map(x -> new RoleDTO(x));
 	}
 	
 	@Transactional(readOnly = true)
-	public CategoryDTO findById(Long id) {
-		Optional<Category> obj = repository.findById(id);
-		Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new CategoryDTO(entity);
+	public RoleDTO findById(Long id) {
+		Optional<Role> obj = repository.findById(id);
+		Role entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+		return new RoleDTO(entity);
 	}
 
 	@Transactional
-	public CategoryDTO insert(CategoryDTO dto) {
-		Category entity = new Category();
-		entity.setName(dto.getName());
+	public RoleDTO insert(RoleDTO dto) {
+		Role entity = new Role();
+		entity.setAuthority(dto.getAuthority());
 		entity = repository.save(entity);
-		return new CategoryDTO(entity);
+		return new RoleDTO(entity);
 	}
 
 	@Transactional
-	public CategoryDTO update(Long id, CategoryDTO dto) {
+	public RoleDTO update(Long id, RoleDTO dto) {
 		try {
-			Category entity = repository.getById(id);
-			entity.setName(dto.getName());
+			Role entity = repository.getById(id);
+			entity.setAuthority(dto.getAuthority());
 			entity = repository.save(entity);
-			return new CategoryDTO(entity);
+			return new RoleDTO(entity);
 		}
 		catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id " + id + " not found ");
