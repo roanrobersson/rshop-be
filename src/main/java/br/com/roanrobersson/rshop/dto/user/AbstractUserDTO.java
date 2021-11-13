@@ -2,7 +2,8 @@ package br.com.roanrobersson.rshop.dto.user;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.entities.User;
 
@@ -11,10 +12,12 @@ public abstract class AbstractUserDTO implements Serializable{
 	
 	private Long id;
 	
-	@NotEmpty(message = "Campo obrigatório")
+	@NotBlank(message = "Campo obrigatório")
+	@Size(min = 2, max = 50, message = "Deve ter entre 2 e 50 caracteres")
 	private String firstName;
 	
-	@NotEmpty(message = "Campo obrigatório")
+	@NotBlank(message = "Campo obrigatório")
+	@Size(min = 2, max = 50, message = "Deve ter entre 2 e 50 caracteres")
 	private String lastName;
 	
 	public AbstractUserDTO() {

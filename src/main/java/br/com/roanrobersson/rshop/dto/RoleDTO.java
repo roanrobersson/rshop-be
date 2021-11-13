@@ -2,12 +2,18 @@ package br.com.roanrobersson.rshop.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import br.com.roanrobersson.rshop.entities.Role;
 
 public class RoleDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	
+	@NotBlank(message = "Campo obrigatório")
+	@Size(min = 3, max = 30, message = "Deve ter entre 3 e 127 caracteres")
 	private String authority;
 	
 	public RoleDTO() {

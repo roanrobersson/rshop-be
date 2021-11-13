@@ -3,11 +3,13 @@ package br.com.roanrobersson.rshop.dto.user;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 public class UserChangePasswordDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@NotEmpty(message = "Campo obrigatório")
+	@Size(min = 8, max = 30, message = "Deve ter entre 8 e 30 caracteres")
 	private String newPassword;
 	
 	public UserChangePasswordDTO() {
