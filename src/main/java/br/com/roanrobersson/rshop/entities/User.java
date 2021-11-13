@@ -29,11 +29,17 @@ public class User implements UserDetails{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Column(nullable=false, length=50)
 	private String firstName;
+	
+	@Column(nullable=false, length=50)
 	private String lastName;
 	
-	@Column(unique = true)
+	@Column(unique = true, nullable=false, length=255)
 	private String email;
+	
+	@Column(nullable=false, length=255)
 	private String password;
 	
 	@ManyToMany(fetch = FetchType.EAGER)

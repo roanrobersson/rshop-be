@@ -25,11 +25,16 @@ public class Product implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(unique = true, nullable=false, length=127)
 	private String name;
 	
 	@Column(columnDefinition = "TEXT")
 	private String description;
+	
+	@Column(nullable=false, precision=10, scale=2)
 	private Double price;
+	
+	@Column(nullable=false, length=255)
 	private String imgUrl;
 	
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
