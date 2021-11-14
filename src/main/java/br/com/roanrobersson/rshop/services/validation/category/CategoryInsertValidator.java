@@ -30,7 +30,7 @@ public class CategoryInsertValidator implements ConstraintValidator<CategoryInse
 		Category category = repository.findByName(dto.getName());
 
 		if (category != null) {
-			list.add(new FieldMessage("name", "Categoria já existe"));
+			list.add(new FieldMessage("name", "Category already exists"));
 		}
 		
 		for (FieldMessage e : list) {

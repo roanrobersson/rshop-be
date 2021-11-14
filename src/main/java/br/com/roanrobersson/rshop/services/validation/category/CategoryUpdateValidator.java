@@ -42,7 +42,7 @@ public class CategoryUpdateValidator implements ConstraintValidator<CategoryUpda
 		System.out.println(category);
 
 		if (category != null && categoryId != category.getId()) {
-			list.add(new FieldMessage("name", "Categoria já existe"));
+			list.add(new FieldMessage("name", "Category already exists"));
 		}
 		
 		for (FieldMessage e : list) {
