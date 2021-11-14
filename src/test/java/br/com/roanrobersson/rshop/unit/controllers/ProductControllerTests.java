@@ -82,8 +82,8 @@ public class ProductControllerTests {
 		
 		page = new PageImpl<>(List.of(existingProductResponseDTO));
 		
-		username = "alex@gmail.com";
-		password = "123456";
+		username = "administrador@gmail.com";
+		password = "12345678";
 		
 		// findAll
 		when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
