@@ -1,15 +1,15 @@
 package br.com.roanrobersson.rshop.unit.services;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +28,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.dto.category.CategoryInsertDTO;
+import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
+import br.com.roanrobersson.rshop.dto.category.CategoryUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.factories.CategoryFactory;
 import br.com.roanrobersson.rshop.repositories.CategoryRepository;
@@ -85,7 +87,7 @@ public class CategoryServiceTests {
 	public void findAllPaged_ReturnPage() {
 		PageRequest pageRequest = PageRequest.of(0, 10);
 		
-		Page<CategoryDTO> result = service.findAllPaged(pageRequest);
+		Page<CategoryResponseDTO> result = service.findAllPaged(pageRequest);
 		
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
@@ -95,7 +97,7 @@ public class CategoryServiceTests {
 	@Test
 	public void findById_ReturnCategoryDTO_IdExist() {
 
-		CategoryDTO result = service.findById(existingId);
+		CategoryResponseDTO result = service.findById(existingId);
 		
 		assertNotNull(result);
 	}
@@ -110,25 +112,25 @@ public class CategoryServiceTests {
 	
 	@Test
 	public void insert_ReturnProductDTO( ) {
-		CategoryDTO dto = new CategoryDTO();
+		CategoryInsertDTO dto = new CategoryInsertDTO();
 		
-		CategoryDTO result = service.insert(dto);
+		CategoryResponseDTO result = service.insert(dto);
 		
 		assertNotNull(result);
 	}
 	
 	@Test
 	public void update_ReturnCategoryDTO_IdExist() {
-		CategoryDTO dto = new CategoryDTO();
+		CategoryUpdateDTO dto = new CategoryUpdateDTO();
 		
-		CategoryDTO result = service.update(existingId, dto);
+		CategoryResponseDTO result = service.update(existingId, dto);
 		
 		assertNotNull(result);
 	}
 	
 	@Test
 	public void update_ThrowResourceNotFoundException_IdDoesNotExist() {
-		CategoryDTO dto = new CategoryDTO();
+		CategoryUpdateDTO dto = new CategoryUpdateDTO();
 		
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.update(nonExistingId, dto);

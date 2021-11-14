@@ -4,7 +4,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import br.com.roanrobersson.rshop.services.validation.UserInsertValid;
+import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.services.validation.user.UserInsertValid;
 
 @UserInsertValid
 public class UserInsertDTO extends AbstractUserDTO {
@@ -21,7 +22,19 @@ public class UserInsertDTO extends AbstractUserDTO {
 	public UserInsertDTO(){
 		super();
 	}
-
+	
+	public UserInsertDTO(Long id, String firstName, String lastName, String email, String password) {
+		super(id, firstName, lastName);
+		this.email = email;
+		this.password = password;
+	}
+	
+	public UserInsertDTO(User entity) {
+		super(entity);
+		this.email = entity.getEmail();
+		this.password = entity.getPassword();
+	}
+	
 	public String getEmail() {
 		return email;
 	}

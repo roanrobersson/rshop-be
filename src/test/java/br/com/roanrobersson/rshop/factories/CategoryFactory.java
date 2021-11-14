@@ -1,6 +1,6 @@
 package br.com.roanrobersson.rshop.factories;
 
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
 import br.com.roanrobersson.rshop.entities.Category;
 
 public class CategoryFactory {
@@ -9,7 +9,7 @@ public class CategoryFactory {
 		return new Category(1L, "Test category");
 	}
 	
-	public static CategoryDTO createCategoryDTO() {
-		return new CategoryDTO(createCategory());
+	public static CategoryResponseDTO createCategoryDTO() {
+		return new CategoryResponseDTO(createCategory());
 	}
 }

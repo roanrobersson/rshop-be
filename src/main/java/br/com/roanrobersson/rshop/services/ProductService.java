@@ -14,8 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
 import br.com.roanrobersson.rshop.dto.ProductDTO;
+import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
 import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.entities.Product;
 import br.com.roanrobersson.rshop.repositories.CategoryRepository;
@@ -88,7 +88,7 @@ public class ProductService {
 		entity.setPrice(dto.getPrice());
 		
 		entity.getCategories().clear();
-		for (CategoryDTO catDto : dto.getCategories()) {
+		for (CategoryResponseDTO catDto : dto.getCategories()) {
 			Category category = categoryRepository.getById(catDto.getId());
 			entity.getCategories().add(category);
 		}

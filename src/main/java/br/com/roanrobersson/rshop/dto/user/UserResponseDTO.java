@@ -1,9 +1,7 @@
 package br.com.roanrobersson.rshop.dto.user;
 
 import br.com.roanrobersson.rshop.entities.User;
-import br.com.roanrobersson.rshop.services.validation.UserUpdateValid;
 
-@UserUpdateValid
 public class UserResponseDTO extends AbstractUserDTO {
 	private static final long serialVersionUID = 1L;
 	
@@ -12,6 +10,12 @@ public class UserResponseDTO extends AbstractUserDTO {
 	public UserResponseDTO(){
 		super();
 	}
+	
+	public UserResponseDTO(Long id, String firstName, String lastName, String email) {
+		super(id, firstName, lastName);
+		this.email = email;
+	}
+	
 	
 	public UserResponseDTO(User entity) {
 		super(entity);

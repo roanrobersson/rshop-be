@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.dto;
+package br.com.roanrobersson.rshop.dto.category;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.entities.Category;
 
-public class CategoryDTO implements Serializable{
+public abstract class AbstractCategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
@@ -16,15 +16,15 @@ public class CategoryDTO implements Serializable{
 	@Size(min = 3, max = 127, message = "Deve ter entre 8 e 127 caracteres")
 	private String name;
 	
-	public CategoryDTO() {
+	public AbstractCategoryDTO() {
 	}
 
-	public CategoryDTO(Long id, String name) {
+	public AbstractCategoryDTO(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 	
-	public CategoryDTO(Category entity) {
+	public AbstractCategoryDTO(Category entity) {
 		this.id = entity.getId();
 		this.name = entity.getName();
 	}

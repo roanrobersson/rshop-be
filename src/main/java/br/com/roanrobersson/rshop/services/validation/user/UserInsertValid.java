@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.services.validation;
+package br.com.roanrobersson.rshop.services.validation.user;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -12,6 +12,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
+import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
 import br.com.roanrobersson.rshop.entities.Product;
 
 public class ProductDTO implements Serializable{
@@ -37,7 +38,7 @@ public class ProductDTO implements Serializable{
 	private Instant date;
 	
 	@NotEmpty(message = "Produto sem categoria não é permitido")
-	private List<CategoryDTO> categories = new ArrayList<>();
+	private List<CategoryResponseDTO> categories = new ArrayList<>();
 	
 	public ProductDTO() {
 	}
@@ -58,7 +59,7 @@ public class ProductDTO implements Serializable{
 		this.price = entity.getPrice();
 		this.imgUrl = entity.getImgUrl();
 		this.date = entity.getDate();
-		this.categories = entity.getCategories().stream().map((x) -> new CategoryDTO(x)).collect(Collectors.toList());
+		this.categories = entity.getCategories().stream().map((x) -> new CategoryResponseDTO(x)).collect(Collectors.toList());
 	}
 
 	public Long getId() {
@@ -109,11 +110,11 @@ public class ProductDTO implements Serializable{
 		this.date = date;
 	}
 
-	public List<CategoryDTO> getCategories() {
+	public List<CategoryResponseDTO> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<CategoryDTO> categories) {
+	public void setCategories(List<CategoryResponseDTO> categories) {
 		this.categories = categories;
 	}
 }
