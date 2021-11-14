@@ -1,6 +1,6 @@
 package br.com.roanrobersson.rshop.factories;
 
-import br.com.roanrobersson.rshop.dto.RoleDTO;
+import br.com.roanrobersson.rshop.dto.role.RoleInsertDTO;
 import br.com.roanrobersson.rshop.entities.Role;
 
 public class RoleFactory {
@@ -9,7 +9,7 @@ public class RoleFactory {
 		return new Role(1L, "ROLE_TEST");
 	}
 	
-	public static RoleDTO createRoleDTO() {
-		return new RoleDTO(createRole());
+	public static RoleInsertDTO createRoleDTO() {
+		return new RoleInsertDTO(createRole());
 	}
 }

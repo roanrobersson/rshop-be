@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.RoleDTO;
+import br.com.roanrobersson.rshop.dto.role.RoleInsertDTO;
+import br.com.roanrobersson.rshop.dto.role.RoleResponseDTO;
+import br.com.roanrobersson.rshop.dto.role.RoleUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Role;
 import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
@@ -25,33 +27,33 @@ public class RoleService {
 	private RoleRepository repository;
 	
 	@Transactional(readOnly = true)
-	public Page<RoleDTO> findAllPaged(PageRequest pageRequest) {
+	public Page<RoleResponseDTO> findAllPaged(PageRequest pageRequest) {
 		Page<Role> list = repository.findAll(pageRequest);
-		return list.map(x -> new RoleDTO(x));
+		return list.map(x -> new RoleResponseDTO(x));
 	}
 	
 	@Transactional(readOnly = true)
-	public RoleDTO findById(Long id) {
+	public RoleResponseDTO findById(Long id) {
 		Optional<Role> obj = repository.findById(id);
 		Role entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new RoleDTO(entity);
+		return new RoleResponseDTO(entity);
 	}
 
 	@Transactional
-	public RoleDTO insert(RoleDTO dto) {
+	public RoleResponseDTO insert(RoleInsertDTO dto) {
 		Role entity = new Role();
 		entity.setAuthority(dto.getAuthority());
 		entity = repository.save(entity);
-		return new RoleDTO(entity);
+		return new RoleResponseDTO(entity);
 	}
 
 	@Transactional
-	public RoleDTO update(Long id, RoleDTO dto) {
+	public RoleResponseDTO update(Long id, RoleUpdateDTO dto) {
 		try {
 			Role entity = repository.getById(id);
 			entity.setAuthority(dto.getAuthority());
 			entity = repository.save(entity);
-			return new RoleDTO(entity);
+			return new RoleResponseDTO(entity);
 		}
 		catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id " + id + " not found ");

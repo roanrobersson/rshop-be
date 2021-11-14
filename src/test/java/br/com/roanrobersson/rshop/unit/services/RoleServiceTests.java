@@ -28,7 +28,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.RoleDTO;
+import br.com.roanrobersson.rshop.dto.role.RoleInsertDTO;
+import br.com.roanrobersson.rshop.dto.role.RoleResponseDTO;
+import br.com.roanrobersson.rshop.dto.role.RoleUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Role;
 import br.com.roanrobersson.rshop.factories.RoleFactory;
 import br.com.roanrobersson.rshop.repositories.RoleRepository;
@@ -85,7 +87,7 @@ public class RoleServiceTests {
 	public void findAllPaged_ReturnPage() {
 		PageRequest pageRequest = PageRequest.of(0, 10);
 		
-		Page<RoleDTO> result = service.findAllPaged(pageRequest);
+		Page<RoleResponseDTO> result = service.findAllPaged(pageRequest);
 		
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
@@ -95,7 +97,7 @@ public class RoleServiceTests {
 	@Test
 	public void findById_ReturnRoleDTO_IdExist() {
 
-		RoleDTO result = service.findById(existingId);
+		RoleResponseDTO result = service.findById(existingId);
 		
 		assertNotNull(result);
 	}
@@ -110,25 +112,25 @@ public class RoleServiceTests {
 	
 	@Test
 	public void insert_ReturnProductDTO( ) {
-		RoleDTO dto = new RoleDTO();
+		RoleInsertDTO dto = new RoleInsertDTO();
 		
-		RoleDTO result = service.insert(dto);
+		RoleResponseDTO result = service.insert(dto);
 		
 		assertNotNull(result);
 	}
 	
 	@Test
 	public void update_ReturnRoleDTO_IdExist() {
-		RoleDTO dto = new RoleDTO();
+		RoleUpdateDTO dto = new RoleUpdateDTO();
 		
-		RoleDTO result = service.update(existingId, dto);
+		RoleResponseDTO result = service.update(existingId, dto);
 		
 		assertNotNull(result);
 	}
 	
 	@Test
 	public void update_ThrowResourceNotFoundException_IdDoesNotExist() {
-		RoleDTO dto = new RoleDTO();
+		RoleUpdateDTO dto = new RoleUpdateDTO();
 		
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.update(nonExistingId, dto);

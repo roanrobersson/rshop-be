@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.dto;
+package br.com.roanrobersson.rshop.dto.role;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.entities.Role;
 
-public class RoleDTO implements Serializable {
+public abstract class AbstractRoleDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
@@ -16,15 +16,15 @@ public class RoleDTO implements Serializable {
 	@Size(min = 3, max = 30, message = "Deve ter entre 3 e 127 caracteres")
 	private String authority;
 	
-	public RoleDTO() {
+	public AbstractRoleDTO() {
 	}
 
-	public RoleDTO(Long id, String authority) {
+	public AbstractRoleDTO(Long id, String authority) {
 		this.id = id;
 		this.authority = authority;
 	}
 
-	public RoleDTO(Role role) {
+	public AbstractRoleDTO(Role role) {
 		id = role.getId();
 		authority = role.getAuthority();
 	}
