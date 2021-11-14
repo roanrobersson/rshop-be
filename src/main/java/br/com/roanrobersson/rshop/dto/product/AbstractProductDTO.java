@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.dto;
+package br.com.roanrobersson.rshop.dto.product;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
 import br.com.roanrobersson.rshop.entities.Product;
 
-public class ProductDTO implements Serializable{
+public abstract class AbstractProductDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
@@ -40,10 +40,10 @@ public class ProductDTO implements Serializable{
 	@NotEmpty(message = "Produto sem categoria não é permitido")
 	private List<CategoryResponseDTO> categories = new ArrayList<>();
 	
-	public ProductDTO() {
+	public AbstractProductDTO() {
 	}
 
-	public ProductDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
+	public AbstractProductDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -52,7 +52,7 @@ public class ProductDTO implements Serializable{
 		this.date = date;
 	}
 	
-	public ProductDTO(Product entity) {
+	public AbstractProductDTO(Product entity) {
 		this.id = entity.getId();
 		this.name = entity.getName();
 		this.description = entity.getDescription();

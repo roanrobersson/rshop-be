@@ -2,7 +2,9 @@ package br.com.roanrobersson.rshop.factories;
 
 import java.time.Instant;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductInsertDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductResponseDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.entities.Product;
 
@@ -14,13 +16,21 @@ public class ProductFactory {
 		return product;
 	}
 	
-	public static ProductDTO createProductDTO() {
+	public static ProductInsertDTO createProductInsertDTO() {
 		Product product = createProduct();
-		return new ProductDTO(product);
+		return new ProductInsertDTO(product);
 	}
 	
-	public static ProductDTO createProductDTO(Long id) {
-		ProductDTO dto = createProductDTO();
+	public static ProductUpdateDTO createProductUpdateDTO(Long id) {
+		Product product = createProduct();
+		ProductUpdateDTO dto = new ProductUpdateDTO(product);
+		dto.setId(id);
+		return dto;
+	}
+	
+	public static ProductResponseDTO createProductResponseDTO(Long id) {
+		Product product = createProduct();
+		ProductResponseDTO dto = new ProductResponseDTO(product);
 		dto.setId(id);
 		return dto;
 	}

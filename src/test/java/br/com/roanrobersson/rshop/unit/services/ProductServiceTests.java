@@ -1,16 +1,16 @@
 package br.com.roanrobersson.rshop.unit.services;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +29,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductInsertDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductResponseDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Product;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
 import br.com.roanrobersson.rshop.repositories.ProductRepository;
@@ -87,7 +89,7 @@ public class ProductServiceTests {
 		String name = "";
 		PageRequest pageRequest = PageRequest.of(0, 10);
 		
-		Page<ProductDTO> result = service.findAllPaged(categoryId, name, pageRequest);
+		Page<ProductResponseDTO> result = service.findAllPaged(categoryId, name, pageRequest);
 		assertNotNull(result);
 		
 		assertFalse(result.isEmpty());
@@ -97,7 +99,7 @@ public class ProductServiceTests {
 	@Test
 	public void findByIdShouldReturnProductDTOWhenIdExist() {
 
-		ProductDTO result = service.findById(existingId);
+		ProductResponseDTO result = service.findById(existingId);
 		
 		assertNotNull(result);
 	}
@@ -112,25 +114,25 @@ public class ProductServiceTests {
 	
 	@Test
 	public void insertShouldReturnProductDTO( ) {
-		ProductDTO dto = new ProductDTO();
+		ProductInsertDTO dto = new ProductInsertDTO();
 		
-		ProductDTO result = service.insert(dto);
+		ProductResponseDTO result = service.insert(dto);
 		
 		assertNotNull(result);
 	}
 	
 	@Test
 	public void updateShouldReturnProductDTOWhenIdExist() {
-		ProductDTO dto = new ProductDTO();
+		ProductUpdateDTO dto = new ProductUpdateDTO();
 		
-		ProductDTO result = service.update(existingId, dto);
+		ProductResponseDTO result = service.update(existingId, dto);
 		
 		assertNotNull(result);
 	}
 	
 	@Test
 	public void updateShouldShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
-		ProductDTO dto = new ProductDTO();
+		ProductUpdateDTO dto = new ProductUpdateDTO();
 		
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.update(nonExistingId, dto);

@@ -7,10 +7,10 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +34,9 @@ import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductInsertDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductResponseDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
 import br.com.roanrobersson.rshop.services.ProductService;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
@@ -62,11 +64,11 @@ public class ProductControllerTests {
 	private Long existingId;
 	private Long nonExistingId;
 	private Long dependentId;
-	private ProductDTO newProductDTO;
-	private ProductDTO existingProductDTO;
-	private PageImpl<ProductDTO> page;
-	private String operatorUsername;
-	private String operatorPassword;
+	private ProductInsertDTO productInsertDTO;
+	private ProductResponseDTO existingProductResponseDTO;
+	private PageImpl<ProductResponseDTO> page;
+	private String username;
+	private String password;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -75,26 +77,26 @@ public class ProductControllerTests {
 		nonExistingId = 2L;
 		dependentId = 3L;
 		
-		newProductDTO = ProductFactory.createProductDTO(null);
-		existingProductDTO = ProductFactory.createProductDTO(existingId);
+		productInsertDTO = ProductFactory.createProductInsertDTO();
+		existingProductResponseDTO = ProductFactory.createProductResponseDTO(existingId);
 		
-		page = new PageImpl<>(List.of(existingProductDTO));
+		page = new PageImpl<>(List.of(existingProductResponseDTO));
 		
-		operatorUsername = "alex@gmail.com";
-		operatorPassword = "123456";
+		username = "alex@gmail.com";
+		password = "123456";
 		
 		// findAll
 		when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
 		
 		// findById
-		when(service.findById(existingId)).thenReturn(existingProductDTO);
+		when(service.findById(existingId)).thenReturn(existingProductResponseDTO);
 		when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
 	
 		// insert
-		when(service.insert(any())).thenReturn(existingProductDTO);
+		when(service.insert(any())).thenReturn(existingProductResponseDTO);
 		
 		// update
-		when(service.update(eq(existingId), any())).thenReturn(existingProductDTO);
+		when(service.update(eq(existingId), any())).thenReturn(existingProductResponseDTO);
 		when(service.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
 
 		// delete
@@ -137,11 +139,11 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void insert_ReturnProductDTO_ValidProductDTO() throws Exception{
-		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
-		String jsonBody = objectMapper.writeValueAsString(newProductDTO);
-		ProductDTO expectedProductDTO = ProductFactory.createProductDTO(existingId);
-		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductDTO); 
+	public void insert_ReturnProductResponseDTO_ValidProductInsertDTO() throws Exception{
+		String accessToken = obtainAccessToken(username, password);
+		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
+		ProductResponseDTO expectedProductResponseDTO = ProductFactory.createProductResponseDTO(existingId);
+		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductResponseDTO); 
 				
 		ResultActions result =
 				mockMvc.perform(post("/products")
@@ -156,10 +158,10 @@ public class ProductControllerTests {
 	
 	@Test
 	public void insert_ReturnUnprocessableEntity_NoPositivePrice() throws Exception{
-		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
-		ProductDTO invalidProductDTO = ProductFactory.createProductDTO(existingId);
-		invalidProductDTO.setPrice(0.0);
-		String jsonBody = objectMapper.writeValueAsString(invalidProductDTO);
+		String accessToken = obtainAccessToken(username, password);
+		ProductInsertDTO invalidProductInsertDTO = ProductFactory.createProductInsertDTO();
+		invalidProductInsertDTO.setPrice(0.0);
+		String jsonBody = objectMapper.writeValueAsString(invalidProductInsertDTO);
 		
 		ResultActions result =
 				mockMvc.perform(post("/products")
@@ -172,10 +174,10 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void update_ReturnProductDTO_IdExists() throws Exception{
-		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
-		String jsonBody = objectMapper.writeValueAsString(newProductDTO);
-		ProductDTO expectedProductDTO = ProductFactory.createProductDTO(existingId);
+	public void update_ReturnProductResponseDTO_IdExists() throws Exception{
+		String accessToken = obtainAccessToken(username, password);
+		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
+		ProductUpdateDTO expectedProductDTO = ProductFactory.createProductUpdateDTO(1L);
 		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductDTO); 
 				
 		ResultActions result =
@@ -191,8 +193,8 @@ public class ProductControllerTests {
 	
 	@Test
 	public void update_ReturnNotFound_IdDoesNotExist() throws Exception{
-		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
-		String jsonBody = objectMapper.writeValueAsString(newProductDTO);
+		String accessToken = obtainAccessToken(username, password);
+		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
 		
 		ResultActions result =
 				mockMvc.perform(put("/products/{id}", nonExistingId)
@@ -206,7 +208,7 @@ public class ProductControllerTests {
 	
 	@Test
 	public void delete_ReturnNoContent_IdExist() throws Exception {
-		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+		String accessToken = obtainAccessToken(username, password);
 		
 		ResultActions result =
 			mockMvc.perform(delete("/products/{id}", existingId)
@@ -218,7 +220,7 @@ public class ProductControllerTests {
 	
 	@Test
 	public void delete_ReturnNotFound_IdDoesNotExist() throws Exception {
-		String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+		String accessToken = obtainAccessToken(username, password);
 		
 		ResultActions result =
 				mockMvc.perform(delete("/products/{id}", nonExistingId)

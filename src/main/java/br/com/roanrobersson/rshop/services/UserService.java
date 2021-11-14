@@ -58,7 +58,7 @@ public class UserService implements UserDetailsService{
 	@Transactional
 	public UserResponseDTO insert(UserInsertDTO dto) {
 		User entity = new User();
-		copyInsertDtoToEntity(dto, entity);
+		copyDtoToEntity(dto, entity);
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		entity = repository.save(entity);
 		return new UserResponseDTO(entity);
@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService{
 		authService.validateSelfOrAdmin(id);
 		try {
 			User entity = repository.getById(id);
-			copyUpdateDtoToEntity(dto, entity);
+			copyDtoToEntity(dto, entity);
 			repository.save(entity);
 			return new UserResponseDTO(entity);
 		} catch (EntityNotFoundException e) {
@@ -110,13 +110,13 @@ public class UserService implements UserDetailsService{
 		return user;
 	}
 	
-	private void copyInsertDtoToEntity(UserInsertDTO dto, User entity) {
+	private void copyDtoToEntity(UserInsertDTO dto, User entity) {
 		entity.setFirstName(dto.getFirstName());
 		entity.setLastName(dto.getLastName());
 		entity.setEmail(dto.getEmail());
 	}
 	
-	private void copyUpdateDtoToEntity(UserUpdateDTO dto, User entity) {
+	private void copyDtoToEntity(UserUpdateDTO dto, User entity) {
 		entity.setFirstName(dto.getFirstName());
 		entity.setLastName(dto.getLastName());
 	}

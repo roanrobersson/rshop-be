@@ -111,7 +111,7 @@ public class CategoryServiceTests {
 	}
 	
 	@Test
-	public void insert_ReturnProductDTO( ) {
+	public void insert_ReturnCategoryDTO( ) {
 		CategoryInsertDTO dto = new CategoryInsertDTO();
 		
 		CategoryResponseDTO result = service.insert(dto);

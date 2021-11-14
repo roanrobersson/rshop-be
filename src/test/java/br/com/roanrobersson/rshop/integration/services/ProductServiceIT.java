@@ -9,7 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductInsertDTO;
+import br.com.roanrobersson.rshop.dto.product.ProductResponseDTO;
 import br.com.roanrobersson.rshop.services.ProductService;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
@@ -40,7 +41,7 @@ public class ProductServiceIT {
 	@Test
 	public void findAllPaged_ReturnAllProducts_CategoryNotInformed() {
 		
-		Page<ProductDTO> result = service.findAllPaged(0L, "", pageRequest);
+		Page<ProductResponseDTO> result = service.findAllPaged(0L, "", pageRequest);
 		
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(countTotalProducts, result.getTotalElements());
@@ -49,7 +50,7 @@ public class ProductServiceIT {
 	@Test
 	public void findAllPaged_ReturnOnlySelectedCategory_CategoryInformed() {
 		
-		Page<ProductDTO> result = service.findAllPaged(3L, "", pageRequest);
+		Page<ProductResponseDTO> result = service.findAllPaged(3L, "", pageRequest);
 		
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(countCategoryThreeProducts, result.getTotalElements());
@@ -59,7 +60,7 @@ public class ProductServiceIT {
 	public void findAllPaged_ReturnAllProducts_NameIsEmpty() {
 		String name = "";
 		
-		Page<ProductDTO> result = service.findAllPaged(0L, name, pageRequest);
+		Page<ProductResponseDTO> result = service.findAllPaged(0L, name, pageRequest);
 		
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(countTotalProducts, result.getTotalElements());
@@ -69,7 +70,7 @@ public class ProductServiceIT {
 	public void findAllPaged_ReturnProducts_NameExistsIgnoringCase() {
 		String name = "pc gAMeR";
 		
-		Page<ProductDTO> result = service.findAllPaged(0L, name, pageRequest);
+		Page<ProductResponseDTO> result = service.findAllPaged(0L, name, pageRequest);
 		
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(countPCGamerProducts, result.getTotalElements());
@@ -79,7 +80,7 @@ public class ProductServiceIT {
 	public void findAllPaged_ReturnProducts_NameExists() {
 		String name = "PC Gamer";
 		
-		Page<ProductDTO> result = service.findAllPaged(0L, name, pageRequest);
+		Page<ProductResponseDTO> result = service.findAllPaged(0L, name, pageRequest);
 		
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(countPCGamerProducts, result.getTotalElements());
