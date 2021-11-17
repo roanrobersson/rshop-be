@@ -9,7 +9,7 @@ public class UserChangePasswordDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@NotEmpty(message = "Campo obrigatório")
-	@Size(min = 8, max = 30, message = "Deve ter entre 8 e 30 caracteres")
+	@Size(min = 8, max = 50, message = "Deve ter entre 8 e 50 caracteres")
 	private String newPassword;
 	
 	public UserChangePasswordDTO() {

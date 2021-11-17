@@ -10,13 +10,13 @@ import br.com.roanrobersson.rshop.services.validation.user.UserInsertValid;
 @UserInsertValid
 public class UserInsertDTO extends AbstractUserDTO {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Email(message = "Email inválido")
 	@Size(min = 3, max = 255, message = "Deve ter entre 3 e 255 caracteres")
 	private String email;
 	
 	@NotBlank(message = "Campo obrigatório")
-	@Size(min = 8, max = 30, message = "Deve ter entre 8 e 30 caracteres")
+	@Size(min = 8, max = 50, message = "Deve ter entre 8 e 50 caracteres")
 	private String password;
 	
 	public UserInsertDTO(){

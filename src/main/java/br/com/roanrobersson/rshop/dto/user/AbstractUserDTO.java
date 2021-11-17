@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.entities.User;
 
-public abstract class AbstractUserDTO implements Serializable{
+public abstract class AbstractUserDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;

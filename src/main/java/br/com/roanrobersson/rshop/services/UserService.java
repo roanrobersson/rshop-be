@@ -7,6 +7,7 @@ import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,9 @@ import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
 import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
 import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
 import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
+import br.com.roanrobersson.rshop.entities.Role;
 import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
@@ -39,7 +42,13 @@ public class UserService implements UserDetailsService{
 	private UserRepository repository;
 	
 	@Autowired
+	private RoleRepository roleRepository;
+	
+	@Autowired
 	private AuthService authService;
+	
+	@Value("${default_user_role_id}")
+	private Long defaultUserRoleId;
 	
 	@Transactional(readOnly = true)
 	public Page<UserResponseDTO> findAllPaged(PageRequest pageRequest) {
@@ -60,6 +69,8 @@ public class UserService implements UserDetailsService{
 		User entity = new User();
 		copyDtoToEntity(dto, entity);
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+		Role defaultRole = roleRepository.getById(defaultUserRoleId);
+		entity.getRoles().add(defaultRole);
 		entity = repository.save(entity);
 		return new UserResponseDTO(entity);
 	}
