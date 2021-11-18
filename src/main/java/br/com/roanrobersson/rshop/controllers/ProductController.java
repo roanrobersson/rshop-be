@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,7 +35,8 @@ public class ProductController {
 	@Autowired
 	private ProductService service;
 	
-	@GetMapping
+	@GetMapping(produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<ProductResponseDTO>> findAll(
 			@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
 			@RequestParam(value = "name", defaultValue = "") String name,
@@ -48,13 +51,15 @@ public class ProductController {
 		return ResponseEntity.ok().body(list);
 	}
 	
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{id}", produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
 		ProductResponseDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
 	
-	@PostMapping
+	@PostMapping(produces="application/json")
+	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
 	public ResponseEntity<ProductResponseDTO> insert(@Valid @RequestBody ProductInsertDTO dto) {
 		ProductResponseDTO newDto = service.insert(dto);
@@ -63,7 +68,8 @@ public class ProductController {
 		return ResponseEntity.created(uri).body(newDto);
 	}
 	
-	@PutMapping(value = "/{id}")
+	@PutMapping(value = "/{id}", produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
 	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
 	public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ProductUpdateDTO dto) {
 		ProductResponseDTO newDto = service.update(id, dto);
@@ -71,6 +77,7 @@ public class ProductController {
 	}
 	
 	@DeleteMapping(value = "/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);

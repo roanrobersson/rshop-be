@@ -109,7 +109,31 @@ public class UserService implements UserDetailsService{
 			throw new ResourceNotFoundException("Id " + id + " not found");
 		}
 	}
-
+	
+	@Transactional
+	public void grantRole(Long userId, Long roleId) {
+		try {
+			User userEntity = repository.getById(userId);
+			Role roleEntity = roleRepository.getById(roleId);
+			userEntity.getRoles().add(roleEntity);
+			repository.save(userEntity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("User id " + userId + " or role id " + roleId + " not found");
+		}
+	}
+	
+	@Transactional
+	public void revokeRole(Long userId, Long roleId) {
+		try {
+			User userEntity = repository.getById(userId);
+			Role roleEntity = roleRepository.getById(roleId);
+			userEntity.getRoles().remove(roleEntity);
+			repository.save(userEntity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("User id " + userId + " or role id " + roleId + " not found");
+		}
+	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = repository.findByEmail(username);

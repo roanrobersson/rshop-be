@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,7 +37,8 @@ public class UserController {
 	@Autowired
 	private UserService service;
 	
-	@GetMapping
+	@GetMapping(produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
 	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
 	public ResponseEntity<Page<UserResponseDTO>> findAll(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -47,14 +50,16 @@ public class UserController {
 		return ResponseEntity.ok(usersPage);
 	}
 	
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{id}", produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
 		UserResponseDTO dto = service.findById(id);
 		return ResponseEntity.ok(dto);
 	}
 	
-	@PostMapping
+	@PostMapping(produces="application/json")
+	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<UserResponseDTO> insert(@Valid @RequestBody UserInsertDTO dto) {
 		UserResponseDTO newDto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}")
@@ -62,7 +67,8 @@ public class UserController {
 		return ResponseEntity.created(uri).body(newDto);
 	}
 	
-	@PatchMapping(value = "/{id}")
+	@PatchMapping(value = "/{id}", produces="application/json")
+	@ResponseStatus(HttpStatus.OK)
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
 		UserResponseDTO newDto = service.update(id, dto);
@@ -70,6 +76,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping(value = "/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
@@ -77,6 +84,7 @@ public class UserController {
 	}
 	
 	@PutMapping(value = "/{id}/password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("isAuthenticated() or hasAnyRole('ADMIN')")
 	public ResponseEntity<Void> changePassword(@PathVariable Long id, @Valid @RequestBody UserChangePasswordDTO dto) {
 		service.changePassword(id, dto);

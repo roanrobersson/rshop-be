@@ -102,7 +102,16 @@ public class User implements UserDetails{
 	public Set<Role> getRoles() {
 		return roles;
 	}
-
+	
+	public boolean hasRole(String roleName) {
+		for (Role role : roles) {
+			if (role.getAuthority().equals(roleName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority()))
@@ -132,15 +141,6 @@ public class User implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		return true;
-	}
-	
-	public boolean hasRole(String roleName) {
-		for (Role role : roles) {
-			if (role.getAuthority().equals(roleName)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	@Override
