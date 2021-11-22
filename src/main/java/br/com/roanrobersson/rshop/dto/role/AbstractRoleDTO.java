@@ -10,8 +10,6 @@ import br.com.roanrobersson.rshop.entities.Role;
 public abstract class AbstractRoleDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	
 	@NotBlank(message = "Campo obrigatório")
 	@Size(min = 3, max = 30, message = "Deve ter entre 3 e 127 caracteres")
 	private String authority;
@@ -19,23 +17,14 @@ public abstract class AbstractRoleDTO implements Serializable {
 	public AbstractRoleDTO() {
 	}
 
-	public AbstractRoleDTO(Long id, String authority) {
-		this.id = id;
+	public AbstractRoleDTO(String authority) {
 		this.authority = authority;
 	}
 
 	public AbstractRoleDTO(Role role) {
-		id = role.getId();
 		authority = role.getAuthority();
 	}
 	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getAuthority() {
 		return authority;

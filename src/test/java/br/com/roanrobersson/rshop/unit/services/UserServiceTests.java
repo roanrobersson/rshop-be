@@ -37,8 +37,11 @@ import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
 import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
 import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
 import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
+import br.com.roanrobersson.rshop.entities.Role;
 import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.factories.RoleFactory;
 import br.com.roanrobersson.rshop.factories.UserFactory;
+import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 import br.com.roanrobersson.rshop.services.AuthService;
 import br.com.roanrobersson.rshop.services.UserService;
@@ -55,12 +58,16 @@ public class UserServiceTests {
 	private UserRepository repository;
 	
 	@Mock
+	private RoleRepository roleRepository;
+
+	@Mock
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Mock
 	private AuthService authService;
 	
 	private long existingId;
+	private String existingRoleId;
 	private long nonExistingId;
 	private long dependentId;
 	private String existingEmail;
@@ -69,11 +76,13 @@ public class UserServiceTests {
 	private User user;
 	private PageImpl<User> page;
 	private UserChangePasswordDTO changePasswordDTO;
+	private Role role;
 	
 	@BeforeEach
 	void setUp() throws Exception {
 		
 		existingId = 1L;
+		existingRoleId = "tes";
 		nonExistingId = Long.MAX_VALUE;
 		dependentId = 4L;
 		existingEmail = "alex@gmail.com";
@@ -83,7 +92,8 @@ public class UserServiceTests {
 		user = UserFactory.createUser();
 		page = new PageImpl<>(List.of(user));
 		changePasswordDTO = new UserChangePasswordDTO(validPassword); 
-				
+		role = RoleFactory.createRole();		
+		
 		// findAllPaged
 		when(repository.findAll(any(PageRequest.class))).thenReturn(page);
 		
@@ -94,6 +104,7 @@ public class UserServiceTests {
 		// insert
 		when(repository.save(any())).thenReturn(user);
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
+		when(roleRepository.getById(existingRoleId)).thenReturn(role);
 		
 		// update
 		when(repository.getById(existingId)).thenReturn(user);

@@ -6,7 +6,7 @@ import br.com.roanrobersson.rshop.entities.Role;
 public class RoleFactory {
 
 	public static Role createRole() {
-		return new Role(1L, "ROLE_TEST");
+		return new Role("tes", "ROLE_TEST");
 	}
 	
 	public static RoleInsertDTO createRoleDTO() {

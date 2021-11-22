@@ -50,7 +50,7 @@ public class RoleController {
 	
 	@GetMapping(value = "/{id}", produces="application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<RoleResponseDTO> findById(@PathVariable Long id) {
+	public ResponseEntity<RoleResponseDTO> findById(@PathVariable String id) {
 		RoleResponseDTO newDto = service.findById(id);
 		return ResponseEntity.ok().body(newDto);
 	}
@@ -66,14 +66,14 @@ public class RoleController {
 	
 	@PutMapping(value = "/{id}", produces="application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<RoleResponseDTO> update(@PathVariable Long id, @Valid @RequestBody RoleUpdateDTO dto) {
+	public ResponseEntity<RoleResponseDTO> update(@PathVariable String id, @Valid @RequestBody RoleUpdateDTO dto) {
 		RoleResponseDTO newDto = service.update(id, dto);
 		return ResponseEntity.ok().body(newDto);
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable String id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}

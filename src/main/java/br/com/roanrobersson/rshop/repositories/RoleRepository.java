@@ -7,7 +7,7 @@ import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.entities.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long>{
+public interface RoleRepository extends JpaRepository<Role, String>{
 
 	Role findByAuthority(String authority);
 }

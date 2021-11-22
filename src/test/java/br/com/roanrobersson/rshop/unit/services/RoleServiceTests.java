@@ -47,18 +47,18 @@ public class RoleServiceTests {
 	@Mock
 	private RoleRepository repository;
 	
-	private long existingId;
-	private long nonExistingId;
-	private long dependentId;
+	private String existingId;
+	private String nonExistingId;
+	private String dependentId;
 	private Role role;
 	private PageImpl<Role> page;
 	
 	@BeforeEach
 	void setUp() throws Exception {
 		
-		existingId = 1L;
-		nonExistingId = Long.MAX_VALUE;
-		dependentId = 4L;
+		existingId = "tes";
+		nonExistingId = "yyy";
+		dependentId = "adm";
 		
 		role = RoleFactory.createRole();
 		page = new PageImpl<>(List.of(role));

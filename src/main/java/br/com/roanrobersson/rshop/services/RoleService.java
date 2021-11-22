@@ -33,7 +33,7 @@ public class RoleService {
 	}
 	
 	@Transactional(readOnly = true)
-	public RoleResponseDTO findById(Long id) {
+	public RoleResponseDTO findById(String id) {
 		Optional<Role> obj = repository.findById(id);
 		Role entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new RoleResponseDTO(entity);
@@ -48,7 +48,7 @@ public class RoleService {
 	}
 
 	@Transactional
-	public RoleResponseDTO update(Long id, RoleUpdateDTO dto) {
+	public RoleResponseDTO update(String id, RoleUpdateDTO dto) {
 		try {
 			Role entity = repository.getById(id);
 			entity.setAuthority(dto.getAuthority());
@@ -60,7 +60,7 @@ public class RoleService {
 		}
 	}
 	
-	public void delete(Long id) {
+	public void delete(String id) {
 		try {
 			repository.deleteById(id);
 		}

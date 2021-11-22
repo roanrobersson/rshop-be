@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService{
 	private AuthService authService;
 	
 	@Value("${default_user_role_id}")
-	private Long defaultUserRoleId;
+	private String defaultUserRoleId;
 	
 	@Transactional(readOnly = true)
 	public Page<UserResponseDTO> findAllPaged(PageRequest pageRequest) {
@@ -111,7 +111,7 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public void grantRole(Long userId, Long roleId) {
+	public void grantRole(Long userId, String roleId) {
 		try {
 			User userEntity = repository.getById(userId);
 			Role roleEntity = roleRepository.getById(roleId);
@@ -123,7 +123,7 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public void revokeRole(Long userId, Long roleId) {
+	public void revokeRole(Long userId, String roleId) {
 		try {
 			User userEntity = repository.getById(userId);
 			Role roleEntity = roleRepository.getById(roleId);
