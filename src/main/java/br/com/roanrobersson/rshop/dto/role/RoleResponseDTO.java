@@ -19,11 +19,12 @@ public class RoleResponseDTO extends AbstractRoleDTO implements Serializable {
 	}
 
 	public RoleResponseDTO(String id, String authority) {
-		super( authority);
+		super(authority);
 		this.id = id;
 	}
 
 	public RoleResponseDTO(Role role) {
 		super(role);
+		this.id = role.getId();
 	}
 }

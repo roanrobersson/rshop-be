@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.controllers.exceptions.FieldMessage;
-import br.com.roanrobersson.rshop.dto.category.CategoryUpdateDTO;
 import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.repositories.CategoryRepository;

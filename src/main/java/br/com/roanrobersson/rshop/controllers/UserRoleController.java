@@ -1,10 +1,13 @@
 package br.com.roanrobersson.rshop.controllers;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,14 @@ public class UserRoleController {
 	
 	@Autowired
 	UserService service;
+	
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	public ResponseEntity<Set<String>> findAll(@PathVariable Long userId) {
+		Set<String> list = service.getRoles(userId);
+		return ResponseEntity.ok().body(list);
+	}
 	
 	@PutMapping(value = "/{roleId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

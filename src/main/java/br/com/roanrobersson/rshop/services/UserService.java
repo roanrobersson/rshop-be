@@ -1,6 +1,8 @@
 package br.com.roanrobersson.rshop.services;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -108,6 +110,14 @@ public class UserService implements UserDetailsService{
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id " + id + " not found");
 		}
+	}
+	
+	@Transactional
+	public Set<String> getRoles(Long userId) {	
+		Optional<User> obj = repository.findById(userId);
+		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Id " + userId + " not found"));
+		Set<String> set = entity.getRoles().stream().map(r -> r.getId()).collect(Collectors.toSet());
+		return set;
 	}
 	
 	@Transactional
