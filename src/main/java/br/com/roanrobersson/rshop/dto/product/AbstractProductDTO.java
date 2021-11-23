@@ -14,7 +14,11 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
 import br.com.roanrobersson.rshop.entities.Product;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter @Setter @NoArgsConstructor
 public abstract class AbstractProductDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -39,9 +43,6 @@ public abstract class AbstractProductDTO implements Serializable{
 	
 	@NotEmpty(message = "Produto sem categoria não é permitido")
 	private List<CategoryResponseDTO> categories = new ArrayList<>();
-	
-	public AbstractProductDTO() {
-	}
 
 	public AbstractProductDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
 		this.id = id;
@@ -60,61 +61,5 @@ public abstract class AbstractProductDTO implements Serializable{
 		this.imgUrl = entity.getImgUrl();
 		this.date = entity.getDate();
 		this.categories = entity.getCategories().stream().map((x) -> new CategoryResponseDTO(x)).collect(Collectors.toList());
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-
-	public String getImgUrl() {
-		return imgUrl;
-	}
-
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
-	}
-
-	public Instant getDate() {
-		return date;
-	}
-
-	public void setDate(Instant date) {
-		this.date = date;
-	}
-
-	public List<CategoryResponseDTO> getCategories() {
-		return categories;
-	}
-
-	public void setCategories(List<CategoryResponseDTO> categories) {
-		this.categories = categories;
 	}
 }

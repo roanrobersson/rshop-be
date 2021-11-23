@@ -6,8 +6,12 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.entities.User;
 import br.com.roanrobersson.rshop.services.validation.user.UserInsertValid;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @UserInsertValid
+@Getter @Setter @NoArgsConstructor
 public class UserInsertDTO extends AbstractUserDTO {
 	private static final long serialVersionUID = 1L;
 
@@ -19,10 +23,6 @@ public class UserInsertDTO extends AbstractUserDTO {
 	@Size(min = 8, max = 50, message = "Deve ter entre 8 e 50 caracteres")
 	private String password;
 	
-	public UserInsertDTO(){
-		super();
-	}
-	
 	public UserInsertDTO(Long id, String firstName, String lastName, String email, String password) {
 		super(id, firstName, lastName);
 		this.email = email;
@@ -33,21 +33,5 @@ public class UserInsertDTO extends AbstractUserDTO {
 		super(entity);
 		this.email = entity.getEmail();
 		this.password = entity.getPassword();
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 }

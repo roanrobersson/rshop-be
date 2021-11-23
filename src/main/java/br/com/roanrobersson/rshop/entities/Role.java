@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.entities;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -11,63 +10,34 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "tb_role")
+@Getter @Setter @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Role implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(columnDefinition = "CHAR(3)")
+	@EqualsAndHashCode.Include
 	private String id;
 	
 	@Column(unique = true, nullable=false, length=30)
 	private String authority;
 	
 	@ManyToMany(mappedBy = "roles")
+	@Setter(value = AccessLevel.NONE)
 	private Set<User> users = new HashSet<>();
 
-	public Role() {
-	}
-	
 	public Role(String id, String authority) {
 		super();
 		this.id = id;
 		this.authority = authority;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getAuthority() {
-		return authority;
-	}
-
-	public void setAuthority(String authority) {
-		this.authority = authority;
-	}
-
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Role other = (Role) obj;
-		return Objects.equals(id, other.id);
 	}
 }
