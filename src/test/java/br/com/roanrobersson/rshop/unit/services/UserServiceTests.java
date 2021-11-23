@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.user.AbstractUserDTO;
 import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
 import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
 import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
@@ -65,6 +65,9 @@ public class UserServiceTests {
 	
 	@Mock
 	private AuthService authService;
+	
+	@Mock
+	private ModelMapper modelMapper;
 	
 	private long existingId;
 	private String existingRoleId;
@@ -118,6 +121,9 @@ public class UserServiceTests {
 		// loadUserByUsername
 		when(repository.findByEmail(anyString())).thenReturn(user);
 		doThrow(UsernameNotFoundException.class).when(repository).findByEmail(nonExistingEmail);
+		
+		// modelMapper
+		when(modelMapper.map(any(), any())).thenReturn(user);
 	}
 	
 	@Test
@@ -148,10 +154,10 @@ public class UserServiceTests {
 	}
 	
 	@Test
-	public void insertShouldReturnUserDTO( ) {
+	public void insertShouldReturnUserResponseDTO( ) {
 		UserInsertDTO dto = new UserInsertDTO();
 		
-		AbstractUserDTO result = service.insert(dto);
+		UserResponseDTO result = service.insert(dto);
 		
 		assertNotNull(result);
 	}

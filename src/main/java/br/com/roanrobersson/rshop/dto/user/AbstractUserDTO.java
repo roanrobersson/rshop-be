@@ -15,8 +15,6 @@ import lombok.Setter;
 public abstract class AbstractUserDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	
 	@NotBlank(message = "Campo obrigatório")
 	@Size(min = 2, max = 50, message = "Deve ter entre 2 e 50 caracteres")
 	private String firstName;
@@ -34,7 +32,6 @@ public abstract class AbstractUserDTO implements Serializable {
 	private String secondaryPhone;
 	
 	public AbstractUserDTO(User entity) {
-		this.id = entity.getId();
 		this.firstName = entity.getFirstName();
 		this.lastName = entity.getLastName();
 		this.primaryPhone = entity.getPrimaryPhone();

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class UserService implements UserDetailsService{
 	@Value("${default_user_role_id}")
 	private String defaultUserRoleId;
 	
+	@Autowired 
+	private ModelMapper modelMapper;
+	
 	@Transactional(readOnly = true)
 	public Page<UserResponseDTO> findAllPaged(PageRequest pageRequest) {
 		Page<User> list = repository.findAll(pageRequest);
@@ -68,8 +72,7 @@ public class UserService implements UserDetailsService{
 
 	@Transactional
 	public UserResponseDTO insert(UserInsertDTO dto) {
-		User entity = new User();
-		copyDtoToEntity(dto, entity);
+		User entity = modelMapper.map(dto, User.class);
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		Role defaultRole = roleRepository.getById(defaultUserRoleId);
 		entity.getRoles().add(defaultRole);
@@ -82,7 +85,7 @@ public class UserService implements UserDetailsService{
 		authService.validateSelfOrAdmin(id);
 		try {
 			User entity = repository.getById(id);
-			copyDtoToEntity(dto, entity);
+			modelMapper.map(dto, entity);
 			repository.save(entity);
 			return new UserResponseDTO(entity);
 		} catch (EntityNotFoundException e) {
@@ -153,20 +156,5 @@ public class UserService implements UserDetailsService{
 		}
 		logger.info("User found: " + username);
 		return user;
-	}
-	
-	private void copyDtoToEntity(UserInsertDTO dto, User entity) {
-		entity.setFirstName(dto.getFirstName());
-		entity.setLastName(dto.getLastName());
-		entity.setEmail(dto.getEmail());
-		entity.setPrimaryPhone(dto.getPrimaryPhone());
-		entity.setSecondaryPhone(dto.getSecondaryPhone());
-	}
-	
-	private void copyDtoToEntity(UserUpdateDTO dto, User entity) {
-		entity.setFirstName(dto.getFirstName());
-		entity.setLastName(dto.getLastName());
-		entity.setPrimaryPhone(dto.getPrimaryPhone());
-		entity.setSecondaryPhone(dto.getSecondaryPhone());
 	}
 }

@@ -11,11 +11,15 @@ import lombok.Setter;
 public class CategoryResponseDTO extends AbstractCategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+	
 	public CategoryResponseDTO(Long id, String name) {
-		super(id, name);
+		super(name);
+		this.id = id;
 	}
 	
 	public CategoryResponseDTO(Category entity){
 		super(entity);
+		this.id = entity.getId();
 	}
 }

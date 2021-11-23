@@ -73,7 +73,7 @@ public class ProductControllerIT {
 		
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
 		
-		ProductUpdateDTO productUpdateDTO = ProductFactory.createProductUpdateDTO(existingId);
+		ProductUpdateDTO productUpdateDTO = ProductFactory.createProductUpdateDTO();
 		String jsonBody = objectMapper.writeValueAsString(productUpdateDTO);
 		
 		String expectedName = productUpdateDTO.getName();
@@ -97,7 +97,7 @@ public class ProductControllerIT {
 		
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
 
-		ProductUpdateDTO productDTO = ProductFactory.createProductUpdateDTO(existingId);
+		ProductUpdateDTO productDTO = ProductFactory.createProductUpdateDTO();
 		String jsonBody = objectMapper.writeValueAsString(productDTO);
 		
 		ResultActions result = 

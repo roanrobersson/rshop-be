@@ -177,7 +177,7 @@ public class ProductControllerTests {
 	public void update_ReturnProductResponseDTO_IdExists() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
 		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
-		ProductUpdateDTO expectedProductDTO = ProductFactory.createProductUpdateDTO(1L);
+		ProductUpdateDTO expectedProductDTO = ProductFactory.createProductUpdateDTO();
 		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductDTO); 
 				
 		ResultActions result =

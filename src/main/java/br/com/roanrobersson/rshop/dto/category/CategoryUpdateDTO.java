@@ -14,7 +14,7 @@ public class CategoryUpdateDTO extends AbstractCategoryDTO implements Serializab
 	private static final long serialVersionUID = 1L;
 
 	public CategoryUpdateDTO(Long id, String name) {
-		super(id, name);
+		super(name);
 	}
 	
 	public CategoryUpdateDTO(Category entity){

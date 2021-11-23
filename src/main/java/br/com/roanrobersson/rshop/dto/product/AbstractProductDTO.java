@@ -22,8 +22,6 @@ import lombok.Setter;
 public abstract class AbstractProductDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	
 	@NotBlank(message = "Campo requerido")
 	@Size(min = 3, max = 127, message = "Deve ter entre 8 e 127 caracteres")
 	private String name;
@@ -44,8 +42,7 @@ public abstract class AbstractProductDTO implements Serializable{
 	@NotEmpty(message = "Produto sem categoria não é permitido")
 	private List<CategoryResponseDTO> categories = new ArrayList<>();
 
-	public AbstractProductDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
-		this.id = id;
+	public AbstractProductDTO(String name, String description, Double price, String imgUrl, Instant date) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
@@ -54,7 +51,6 @@ public abstract class AbstractProductDTO implements Serializable{
 	}
 	
 	public AbstractProductDTO(Product entity) {
-		this.id = entity.getId();
 		this.name = entity.getName();
 		this.description = entity.getDescription();
 		this.price = entity.getPrice();

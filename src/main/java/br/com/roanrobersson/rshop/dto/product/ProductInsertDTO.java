@@ -14,8 +14,8 @@ import lombok.Setter;
 public class ProductInsertDTO extends AbstractProductDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
-	public ProductInsertDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
-		super(id, name, description, price, imgUrl, date);
+	public ProductInsertDTO(String name, String description, Double price, String imgUrl, Instant date) {
+		super(name, description, price, imgUrl, date);
 	}
 	
 	public ProductInsertDTO(Product entity) {

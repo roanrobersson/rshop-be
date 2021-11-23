@@ -9,16 +9,20 @@ import lombok.Setter;
 public class UserResponseDTO extends AbstractUserDTO {
 	private static final long serialVersionUID = 1L;
 	
+	private Long id;
+	
 	private String email;
 	
 	public UserResponseDTO(Long id, String firstName, String lastName, String email,
 			String primaryPhone, String secondaryPhone) {
-		super(id, firstName, lastName, primaryPhone, secondaryPhone);
+		super(firstName, lastName, primaryPhone, secondaryPhone);
+		this.id = id;
 		this.email = email;
 	}
 	
 	public UserResponseDTO(User entity) {
 		super(entity);
+		this.id = entity.getId();
 		this.email = entity.getEmail();
 	}
 }

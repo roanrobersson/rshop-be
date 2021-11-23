@@ -14,11 +14,15 @@ import lombok.Setter;
 public class ProductResponseDTO extends AbstractProductDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+	
 	public ProductResponseDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
-		super(id, name, description, price, imgUrl, date);
+		super(name, description, price, imgUrl, date);
+		this.id = id;
 	}
 	
 	public ProductResponseDTO(Product entity) {
 		super(entity);
+		this.id = entity.getId();
 	}
 }

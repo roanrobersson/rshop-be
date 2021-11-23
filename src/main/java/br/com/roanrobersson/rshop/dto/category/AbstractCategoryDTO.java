@@ -14,15 +14,12 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public abstract class AbstractCategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
-	private Long id;
-	
+		
 	@NotBlank(message = "Campo obrigatório")
 	@Size(min = 3, max = 127, message = "Deve ter entre 8 e 127 caracteres")
 	private String name;
 	
 	public AbstractCategoryDTO(Category entity) {
-		this.id = entity.getId();
 		this.name = entity.getName();
 	}
 }

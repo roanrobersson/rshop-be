@@ -85,7 +85,7 @@ public class UserController {
 	
 	@PutMapping(value = "/{id}/password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("isAuthenticated() or hasAnyRole('ADMIN')")
+	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<Void> changePassword(@PathVariable Long id, @Valid @RequestBody UserChangePasswordDTO dto) {
 		service.changePassword(id, dto);
 		return ResponseEntity.noContent().build();

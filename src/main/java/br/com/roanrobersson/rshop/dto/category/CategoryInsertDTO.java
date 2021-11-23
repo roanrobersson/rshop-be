@@ -13,8 +13,8 @@ import lombok.Setter;
 public class CategoryInsertDTO extends AbstractCategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	public CategoryInsertDTO(Long id, String name) {
-		super(id, name);
+	public CategoryInsertDTO(String name) {
+		super(name);
 	}
 	
 	public CategoryInsertDTO(Category entity){
