@@ -11,8 +11,9 @@ public class UserResponseDTO extends AbstractUserDTO {
 	
 	private String email;
 	
-	public UserResponseDTO(Long id, String firstName, String lastName, String email) {
-		super(id, firstName, lastName);
+	public UserResponseDTO(Long id, String firstName, String lastName, String email,
+			String primaryPhone, String secondaryPhone) {
+		super(id, firstName, lastName, primaryPhone, secondaryPhone);
 		this.email = email;
 	}
 	

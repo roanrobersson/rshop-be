@@ -159,10 +159,14 @@ public class UserService implements UserDetailsService{
 		entity.setFirstName(dto.getFirstName());
 		entity.setLastName(dto.getLastName());
 		entity.setEmail(dto.getEmail());
+		entity.setPrimaryPhone(dto.getPrimaryPhone());
+		entity.setSecondaryPhone(dto.getSecondaryPhone());
 	}
 	
 	private void copyDtoToEntity(UserUpdateDTO dto, User entity) {
 		entity.setFirstName(dto.getFirstName());
 		entity.setLastName(dto.getLastName());
+		entity.setPrimaryPhone(dto.getPrimaryPhone());
+		entity.setSecondaryPhone(dto.getSecondaryPhone());
 	}
 }

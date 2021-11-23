@@ -2,9 +2,7 @@ package br.com.roanrobersson.rshop.dto.product;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
 
-import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
 import br.com.roanrobersson.rshop.entities.Product;
 import br.com.roanrobersson.rshop.services.validation.product.ProductInsertValid;
 import lombok.Getter;

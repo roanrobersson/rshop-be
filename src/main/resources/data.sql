@@ -1,8 +1,8 @@
-INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Alex', 'Brown', 'alex@gmail.com', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
-INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Maria', 'Green', 'maria@gmail.com', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
-INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Cliente', 'Sobrenome', 'cliente@gmail.com', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
-INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Operador', 'Sobrenome', 'operador@gmail.com', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
-INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Administrador', 'Sobrenome', 'administrador@gmail.com', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
+INSERT INTO tb_user (first_name, last_name, email, primary_phone, secondary_phone, password) VALUES ('Alex', 'Brown', 'alex@gmail.com', '54987771565', '54955565654', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
+INSERT INTO tb_user (first_name, last_name, email, primary_phone, secondary_phone, password) VALUES ('Maria', 'Green', 'maria@gmail.com', '54957751665', '54978566654', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
+INSERT INTO tb_user (first_name, last_name, email, primary_phone, password) VALUES ('Cliente', 'Sobrenome', 'cliente@gmail.com', '54987771565', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
+INSERT INTO tb_user (first_name, last_name, email, primary_phone, secondary_phone, password) VALUES ('Operador', 'Sobrenome', 'operador@gmail.com', '54987771565', '5498142521', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
+INSERT INTO tb_user (first_name, last_name, email, primary_phone, password) VALUES ('Administrador', 'Sobrenome', 'administrador@gmail.com', '54987771565', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
 
 INSERT INTO tb_role (id, authority) VALUES ('cli', 'ROLE_CLIENT');
 INSERT INTO tb_role (id, authority) VALUES ('opr', 'ROLE_OPERATOR');

@@ -31,7 +31,7 @@ import lombok.Setter;
 @Table(name = "tb_user")
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User implements UserDetails{
+public class User  implements UserDetails{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -50,6 +50,12 @@ public class User implements UserDetails{
 	
 	@Column(nullable=false, length=255)
 	private String password;
+	
+	@Column(columnDefinition = "CHAR(11) NOT NULL")
+	private String primaryPhone;
+	
+	@Column(columnDefinition = "CHAR(11)")
+	private String secondaryPhone;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_user_role",

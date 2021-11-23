@@ -23,8 +23,9 @@ public class UserInsertDTO extends AbstractUserDTO {
 	@Size(min = 8, max = 50, message = "Deve ter entre 8 e 50 caracteres")
 	private String password;
 	
-	public UserInsertDTO(Long id, String firstName, String lastName, String email, String password) {
-		super(id, firstName, lastName);
+	public UserInsertDTO(Long id, String firstName, String lastName, String email,
+			String password, String primaryPhone, String secondaryPhone) {
+		super(id, firstName, lastName, primaryPhone, secondaryPhone);
 		this.email = email;
 		this.password = password;
 	}
