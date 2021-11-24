@@ -21,6 +21,12 @@ INSERT INTO tb_user_role (user_id, role_id) VALUES (5, 'cli');
 INSERT INTO tb_user_role (user_id, role_id) VALUES (5, 'opr');
 INSERT INTO tb_user_role (user_id, role_id) VALUES (5, 'adm');
 
+INSERT INTO tb_address (user_id, nick, address, number, neighborhood, complement, reference_point, city, state, uf, postal_code, phone) VALUES (1, 'Casa', 'Rua Frederico Malvenzi', '1313', 'São Pelegrino', 'AP 2', 'Próximo ao mercado Nova Era', 'Erechim', 'Rio Grande do Sul', 'RS', '99700000', '54987771565');
+INSERT INTO tb_address (user_id, nick, address, number, neighborhood, reference_point, city, state, uf, postal_code, phone) VALUES (1, 'Casa mãe', 'Av Pedro Cabral', '1111', 'Nova Vila', 'Ao lado da Bella Casa', 'Erechim', 'Rio Grande do Sul', 'RS', '99700000', '54999625075');
+INSERT INTO tb_address (user_id, nick, address, number, neighborhood, complement, reference_point, city, state, uf, postal_code, phone) VALUES (1, 'Trabalho', 'Av Rubia Gonçalves', '59', 'Centro', 'Sala 18', 'Edifício Blumenau', 'Erechim', 'Rio Grande do Sul', 'RS', '99700000', '54987663022');
+INSERT INTO tb_address (user_id, nick, address, number, neighborhood, reference_point, city, state, uf, postal_code, phone) VALUES (2, 'Minha casa', 'Av João Pessoa', '44', 'São Pelegrino', 'Ao lado do Detran', 'Natalândia', 'Minas Gerais', 'MG', '38658000', '31998751123');
+INSERT INTO tb_address (user_id, nick, address, number, neighborhood, reference_point, city, state, uf, postal_code, phone) VALUES (3, 'Casa', 'Rua Jacob Grommelmaier', '5545', 'Centro', 'Em frente ao La Bodega', 'Zumbi', 'Rio de Janeiro', 'RJ', '20000000', '22993654785');
+
 INSERT INTO tb_category (name, created_At) VALUES ('Livros', NOW());
 INSERT INTO tb_category (name, created_At) VALUES ('Eletrônicos', NOW());
 INSERT INTO tb_category (name, created_At) VALUES ('Computadores', NOW());
