@@ -20,7 +20,6 @@ public class AuthService {
 	public User authenticated() {
 		try {
 			String username = SecurityContextHolder.getContext().getAuthentication().getName();
-			System.out.println("##### " + userRepository.findByEmail(username));
 			return userRepository.findByEmail(username);
 		}
 		catch(Exception e) {
