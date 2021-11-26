@@ -7,7 +7,8 @@ import br.com.roanrobersson.rshop.entities.User;
 public class UserFactory {
 
 	public static User createUser() {
-		return new User(1L, "Frederico", "Mendes", "fredericomendes@gmail.com", "12345678");
+		return new User(1L, "Frederico", "Mendes", "fredericomendes@gmail.com", 
+				"12345678", "54991204552", "54987776545");
 	}
 	
 	public static AbstractUserDTO userDTO() {

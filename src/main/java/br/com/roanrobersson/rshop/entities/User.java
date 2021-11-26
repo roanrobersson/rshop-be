@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +27,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_user")
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User  implements UserDetails{
@@ -58,7 +56,7 @@ public class User  implements UserDetails{
 	private String secondaryPhone;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "tb_user_role",
+	@JoinTable(name = "user_role",
 	joinColumns = @JoinColumn(name = "user_id"),
 	inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@Setter(value = AccessLevel.NONE)
@@ -67,12 +65,15 @@ public class User  implements UserDetails{
 	@OneToMany(mappedBy = "user")
 	private Set<Address> addresses = new HashSet<>();
 
-	public User(Long id, String firstName, String lastName, String email, String password) {
+	public User(Long id, String firstName, String lastName, String password, 
+			String email, String primaryPhone, String secondaryPhone) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.email = email;
 		this.password = password;
+		this.email = email;
+		this.primaryPhone = primaryPhone;
+		this.secondaryPhone = secondaryPhone;
 	}
 	
 	public boolean hasRole(String roleName) {

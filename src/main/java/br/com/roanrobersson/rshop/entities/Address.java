@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_address", 
-	uniqueConstraints = @UniqueConstraint(columnNames={"user_id", "nick"}))	 
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"user_id", "nick"}))	 
 @Getter @Setter @NoArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Address implements Serializable {

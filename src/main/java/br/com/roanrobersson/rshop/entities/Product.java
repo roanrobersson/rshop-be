@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -22,7 +21,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_product")
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Product implements Serializable {
@@ -49,7 +47,7 @@ public class Product implements Serializable {
 	private Instant date;
 	
 	@ManyToMany
-	@JoinTable(name = "tb_product_category",
+	@JoinTable(name = "product_category",
 		joinColumns = @JoinColumn(name = "product_id"),
 		inverseJoinColumns = @JoinColumn(name = "category_id"))
 	@Setter(value = AccessLevel.NONE)
