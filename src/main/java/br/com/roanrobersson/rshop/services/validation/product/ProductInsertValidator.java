@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.roanrobersson.rshop.controllers.exceptions.FieldMessage;
 import br.com.roanrobersson.rshop.dto.product.ProductInsertDTO;
-import br.com.roanrobersson.rshop.entities.Category;
-import br.com.roanrobersson.rshop.repositories.CategoryRepository;
+import br.com.roanrobersson.rshop.entities.Product;
+import br.com.roanrobersson.rshop.repositories.ProductRepository;
 
 public class ProductInsertValidator implements ConstraintValidator<ProductInsertValid, ProductInsertDTO> {
 	
 	@Autowired
-	private CategoryRepository repository;
+	private ProductRepository repository;
 	
 	@Override
 	public void initialize(ProductInsertValid ann) {
@@ -27,10 +27,10 @@ public class ProductInsertValidator implements ConstraintValidator<ProductInsert
 		
 		List<FieldMessage> list = new ArrayList<>();
 		
-		Category category = repository.findByName(dto.getName());
+		Product product = repository.findByName(dto.getName());
 
-		if (category != null) {
-			list.add(new FieldMessage("name", "Category already exists"));
+		if (product != null) {
+			list.add(new FieldMessage("name", "Product already exists"));
 		}
 		
 		for (FieldMessage e : list) {

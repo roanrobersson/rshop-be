@@ -13,8 +13,8 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.controllers.exceptions.FieldMessage;
 import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.entities.Category;
-import br.com.roanrobersson.rshop.repositories.CategoryRepository;
+import br.com.roanrobersson.rshop.entities.Product;
+import br.com.roanrobersson.rshop.repositories.ProductRepository;
 
 public class ProductUpdateValidator implements ConstraintValidator<ProductUpdateValid, ProductUpdateDTO> {
 	
@@ -22,7 +22,7 @@ public class ProductUpdateValidator implements ConstraintValidator<ProductUpdate
 	private HttpServletRequest request;
 	
 	@Autowired
-	private CategoryRepository repository;
+	private ProductRepository repository;
 	
 	@Override
 	public void initialize(ProductUpdateValid ann) {
@@ -37,11 +37,11 @@ public class ProductUpdateValidator implements ConstraintValidator<ProductUpdate
 		
 		List<FieldMessage> list = new ArrayList<>();
 		
-		Category category = repository.findByName(dto.getName());
+		Product product = repository.findByName(dto.getName());
 		
-		System.out.println(category);
+		System.out.println(product);
 
-		if (category != null && categoryId != category.getId()) {
+		if (product != null && categoryId != product.getId()) {
 			list.add(new FieldMessage("name", "Category already exists"));
 		}
 		

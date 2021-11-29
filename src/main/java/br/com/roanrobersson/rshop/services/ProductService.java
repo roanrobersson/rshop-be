@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -33,6 +34,8 @@ public class ProductService {
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
+	
+	@Autowired ModelMapper modelMapper;
 	
 	@Transactional(readOnly = true)
 	public Page<ProductResponseDTO> findAllPaged(Long categoryId, String name, PageRequest pageRequest) {
@@ -83,12 +86,7 @@ public class ProductService {
 	}
 	
 	private void copyDtoToEntity(ProductInsertDTO dto, Product entity) {
-		entity.setName(dto.getName());
-		entity.setDescription(dto.getDescription());
-		entity.setDate(dto.getDate());
-		entity.setImgUrl(dto.getImgUrl());
-		entity.setPrice(dto.getPrice());
-		
+		modelMapper.map(dto, entity);
 		entity.getCategories().clear();
 		for (CategoryResponseDTO catDto : dto.getCategories()) {
 			Category category = categoryRepository.getById(catDto.getId());
@@ -97,12 +95,7 @@ public class ProductService {
 	}
 	
 	private void copyDtoToEntity(ProductUpdateDTO dto, Product entity) {
-		entity.setName(dto.getName());
-		entity.setDescription(dto.getDescription());
-		entity.setDate(dto.getDate());
-		entity.setImgUrl(dto.getImgUrl());
-		entity.setPrice(dto.getPrice());
-		
+		modelMapper.map(dto, entity);		
 		entity.getCategories().clear();
 		for (CategoryResponseDTO catDto : dto.getCategories()) {
 			Category category = categoryRepository.getById(catDto.getId());
