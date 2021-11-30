@@ -1,9 +1,5 @@
 package br.com.roanrobersson.rshop.services;
 
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,43 +44,35 @@ public class UserAddressService {
 	@Transactional(readOnly = true)
 	public AddressResponseDTO findById(Long userId, Long addressId) {
 		authService.validateSelfOrOperatorOrAdmin(userId);
-		Optional<Address> obj = addressRepository.findById(addressId);
-		Address entity = obj.orElseThrow(() -> new ResourceNotFoundException("Id " + addressId + " not found"));
+		Address entity = findAddressOrThrow(addressId);
 		if (userId != entity.getUser().getId()) throw new ResourceNotFoundException("Id " + addressId + " not found");
 		return new AddressResponseDTO(entity);
 	}
 
 	@Transactional
-	public AddressResponseDTO insert(Long userId, AddressInsertDTO dto) {
+	public AddressResponseDTO insert(Long userId, AddressInsertDTO addressDTO) {
 		authService.validateSelfOrOperatorOrAdmin(userId);
-		try {
-			User userEntity = userRepository.getById(userId);
-			Address addressEntity = modelMapper.map(dto, Address.class);
-			addressEntity.setUser(userEntity);
-			addressEntity = addressRepository.save(addressEntity);
-			return new AddressResponseDTO(addressEntity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("User id " + userId + " not found ");
-		}
+		User userEntity = findOrThrow(userId);
+		Address addressEntity = modelMapper.map(addressDTO, Address.class);
+		addressEntity.setUser(userEntity);
+		addressEntity = addressRepository.save(addressEntity);
+		return new AddressResponseDTO(addressEntity);
 	}
 	
 	@Transactional
-	public AddressResponseDTO update(Long userId, Long addressId, AddressUpdateDTO dto) {
+	public AddressResponseDTO update(Long userId, Long addressId, AddressUpdateDTO addressUpdateDTO) {
 		authService.validateSelfOrOperatorOrAdmin(userId);
-			Optional<Address> obj = addressRepository.findById(addressId);
-			Address addressEntity = obj.orElseThrow(() -> new ResourceNotFoundException("Id " + addressId + " not found"));
-			if (userId != addressEntity.getUser().getId()) throw new ResourceNotFoundException("Id " + addressId + " not found");
-			modelMapper.map(dto, addressEntity);
-			addressEntity = addressRepository.save(addressEntity);
-			return new AddressResponseDTO(addressEntity);
+		Address addressEntity = findAddressOrThrow(addressId);
+		if (userId != addressEntity.getUser().getId()) throw new ResourceNotFoundException("Id " + addressId + " not found");
+		modelMapper.map(addressUpdateDTO, addressEntity);
+		addressEntity = addressRepository.save(addressEntity);
+		return new AddressResponseDTO(addressEntity);
 	}
 	
 	public void delete(Long userId, Long addressId) {
 		authService.validateSelfOrOperatorOrAdmin(userId);
 		try {
-			Optional<Address> obj = addressRepository.findById(addressId);
-			Address entity = obj.orElseThrow(() -> new ResourceNotFoundException("Id " + addressId + " not found"));
+			Address entity = findAddressOrThrow(addressId);
 			if (userId != entity.getUser().getId()) throw new ResourceNotFoundException("Id " + addressId + " not found");
 			addressRepository.deleteById(addressId);
 		} catch (EmptyResultDataAccessException e) {
@@ -92,5 +80,14 @@ public class UserAddressService {
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Integrity violation");
 		}
+	}
+	
+	
+	private User findOrThrow(Long userId) {
+		return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Id " + userId + " not found"));
+	}
+	
+	private Address findAddressOrThrow(Long addressId) {
+		return addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Id " + addressId + " not found"));
 	}
 }

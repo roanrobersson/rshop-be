@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,9 @@ public class RoleServiceTests {
 	
 	@Mock
 	private RoleRepository repository;
+	
+	@Mock
+	private ModelMapper modelMapper;
 	
 	private String existingId;
 	private String nonExistingId;
@@ -81,6 +85,9 @@ public class RoleServiceTests {
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
+		
+		// modelMapper
+		when(modelMapper.map(any(), any())).thenReturn(role);
 	}
 	
 	@Test

@@ -4,22 +4,22 @@ INSERT INTO user (first_name, last_name, email, primary_phone, password) VALUES 
 INSERT INTO user (first_name, last_name, email, primary_phone, secondary_phone, password) VALUES ('Operador', 'Sobrenome', 'operador@gmail.com', '54987771565', '5498142521', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
 INSERT INTO user (first_name, last_name, email, primary_phone, password) VALUES ('Administrador', 'Sobrenome', 'administrador@gmail.com', '54987771565', '$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq');
 
-INSERT INTO role (id, authority) VALUES ('cli', 'ROLE_CLIENT');
-INSERT INTO role (id, authority) VALUES ('opr', 'ROLE_OPERATOR');
-INSERT INTO role (id, authority) VALUES ('adm', 'ROLE_ADMIN');
-INSERT INTO role (id, authority) VALUES ('tes', 'ROLE_TEST');
+INSERT INTO role (id, authority) VALUES ('CLI', 'ROLE_CLIENT');
+INSERT INTO role (id, authority) VALUES ('OPR', 'ROLE_OPERATOR');
+INSERT INTO role (id, authority) VALUES ('ADM', 'ROLE_ADMIN');
+INSERT INTO role (id, authority) VALUES ('TES', 'ROLE_TEST');
 
-INSERT INTO user_role (user_id, role_id) VALUES (1, 'cli');
-INSERT INTO user_role (user_id, role_id) VALUES (1, 'opr');
-INSERT INTO user_role (user_id, role_id) VALUES (2, 'cli');
-INSERT INTO user_role (user_id, role_id) VALUES (2, 'opr');
-INSERT INTO user_role (user_id, role_id) VALUES (2, 'adm');
-INSERT INTO user_role (user_id, role_id) VALUES (3, 'cli');
-INSERT INTO user_role (user_id, role_id) VALUES (4, 'cli');
-INSERT INTO user_role (user_id, role_id) VALUES (4, 'opr');
-INSERT INTO user_role (user_id, role_id) VALUES (5, 'cli');
-INSERT INTO user_role (user_id, role_id) VALUES (5, 'opr');
-INSERT INTO user_role (user_id, role_id) VALUES (5, 'adm');
+INSERT INTO user_role (user_id, role_id) VALUES (1, 'CLI');
+INSERT INTO user_role (user_id, role_id) VALUES (1, 'OPR');
+INSERT INTO user_role (user_id, role_id) VALUES (2, 'CLI');
+INSERT INTO user_role (user_id, role_id) VALUES (2, 'OPR');
+INSERT INTO user_role (user_id, role_id) VALUES (2, 'ADM');
+INSERT INTO user_role (user_id, role_id) VALUES (3, 'CLI');
+INSERT INTO user_role (user_id, role_id) VALUES (4, 'CLI');
+INSERT INTO user_role (user_id, role_id) VALUES (4, 'OPR');
+INSERT INTO user_role (user_id, role_id) VALUES (5, 'CLI');
+INSERT INTO user_role (user_id, role_id) VALUES (5, 'OPR');
+INSERT INTO user_role (user_id, role_id) VALUES (5, 'ADM');
 
 INSERT INTO address (user_id, nick, address, number, neighborhood, complement, reference_point, city, state, uf, postal_code, phone) VALUES (1, 'Casa', 'Rua Frederico Malvenzi', '1313', 'São Pelegrino', 'AP 2', 'Próximo ao mercado Nova Era', 'Erechim', 'Rio Grande do Sul', 'RS', '99700000', '54987771565');
 INSERT INTO address (user_id, nick, address, number, neighborhood, reference_point, city, state, uf, postal_code, phone) VALUES (1, 'Casa mãe', 'Av Pedro Cabral', '1111', 'Nova Vila', 'Ao lado da Bella Casa', 'Erechim', 'Rio Grande do Sul', 'RS', '99700000', '54999625075');

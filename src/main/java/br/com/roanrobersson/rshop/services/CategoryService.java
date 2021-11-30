@@ -1,9 +1,5 @@
 package br.com.roanrobersson.rshop.services;
 
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -34,8 +30,7 @@ public class CategoryService {
 	
 	@Transactional(readOnly = true)
 	public CategoryResponseDTO findById(Long id) {
-		Optional<Category> obj = repository.findById(id);
-		Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+		Category entity = findOrThrow(id);
 		return new CategoryResponseDTO(entity);
 	}
 
@@ -49,15 +44,10 @@ public class CategoryService {
 
 	@Transactional
 	public CategoryResponseDTO update(Long id, CategoryUpdateDTO dto) {
-		try {
-			Category entity = repository.getById(id);
-			entity.setName(dto.getName());
-			entity = repository.save(entity);
-			return new CategoryResponseDTO(entity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Id " + id + " not found ");
-		}
+		Category entity = findOrThrow(id);
+		entity.setName(dto.getName());
+		entity = repository.save(entity);
+		return new CategoryResponseDTO(entity);
 	}
 	
 	public void delete(Long id) {
@@ -70,5 +60,9 @@ public class CategoryService {
 		catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Integrity violation");
 		}
+	}
+	
+	private Category findOrThrow(Long id) {
+		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 	}
 }

@@ -1,16 +1,12 @@
 package br.com.roanrobersson.rshop.services;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityNotFoundException;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -50,8 +46,7 @@ public class UserService implements UserDetailsService{
 	@Autowired
 	private AuthService authService;
 	
-	@Value("${default_user_role_id}")
-	private String defaultUserRoleId;
+	private String defaultUserRoleId = "CLI";
 	
 	@Autowired 
 	private ModelMapper modelMapper;
@@ -63,10 +58,9 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional(readOnly = true)
-	public UserResponseDTO findById(Long id) {
-		authService.validateSelfOrAdmin(id);
-		Optional<User> obj = repository.findById(id);
-		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Id " + id + " not found"));
+	public UserResponseDTO findById(Long userId) {
+		authService.validateSelfOrAdmin(userId);
+		User entity = findUserOrThrow(userId);
 		return new UserResponseDTO(entity);
 	}
 
@@ -74,77 +68,60 @@ public class UserService implements UserDetailsService{
 	public UserResponseDTO insert(UserInsertDTO dto) {
 		User entity = modelMapper.map(dto, User.class);
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
-		Role defaultRole = roleRepository.getById(defaultUserRoleId);
+		Role defaultRole = findRoleOrThrow(defaultUserRoleId);
 		entity.getRoles().add(defaultRole);
 		entity = repository.save(entity);
 		return new UserResponseDTO(entity);
 	}
 	
 	@Transactional
-	public UserResponseDTO update(Long id, UserUpdateDTO dto) {
-		authService.validateSelfOrAdmin(id);
-		try {
-			User entity = repository.getById(id);
-			modelMapper.map(dto, entity);
-			repository.save(entity);
-			return new UserResponseDTO(entity);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Id " + id + " not found");
-		}
+	public UserResponseDTO update(Long userId, UserUpdateDTO userUpdateDTO) {
+		authService.validateSelfOrAdmin(userId);
+		User entity = findUserOrThrow(userId);
+		modelMapper.map(userUpdateDTO, entity);
+		repository.save(entity);
+		return new UserResponseDTO(entity);
 	}
 	
-	public void delete(Long id) {
+	public void delete(Long userId) {
 		try {
-			repository.deleteById(id);
+			repository.deleteById(userId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Id " + id + " not found");
+			throw new ResourceNotFoundException("Id " + userId + " not found");
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Integrity violation");
 		}
 	}
 	
 	@Transactional
-	public void changePassword(Long id, UserChangePasswordDTO dto) {
-		authService.validateSelfOrAdmin(id);
-		try {
-			User entity = repository.getById(id);
-			entity.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-			repository.save(entity);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Id " + id + " not found");
-		}
+	public void changePassword(Long userId, UserChangePasswordDTO userChangePasswordDTO) {
+		authService.validateSelfOrAdmin(userId);
+		User entity = findUserOrThrow(userId);
+		entity.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
+		repository.save(entity);
 	}
 	
 	@Transactional
 	public Set<String> getRoles(Long userId) {	
-		Optional<User> obj = repository.findById(userId);
-		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Id " + userId + " not found"));
+		User entity = findUserOrThrow(userId);
 		Set<String> set = entity.getRoles().stream().map(r -> r.getId()).collect(Collectors.toSet());
 		return set;
 	}
 	
 	@Transactional
 	public void grantRole(Long userId, String roleId) {
-		try {
-			User userEntity = repository.getById(userId);
-			Role roleEntity = roleRepository.getById(roleId);
-			userEntity.getRoles().add(roleEntity);
-			repository.save(userEntity);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("User id " + userId + " or role id " + roleId + " not found");
-		}
+		User userEntity = findUserOrThrow(userId);
+		Role roleEntity = findRoleOrThrow(roleId);
+		userEntity.getRoles().add(roleEntity);
+		repository.save(userEntity);
 	}
 	
 	@Transactional
 	public void revokeRole(Long userId, String roleId) {
-		try {
-			User userEntity = repository.getById(userId);
-			Role roleEntity = roleRepository.getById(roleId);
-			userEntity.getRoles().remove(roleEntity);
-			repository.save(userEntity);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("User id " + userId + " or role id " + roleId + " not found");
-		}
+		User userEntity = findUserOrThrow(userId);
+		Role roleEntity = findRoleOrThrow(roleId);
+		userEntity.getRoles().remove(roleEntity);
+		repository.save(userEntity);
 	}
 	
 	@Override
@@ -156,5 +133,13 @@ public class UserService implements UserDetailsService{
 		}
 		logger.info("User found: " + username);
 		return user;
+	}
+	
+	private User findUserOrThrow(Long userId) {
+		return repository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+	}
+	
+	private Role findRoleOrThrow(String roleId) {
+		return roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 	}
 }

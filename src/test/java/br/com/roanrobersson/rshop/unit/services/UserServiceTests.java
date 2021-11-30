@@ -85,7 +85,7 @@ public class UserServiceTests {
 	void setUp() throws Exception {
 		
 		existingId = 1L;
-		existingRoleId = "tes";
+		existingRoleId = "CLI";
 		nonExistingId = Long.MAX_VALUE;
 		dependentId = 4L;
 		existingEmail = "alex@gmail.com";
@@ -107,7 +107,7 @@ public class UserServiceTests {
 		// insert
 		when(repository.save(any())).thenReturn(user);
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
-		when(roleRepository.getById(existingRoleId)).thenReturn(role);
+		when(roleRepository.findById(existingRoleId)).thenReturn(Optional.of(role));
 		
 		// update
 		when(repository.getById(existingId)).thenReturn(user);
@@ -227,7 +227,7 @@ public class UserServiceTests {
 			service.changePassword(nonExistingId, changePasswordDTO);
 		});
 		
-		verify(repository, times(1)).getById(nonExistingId);
+		verify(repository, times(1)).findById(nonExistingId);
 	}
 	
 	@Test

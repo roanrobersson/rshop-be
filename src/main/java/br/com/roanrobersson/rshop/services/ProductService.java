@@ -2,9 +2,6 @@ package br.com.roanrobersson.rshop.services;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,30 +44,24 @@ public class ProductService {
 	
 	@Transactional(readOnly = true)
 	public ProductResponseDTO findById(Long id) {
-		Optional<Product> obj = repository.findById(id);
-		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+		Product entity = findOrThrow(id);
 		return new ProductResponseDTO(entity);
 	}
 
 	@Transactional
-	public ProductResponseDTO insert(ProductInsertDTO dto) {
+	public ProductResponseDTO insert(ProductInsertDTO productInsertDTO) {
 		Product entity = new Product();
-		copyDtoToEntity(dto, entity);
+		copyDtoToEntity(productInsertDTO, entity);
 		entity = repository.save(entity);
 		return new ProductResponseDTO(entity);
 	}
 	
 	@Transactional
-	public ProductResponseDTO update(Long id, ProductUpdateDTO dto) {
-		try {
-			Product entity = repository.getById(id);
-			copyDtoToEntity(dto, entity);
-			entity = repository.save(entity);
-			return new ProductResponseDTO(entity);
-		}
-		catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Id " + id + " not found ");
-		}
+	public ProductResponseDTO update(Long id, ProductUpdateDTO productUpdateDTO) {
+		Product entity = findOrThrow(id);
+		copyDtoToEntity(productUpdateDTO, entity);
+		entity = repository.save(entity);
+		return new ProductResponseDTO(entity);
 	}
 	
 	public void delete(Long id) {
@@ -85,21 +76,25 @@ public class ProductService {
 		}
 	}
 	
-	private void copyDtoToEntity(ProductInsertDTO dto, Product entity) {
-		modelMapper.map(dto, entity);
+	private void copyDtoToEntity(ProductInsertDTO productInsertDTO, Product entity) {
+		modelMapper.map(productInsertDTO, entity);
 		entity.getCategories().clear();
-		for (CategoryResponseDTO catDto : dto.getCategories()) {
-			Category category = categoryRepository.getById(catDto.getId());
+		for (CategoryResponseDTO categoryResponseDTO : productInsertDTO.getCategories()) {
+			Category category = categoryRepository.getById(categoryResponseDTO.getId());
 			entity.getCategories().add(category);
 		}
 	}
 	
-	private void copyDtoToEntity(ProductUpdateDTO dto, Product entity) {
-		modelMapper.map(dto, entity);		
+	private void copyDtoToEntity(ProductUpdateDTO productUpdateDTO, Product entity) {
+		modelMapper.map(productUpdateDTO, entity);		
 		entity.getCategories().clear();
-		for (CategoryResponseDTO catDto : dto.getCategories()) {
-			Category category = categoryRepository.getById(catDto.getId());
+		for (CategoryResponseDTO categoryResponseDTO : productUpdateDTO.getCategories()) {
+			Category category = categoryRepository.getById(categoryResponseDTO.getId());
 			entity.getCategories().add(category);
 		}
+	}
+	
+	private Product findOrThrow(Long productId) {
+		return repository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 	}
 }
