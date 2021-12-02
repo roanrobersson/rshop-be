@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,63 +22,68 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.dto.category.CategoryInsertDTO;
-import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
-import br.com.roanrobersson.rshop.dto.category.CategoryUpdateDTO;
+import br.com.roanrobersson.rshop.config.CheckSecurity;
+import br.com.roanrobersson.rshop.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.dto.response.CategoryResponseDTO;
+import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.services.CategoryService;
-
 
 @RestController
 @RequestMapping(value = "/categories")
 public class CategoryController {
-	
+
 	@Autowired
 	private CategoryService service;
-	
-	@GetMapping(produces="application/json")
+
+	@GetMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
+	@CheckSecurity.Category.CanConsult
 	public ResponseEntity<Page<CategoryResponseDTO>> findAll(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy
-			) {
+			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		
-		Page<CategoryResponseDTO> list = service.findAllPaged(pageRequest);
-		return ResponseEntity.ok().body(list);
+		Page<Category> categories = service.findAllPaged(pageRequest);
+		Page<CategoryResponseDTO> categoryResponseDTOs = categories.map(x -> new CategoryResponseDTO(x));
+		return ResponseEntity.ok().body(categoryResponseDTOs);
 	}
-	
-	@GetMapping(value = "/{id}", produces="application/json")
+
+	@GetMapping(value = "/{categoryId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CategoryResponseDTO> findById(@PathVariable Long id) {
-		CategoryResponseDTO dto = service.findById(id);
-		return ResponseEntity.ok().body(dto);
+	@CheckSecurity.Category.CanConsult
+	public ResponseEntity<CategoryResponseDTO> findById(@PathVariable Long categoryId) {
+		Category category = service.findById(categoryId);
+		CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO(category);
+		return ResponseEntity.ok().body(categoryResponseDTO);
 	}
-	
-	@PostMapping(produces="application/json")
+
+	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
-	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-	public ResponseEntity<CategoryResponseDTO> insert(@Valid @RequestBody CategoryInsertDTO dto) {
-		CategoryResponseDTO newDto = service.insert(dto);
+	@CheckSecurity.Category.CanEdit
+	public ResponseEntity<CategoryResponseDTO> insert(@Valid @RequestBody CategoryDTO categoryDTO) {
+		Category category = service.insert(categoryDTO);
+		CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO(category);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(newDto.getId()).toUri();
-		return ResponseEntity.created(uri).body(newDto);
+				.buildAndExpand(categoryResponseDTO.getId()).toUri();
+		return ResponseEntity.created(uri).body(categoryResponseDTO);
 	}
-	
-	@PutMapping(value = "/{id}", produces="application/json")
+
+	@PutMapping(value = "/{categoryId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-	public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long id, @Valid @RequestBody CategoryUpdateDTO dto) {
-		CategoryResponseDTO newDto = service.update(id, dto);
-		return ResponseEntity.ok().body(newDto);
+	@CheckSecurity.Category.CanEdit
+	public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long categoryId,
+			@Valid @RequestBody CategoryDTO categoryDTO) {
+		Category category = service.update(categoryId, categoryDTO);
+		CategoryResponseDTO responseDTO = new CategoryResponseDTO(category);
+		return ResponseEntity.ok().body(responseDTO);
 	}
-	
-	@DeleteMapping(value = "/{id}")
+
+	@DeleteMapping(value = "/{categoryId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		service.delete(id);
+	@CheckSecurity.Category.CanEdit
+	public ResponseEntity<Void> delete(@PathVariable Long categoryId) {
+		service.delete(categoryId);
 		return ResponseEntity.noContent().build();
 	}
 

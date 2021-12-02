@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,70 +23,77 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
-import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
+import br.com.roanrobersson.rshop.config.CheckSecurity;
+import br.com.roanrobersson.rshop.dto.UserChangePasswordDTO;
+import br.com.roanrobersson.rshop.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.dto.response.UserResponseDTO;
+import br.com.roanrobersson.rshop.entities.User;
 import br.com.roanrobersson.rshop.services.UserService;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
-	
+
 	@Autowired
 	private UserService service;
-	
-	@GetMapping(produces="application/json")
+
+	@GetMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-	public ResponseEntity<Page<UserResponseDTO>> findAll(
-			@RequestParam(value = "page", defaultValue = "0") Integer page,
+	@CheckSecurity.User.CanConsult
+	public ResponseEntity<Page<UserResponseDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesperpage", defaultValue = "5") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderby", defaultValue = "firstName") String orderBy) {
+			@RequestParam(value = "orderby", defaultValue = "email") String orderBy) {
 		PageRequest request = PageRequest.of(page, linesPerPage, Direction.fromString(direction), orderBy);
-		Page<UserResponseDTO> usersPage = service.findAllPaged(request);
-		return ResponseEntity.ok(usersPage);
+		Page<User> userPage = service.findAllPaged(request);
+		Page<UserResponseDTO> userResponseDTOPage = userPage.map(x -> new UserResponseDTO(x));
+		return ResponseEntity.ok(userResponseDTOPage);
 	}
-	
-	@GetMapping(value = "/{id}", produces="application/json")
+
+	@GetMapping(value = "/{userId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
-		UserResponseDTO dto = service.findById(id);
-		return ResponseEntity.ok(dto);
+	@CheckSecurity.User.CanConsult
+	public ResponseEntity<UserResponseDTO> findById(@PathVariable Long userId) {
+		User user = service.findById(userId);
+		UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+		return ResponseEntity.ok(userResponseDTO);
 	}
-	
-	@PostMapping(produces="application/json")
+
+	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<UserResponseDTO> insert(@Valid @RequestBody UserInsertDTO dto) {
-		UserResponseDTO newDto = service.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}")
-				.buildAndExpand(newDto.getId()).toUri();
-		return ResponseEntity.created(uri).body(newDto);
+	@CheckSecurity.User.CanEdit
+	public ResponseEntity<UserResponseDTO> insert(@Valid @RequestBody UserInsertDTO userInsertDTO) {
+		User user = service.insert(userInsertDTO);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(user.getId()).toUri();
+		UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+		return ResponseEntity.created(uri).body(userResponseDTO);
 	}
-	
-	@PatchMapping(value = "/{id}", produces="application/json")
+
+	@PatchMapping(value = "/{userId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
-		UserResponseDTO newDto = service.update(id, dto);
-		return ResponseEntity.ok(newDto);
+	@CheckSecurity.User.CanEdit
+	public ResponseEntity<UserResponseDTO> update(@PathVariable Long userId,
+			@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
+		User user = service.update(userId, userUpdateDTO);
+		UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+		return ResponseEntity.ok(userResponseDTO);
 	}
-	
-	@DeleteMapping(value = "/{id}")
+
+	@DeleteMapping(value = "/{userId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAnyRole('ADMIN')")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		service.delete(id);
+	@CheckSecurity.User.CanEdit
+	public ResponseEntity<Void> delete(@PathVariable Long userId) {
+		service.delete(userId);
 		return ResponseEntity.noContent().build();
 	}
-	
-	@PutMapping(value = "/{id}/password")
+
+	@PutMapping(value = "/{userId}/password")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<Void> changePassword(@PathVariable Long id, @Valid @RequestBody UserChangePasswordDTO dto) {
-		service.changePassword(id, dto);
+	@CheckSecurity.User.CanEdit
+	public ResponseEntity<Void> changePassword(@PathVariable Long userId,
+			@Valid @RequestBody UserChangePasswordDTO userChangePasswordDTO) {
+		service.changePassword(userId, userChangePasswordDTO);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -33,10 +33,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
-import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
+import br.com.roanrobersson.rshop.dto.UserChangePasswordDTO;
+import br.com.roanrobersson.rshop.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.dto.response.UserResponseDTO;
 import br.com.roanrobersson.rshop.entities.Role;
 import br.com.roanrobersson.rshop.entities.User;
 import br.com.roanrobersson.rshop.factories.RoleFactory;
@@ -70,11 +70,10 @@ public class UserServiceTests {
 	private ModelMapper modelMapper;
 	
 	private long existingId;
-	private String existingRoleId;
 	private long nonExistingId;
 	private long dependentId;
-	private String existingEmail;
-	private String nonExistingEmail;
+	private String existingUserName;
+	private String nonExistingUserName;
 	private String validPassword;
 	private User user;
 	private PageImpl<User> page;
@@ -85,11 +84,10 @@ public class UserServiceTests {
 	void setUp() throws Exception {
 		
 		existingId = 1L;
-		existingRoleId = "CLI";
 		nonExistingId = Long.MAX_VALUE;
 		dependentId = 4L;
-		existingEmail = "alex@gmail.com";
-		nonExistingEmail = "a1b2c3d4e5f6@gmail.com";
+		existingUserName = "alex@gmail.com";
+		nonExistingUserName = "a1b2c3d4e5f6@gmail.com";
 		validPassword = "123456";
 		
 		user = UserFactory.createUser();
@@ -107,7 +105,7 @@ public class UserServiceTests {
 		// insert
 		when(repository.save(any())).thenReturn(user);
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
-		when(roleRepository.findById(existingRoleId)).thenReturn(Optional.of(role));
+		when(roleRepository.findById(any())).thenReturn(Optional.of(role));
 		
 		// update
 		when(repository.getById(existingId)).thenReturn(user);
@@ -119,8 +117,8 @@ public class UserServiceTests {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
 		
 		// loadUserByUsername
-		when(repository.findByEmail(anyString())).thenReturn(user);
-		doThrow(UsernameNotFoundException.class).when(repository).findByEmail(nonExistingEmail);
+		when(repository.findByUserName(anyString())).thenReturn(user);
+		doThrow(UsernameNotFoundException.class).when(repository).findByUserName(nonExistingUserName);
 		
 		// modelMapper
 		when(modelMapper.map(any(), any())).thenReturn(user);
@@ -233,7 +231,7 @@ public class UserServiceTests {
 	@Test
 	public void loadUserByUsernameShouldReturnUserDetailsWhenIdExist() {
 
-		UserDetails result = service.loadUserByUsername(existingEmail);
+		UserDetails result = service.loadUserByUsername(existingUserName);
 		
 		assertNotNull(result);
 	}
@@ -242,9 +240,9 @@ public class UserServiceTests {
 	public void loadUserByUsernameShouldThrowUsernameNotFoundExceptionWhenEmailDoesNotExist() {
 		
 		assertThrows(UsernameNotFoundException.class, () -> {
-			service.loadUserByUsername(nonExistingEmail);
+			service.loadUserByUsername(nonExistingUserName);
 		});
 
-		verify(repository, times(1)).findByEmail(nonExistingEmail);
+		verify(repository, times(1)).findByUserName(nonExistingUserName);
 	}
 }

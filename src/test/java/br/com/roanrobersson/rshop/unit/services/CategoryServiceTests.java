@@ -28,9 +28,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.category.CategoryInsertDTO;
-import br.com.roanrobersson.rshop.dto.category.CategoryResponseDTO;
+import br.com.roanrobersson.rshop.dto.CategoryDTO;
 import br.com.roanrobersson.rshop.dto.category.CategoryUpdateDTO;
+import br.com.roanrobersson.rshop.dto.response.CategoryResponseDTO;
 import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.factories.CategoryFactory;
 import br.com.roanrobersson.rshop.repositories.CategoryRepository;
@@ -112,7 +112,7 @@ public class CategoryServiceTests {
 	
 	@Test
 	public void insert_ReturnCategoryDTO( ) {
-		CategoryInsertDTO dto = new CategoryInsertDTO();
+		CategoryDTO dto = new CategoryDTO();
 		
 		CategoryResponseDTO result = service.insert(dto);
 		

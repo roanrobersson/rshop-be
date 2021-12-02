@@ -1,5 +1,6 @@
 package br.com.roanrobersson.rshop.services;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,71 +19,58 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.user.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.dto.user.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.user.UserResponseDTO;
-import br.com.roanrobersson.rshop.dto.user.UserUpdateDTO;
+import br.com.roanrobersson.rshop.dto.UserChangePasswordDTO;
+import br.com.roanrobersson.rshop.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Role;
 import br.com.roanrobersson.rshop.entities.User;
-import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class UserService implements UserDetailsService{
-	
+public class UserService implements UserDetailsService {
+
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private UserRepository repository;
+
+	@Autowired
+	private RoleService roleService;
 	
 	@Autowired
-	private RoleRepository roleRepository;
-	
-	@Autowired
-	private AuthService authService;
-	
-	private String defaultUserRoleId = "CLI";
-	
-	@Autowired 
 	private ModelMapper modelMapper;
-	
+
+	private Long defaultUserRoleId = 1L;
+
 	@Transactional(readOnly = true)
-	public Page<UserResponseDTO> findAllPaged(PageRequest pageRequest) {
-		Page<User> list = repository.findAll(pageRequest);
-		return list.map(x -> new UserResponseDTO(x));
+	public Page<User> findAllPaged(PageRequest pageRequest) {
+		return repository.findAll(pageRequest);
 	}
-	
+
 	@Transactional(readOnly = true)
-	public UserResponseDTO findById(Long userId) {
-		authService.validateSelfOrAdmin(userId);
-		User entity = findUserOrThrow(userId);
-		return new UserResponseDTO(entity);
+	public User findById(Long userId) {
+		return findUserOrThrow(userId);
 	}
 
 	@Transactional
-	public UserResponseDTO insert(UserInsertDTO dto) {
-		User entity = modelMapper.map(dto, User.class);
-		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
-		Role defaultRole = findRoleOrThrow(defaultUserRoleId);
-		entity.getRoles().add(defaultRole);
-		entity = repository.save(entity);
-		return new UserResponseDTO(entity);
+	public User insert(UserInsertDTO userInsertDTO) {
+		User user = new User();
+		copyDtoToEntity(userInsertDTO, user);
+		return repository.save(user);
 	}
-	
+
 	@Transactional
-	public UserResponseDTO update(Long userId, UserUpdateDTO userUpdateDTO) {
-		authService.validateSelfOrAdmin(userId);
-		User entity = findUserOrThrow(userId);
-		modelMapper.map(userUpdateDTO, entity);
-		repository.save(entity);
-		return new UserResponseDTO(entity);
+	public User update(Long userId, UserUpdateDTO userUpdateDTO) {
+		User user = findUserOrThrow(userId);
+		modelMapper.map(userUpdateDTO, user);
+		return repository.save(user);
 	}
-	
+
 	public void delete(Long userId) {
 		try {
 			repository.deleteById(userId);
@@ -92,54 +80,56 @@ public class UserService implements UserDetailsService{
 			throw new DatabaseException("Integrity violation");
 		}
 	}
-	
+
 	@Transactional
 	public void changePassword(Long userId, UserChangePasswordDTO userChangePasswordDTO) {
-		authService.validateSelfOrAdmin(userId);
-		User entity = findUserOrThrow(userId);
-		entity.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
-		repository.save(entity);
+		User user = findUserOrThrow(userId);
+		user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
+		repository.save(user);
 	}
-	
+
 	@Transactional
-	public Set<String> getRoles(Long userId) {	
-		User entity = findUserOrThrow(userId);
-		Set<String> set = entity.getRoles().stream().map(r -> r.getId()).collect(Collectors.toSet());
-		return set;
+	public Set<Long> getRoles(Long userId) {
+		User user = findUserOrThrow(userId);
+		return user.getRoles().stream().map(r -> r.getId()).collect(Collectors.toSet());
 	}
-	
+
 	@Transactional
-	public void grantRole(Long userId, String roleId) {
-		User userEntity = findUserOrThrow(userId);
-		Role roleEntity = findRoleOrThrow(roleId);
-		userEntity.getRoles().add(roleEntity);
-		repository.save(userEntity);
+	public void grantRole(Long userId, Long roleId) {
+		User user = findUserOrThrow(userId);
+		Role role = roleService.findById(roleId);
+		user.getRoles().add(role);
+		repository.save(user);
 	}
-	
+
 	@Transactional
-	public void revokeRole(Long userId, String roleId) {
-		User userEntity = findUserOrThrow(userId);
-		Role roleEntity = findRoleOrThrow(roleId);
-		userEntity.getRoles().remove(roleEntity);
-		repository.save(userEntity);
+	public void revokeRole(Long userId, Long roleId) {
+		User user = findUserOrThrow(userId);
+		Role role = roleService.findById(roleId);
+		user.getRoles().remove(role);
+		repository.save(user);
 	}
-	
+
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = repository.findByEmail(username);
-		if (user == null) {
-			logger.error("User not found: " + username);
-			throw new UsernameNotFoundException("Email not found");
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Optional<User> optional = repository.findByEmail(email);
+		if (optional.isEmpty()) {
+			logger.error("User not found: " + email);
+			throw new UsernameNotFoundException("Username not found");
 		}
-		logger.info("User found: " + username);
-		return user;
+		logger.info("User found: " + email);
+		return optional.get();
 	}
-	
+
 	private User findUserOrThrow(Long userId) {
-		return repository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+		return repository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found"));
 	}
-	
-	private Role findRoleOrThrow(String roleId) {
-		return roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+
+	private void copyDtoToEntity(UserInsertDTO userInsertDTO, User user) {
+		Role defaultRole = roleService.findById(defaultUserRoleId);
+		modelMapper.map(userInsertDTO, user);
+		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
+		user.getRoles().add(defaultRole);
 	}
 }

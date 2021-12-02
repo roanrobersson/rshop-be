@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +35,9 @@ import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.dto.product.ProductInsertDTO;
-import br.com.roanrobersson.rshop.dto.product.ProductResponseDTO;
+import br.com.roanrobersson.rshop.dto.ProductDTO;
 import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.dto.response.ProductResponseDTO;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
 import br.com.roanrobersson.rshop.services.ProductService;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
@@ -64,7 +65,8 @@ public class ProductControllerTests {
 	private Long existingId;
 	private Long nonExistingId;
 	private Long dependentId;
-	private ProductInsertDTO productInsertDTO;
+	private ProductDTO productInsertDTO;
+	private ProductUpdateDTO productUpdateDTO;
 	private ProductResponseDTO existingProductResponseDTO;
 	private PageImpl<ProductResponseDTO> page;
 	private String username;
@@ -78,6 +80,7 @@ public class ProductControllerTests {
 		dependentId = 3L;
 		
 		productInsertDTO = ProductFactory.createProductInsertDTO();
+		productUpdateDTO = ProductFactory.createProductUpdateDTO();
 		existingProductResponseDTO = ProductFactory.createProductResponseDTO(existingId);
 		
 		page = new PageImpl<>(List.of(existingProductResponseDTO));
@@ -159,8 +162,8 @@ public class ProductControllerTests {
 	@Test
 	public void insert_ReturnUnprocessableEntity_NoPositivePrice() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
-		ProductInsertDTO invalidProductInsertDTO = ProductFactory.createProductInsertDTO();
-		invalidProductInsertDTO.setPrice(0.0);
+		ProductDTO invalidProductInsertDTO = ProductFactory.createProductInsertDTO();
+		invalidProductInsertDTO.setPrice(BigDecimal.valueOf(0));
 		String jsonBody = objectMapper.writeValueAsString(invalidProductInsertDTO);
 		
 		ResultActions result =
@@ -177,8 +180,7 @@ public class ProductControllerTests {
 	public void update_ReturnProductResponseDTO_IdExists() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
 		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
-		ProductUpdateDTO expectedProductDTO = ProductFactory.createProductUpdateDTO();
-		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductDTO); 
+		String expectedJsonBody = objectMapper.writeValueAsString(existingProductResponseDTO); 
 				
 		ResultActions result =
 				mockMvc.perform(put("/products/{id}", existingId)
@@ -194,7 +196,7 @@ public class ProductControllerTests {
 	@Test
 	public void update_ReturnNotFound_IdDoesNotExist() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
-		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
+		String jsonBody = objectMapper.writeValueAsString(productUpdateDTO);
 		
 		ResultActions result =
 				mockMvc.perform(put("/products/{id}", nonExistingId)

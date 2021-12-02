@@ -1,35 +1,40 @@
 package br.com.roanrobersson.rshop.factories;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
-import br.com.roanrobersson.rshop.dto.product.ProductInsertDTO;
-import br.com.roanrobersson.rshop.dto.product.ProductResponseDTO;
+import org.modelmapper.ModelMapper;
+
+import br.com.roanrobersson.rshop.dto.ProductDTO;
 import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.dto.response.ProductResponseDTO;
 import br.com.roanrobersson.rshop.entities.Category;
 import br.com.roanrobersson.rshop.entities.Product;
 
 public class ProductFactory {
+	
+	private static ModelMapper modelMapper = new ModelMapper();
 
 	public static Product createProduct() {
-		Product product = new Product(1L, "Phone", "Good Phone", 800.0, "https://img.com/img.png", Instant.parse("2020-10-20T03:00:00Z"));
+		Product product = new Product(1L, "Phone", "Good Phone", BigDecimal.valueOf(800), "https://img.com/img.png", Instant.parse("2020-10-20T03:00:00Z"));
 		product.getCategories().add(new Category(1L, null));
 		return product;
 	}
 	
-	public static ProductInsertDTO createProductInsertDTO() {
-		Product product = createProduct();
-		return new ProductInsertDTO(product);
+	public static ProductDTO createProductInsertDTO() {
+		ProductDTO dto = modelMapper.map(createProduct(), ProductDTO.class);
+		dto.getCategoriesId().add(1L);
+		return dto;
 	}
 	
 	public static ProductUpdateDTO createProductUpdateDTO() {
-		Product product = createProduct();
-		ProductUpdateDTO dto = new ProductUpdateDTO(product);
+		ProductUpdateDTO dto = modelMapper.map(createProduct(), ProductUpdateDTO.class);
+		dto.getCategoriesId().add(1L);
 		return dto;
 	}
 	
 	public static ProductResponseDTO createProductResponseDTO(Long id) {
-		Product product = createProduct();
-		ProductResponseDTO dto = new ProductResponseDTO(product);
+		ProductResponseDTO dto = modelMapper.map(createProduct(), ProductResponseDTO.class);
 		dto.setId(id);
 		return dto;
 	}

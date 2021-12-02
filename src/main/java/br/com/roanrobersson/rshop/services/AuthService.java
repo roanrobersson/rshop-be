@@ -7,37 +7,35 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.entities.User;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
-import br.com.roanrobersson.rshop.services.exceptions.ForbiddenException;
 import br.com.roanrobersson.rshop.services.exceptions.UnauthorizedException;
 
 @Service
 public class AuthService {
 
 	@Autowired
-	private UserRepository userRepository;
-	
+	private UserRepository repository;
+
 	@Transactional(readOnly = true)
-	public User authenticated() {
+	public Long getUserId() {
 		try {
-			String username = SecurityContextHolder.getContext().getAuthentication().getName();
-			return userRepository.findByEmail(username);
-		}
-		catch(Exception e) {
+			String email = SecurityContextHolder.getContext().getAuthentication().getName();
+			return repository.findByEmail(email).get().getId();
+		} catch (Exception e) {
 			throw new UnauthorizedException("Invalid user");
 		}
 	}
-	
-	public void validateSelfOrAdmin(Long userId) {
-		User user = authenticated();
-		if (!user.getId().equals(userId) && !user.hasRole("ROLE_ADMIN")) {
-			throw new ForbiddenException("Access denied");
+
+	@Transactional(readOnly = true)
+	public User getAuthenticatedUser() {
+		try {
+			String email = SecurityContextHolder.getContext().getAuthentication().getName();
+			return repository.findByEmail(email).get();
+		} catch (Exception e) {
+			throw new UnauthorizedException("Invalid user");
 		}
 	}
-	
-	public void validateSelfOrOperatorOrAdmin(Long userId) {
-		User user = authenticated();
-		if (!user.getId().equals(userId) && !user.hasRole("ROLE_OPERATOR") && !user.hasRole("ROLE_ADMIN")) {
-			throw new ForbiddenException("Access denied");
-		}
+
+	public boolean authenticatedUserIdEquals(Long userId) {
+		return getUserId().equals(userId);
 	}
 }

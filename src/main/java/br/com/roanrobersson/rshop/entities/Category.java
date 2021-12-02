@@ -20,39 +20,44 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Category implements Serializable{
+public class Category implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private long id;
-	
-	@Column(unique = true, nullable=false, length=127)
-	private String name;
-	
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL")
-	private Instant createdAt;
-	
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updatedAt;
-	
+
 	@ManyToMany(mappedBy = "categories")
 	@Setter(value = AccessLevel.NONE)
 	private List<Product> products;
 
-	public Category(long id, String name) {
+	@Column(unique = true, nullable = false, length = 127)
+	private String name;
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
+	private Instant createdAt;
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant updatedAt;
+
+	public Category(long id, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.name = name;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	@PrePersist
 	public void prePersist() {
 		createdAt = Instant.now();
 	}
-	
+
 	@PreUpdate
 	public void preUpdate() {
 		updatedAt = Instant.now();

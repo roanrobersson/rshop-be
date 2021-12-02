@@ -29,8 +29,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.role.RoleInsertDTO;
-import br.com.roanrobersson.rshop.dto.role.RoleResponseDTO;
+import br.com.roanrobersson.rshop.dto.RoleDTO;
+import br.com.roanrobersson.rshop.dto.response.RoleResponseDTO;
 import br.com.roanrobersson.rshop.dto.role.RoleUpdateDTO;
 import br.com.roanrobersson.rshop.entities.Role;
 import br.com.roanrobersson.rshop.factories.RoleFactory;
@@ -51,18 +51,18 @@ public class RoleServiceTests {
 	@Mock
 	private ModelMapper modelMapper;
 	
-	private String existingId;
-	private String nonExistingId;
-	private String dependentId;
+	private Long existingId;
+	private Long nonExistingId;
+	private Long dependentId;
 	private Role role;
 	private PageImpl<Role> page;
 	
 	@BeforeEach
 	void setUp() throws Exception {
 		
-		existingId = "tes";
-		nonExistingId = "yyy";
-		dependentId = "adm";
+		existingId = 1L;
+		nonExistingId = Long.MAX_VALUE;
+		dependentId = 3L;
 		
 		role = RoleFactory.createRole();
 		page = new PageImpl<>(List.of(role));
@@ -119,7 +119,7 @@ public class RoleServiceTests {
 	
 	@Test
 	public void insert_ReturnProductDTO( ) {
-		RoleInsertDTO dto = new RoleInsertDTO();
+		RoleDTO dto = new RoleDTO();
 		
 		RoleResponseDTO result = service.insert(dto);
 		
