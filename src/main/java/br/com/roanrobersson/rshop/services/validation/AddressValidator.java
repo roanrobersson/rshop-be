@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.controllers.exceptions.FieldMessage;
-import br.com.roanrobersson.rshop.dto.AddressDTO;
-import br.com.roanrobersson.rshop.entities.Address;
+import br.com.roanrobersson.rshop.domain.dto.AddressDTO;
+import br.com.roanrobersson.rshop.domain.entities.Address;
 import br.com.roanrobersson.rshop.repositories.AddressRepository;
 
 public class AddressValidator implements ConstraintValidator<AddressValid, AddressDTO> {

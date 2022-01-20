@@ -1,9 +1,12 @@
 package br.com.roanrobersson.rshop.controllers;
 
 import java.net.URI;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,11 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.config.CheckSecurity;
-import br.com.roanrobersson.rshop.dto.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
-import br.com.roanrobersson.rshop.dto.response.UserResponseDTO;
-import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.domain.dto.UserChangePasswordDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.domain.entities.User;
 import br.com.roanrobersson.rshop.services.UserService;
 
 @RestController
@@ -38,45 +41,51 @@ public class UserController {
 	@Autowired
 	private UserService service;
 
+	@Autowired
+	private ModelMapper mapper;
+	
 	@GetMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.User.CanConsult
-	public ResponseEntity<Page<UserResponseDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
+	public ResponseEntity<Page<UserDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesperpage", defaultValue = "5") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderby", defaultValue = "email") String orderBy) {
 		PageRequest request = PageRequest.of(page, linesPerPage, Direction.fromString(direction), orderBy);
 		Page<User> userPage = service.findAllPaged(request);
-		Page<UserResponseDTO> userResponseDTOPage = userPage.map(x -> new UserResponseDTO(x));
-		return ResponseEntity.ok(userResponseDTOPage);
+		Page<UserDTO> userResponseDTOs = userPage.map(x -> convertToDto(x));
+		return ResponseEntity.ok(userResponseDTOs);
 	}
 
 	@GetMapping(value = "/{userId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.User.CanConsult
-	public ResponseEntity<UserResponseDTO> findById(@PathVariable Long userId) {
+	public ResponseEntity<UserDTO> findById(@PathVariable Long userId) {
 		User user = service.findById(userId);
-		UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+		UserDTO userResponseDTO = new UserDTO();
+		copyEntityToDto(user, userResponseDTO);
 		return ResponseEntity.ok(userResponseDTO);
 	}
 
 	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	@CheckSecurity.User.CanEdit
-	public ResponseEntity<UserResponseDTO> insert(@Valid @RequestBody UserInsertDTO userInsertDTO) {
+	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO userInsertDTO) {
 		User user = service.insert(userInsertDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(user.getId()).toUri();
-		UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+		UserDTO userResponseDTO = new UserDTO();
+		copyEntityToDto(user, userResponseDTO);
 		return ResponseEntity.created(uri).body(userResponseDTO);
 	}
 
 	@PatchMapping(value = "/{userId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.User.CanEdit
-	public ResponseEntity<UserResponseDTO> update(@PathVariable Long userId,
+	public ResponseEntity<UserDTO> update(@PathVariable Long userId,
 			@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
 		User user = service.update(userId, userUpdateDTO);
-		UserResponseDTO userResponseDTO = new UserResponseDTO(user);
+		UserDTO userResponseDTO = new UserDTO();
+		copyEntityToDto(user, userResponseDTO);
 		return ResponseEntity.ok(userResponseDTO);
 	}
 
@@ -95,5 +104,22 @@ public class UserController {
 			@Valid @RequestBody UserChangePasswordDTO userChangePasswordDTO) {
 		service.changePassword(userId, userChangePasswordDTO);
 		return ResponseEntity.noContent().build();
+	}
+	
+	private void copyEntityToDto(User user, UserDTO userDTO) {
+		mapper.map(user, userDTO);
+		Set<Long> rolesIds = user.getRoles().stream().map((x) -> x.getId()).collect(Collectors.toSet());
+		Long imageId = user.getImage() != null ? user.getImage().getId() : null;
+		userDTO.setImageId(imageId);
+		userDTO.setRolesIds(rolesIds);
+	}
+	
+	private UserDTO convertToDto(User user) {
+		UserDTO userDTO = mapper.map(user, UserDTO.class);
+		Set<Long> rolesIds = user.getRoles().stream().map((x) -> x.getId()).collect(Collectors.toSet());
+		Long imageId = user.getImage() != null ? user.getImage().getId() : null;
+		userDTO.setRolesIds(rolesIds);
+		userDTO.setImageId(imageId);
+		return userDTO;
 	}
 }

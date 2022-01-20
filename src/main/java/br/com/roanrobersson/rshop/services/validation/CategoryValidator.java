@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.controllers.exceptions.FieldMessage;
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.entities.Category;
+import br.com.roanrobersson.rshop.domain.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.domain.entities.Category;
 import br.com.roanrobersson.rshop.repositories.CategoryRepository;
 
 public class CategoryValidator implements ConstraintValidator<CategoryValid, CategoryDTO> {

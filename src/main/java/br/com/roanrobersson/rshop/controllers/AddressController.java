@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -25,9 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.config.CheckSecurity;
-import br.com.roanrobersson.rshop.dto.AddressDTO;
-import br.com.roanrobersson.rshop.dto.response.AddressResponseDTO;
-import br.com.roanrobersson.rshop.entities.Address;
+import br.com.roanrobersson.rshop.domain.dto.AddressDTO;
+import br.com.roanrobersson.rshop.domain.entities.Address;
 import br.com.roanrobersson.rshop.services.AddressService;
 
 @RestController
@@ -37,35 +37,38 @@ public class AddressController {
 	@Autowired
 	private AddressService service;
 
+	@Autowired
+	private ModelMapper mapper;
+	
 	@GetMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.Address.CanConsult
-	public ResponseEntity<List<AddressResponseDTO>> findAllByUserId(@PathVariable Long userId,
+	public ResponseEntity<List<AddressDTO>> findAllByUserId(@PathVariable Long userId,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderby", defaultValue = "nick") String orderBy) {
 		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
-		List<Address> addressList = service.findAll(userId, sort);
-		List<AddressResponseDTO> addressDtoList = addressList.stream().map(x -> new AddressResponseDTO(x))
+		List<Address> addresses = service.findAll(userId, sort);
+		List<AddressDTO> addressDTOs = addresses.stream().map(x -> mapper.map(x, AddressDTO.class))
 				.collect(Collectors.toList());
-		return ResponseEntity.ok(addressDtoList);
+		return ResponseEntity.ok(addressDTOs);
 	}
 
 	@GetMapping(value = "/{addressId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.Address.CanConsult
-	public ResponseEntity<AddressResponseDTO> findById(@PathVariable Long userId, @PathVariable Long addressId) {
+	public ResponseEntity<AddressDTO> findById(@PathVariable Long userId, @PathVariable Long addressId) {
 		Address address = service.findById(userId, addressId);
-		AddressResponseDTO addressResponseDTO = new AddressResponseDTO(address);
+		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
 		return ResponseEntity.ok().body(addressResponseDTO);
 	}
 
 	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	@CheckSecurity.Address.CanEdit
-	public ResponseEntity<AddressResponseDTO> create(@PathVariable Long userId,
+	public ResponseEntity<AddressDTO> create(@PathVariable Long userId,
 			@Valid @RequestBody AddressDTO addressDTO) {
 		Address address = service.insert(userId, addressDTO);
-		AddressResponseDTO addressResponseDTO = new AddressResponseDTO(address);
+		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}")
 				.buildAndExpand(addressResponseDTO.getId()).toUri();
 		return ResponseEntity.created(uri).body(addressResponseDTO);
@@ -74,10 +77,10 @@ public class AddressController {
 	@PutMapping(value = "/{addressId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CheckSecurity.Address.CanEdit
-	public ResponseEntity<AddressResponseDTO> update(@PathVariable Long userId, @PathVariable Long addressId,
+	public ResponseEntity<AddressDTO> update(@PathVariable Long userId, @PathVariable Long addressId,
 			@Valid @RequestBody AddressDTO addressDTO) {
 		Address address = service.update(userId, addressId, addressDTO);
-		AddressResponseDTO addressResponseDTO = new AddressResponseDTO(address);
+		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
 		return ResponseEntity.ok().body(addressResponseDTO);
 	}
 

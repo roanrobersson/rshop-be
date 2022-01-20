@@ -1,19 +1,27 @@
-package br.com.roanrobersson.rshop.dto;
+package br.com.roanrobersson.rshop.domain.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import br.com.roanrobersson.rshop.services.validation.AddressValid;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@AddressValid
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressDTO {
-
+	
+	@ApiModelProperty(hidden = true)
+	private Long id;
+	
 	@NotBlank(message = "Campo obrigatório")
 	@Size(min = 1, max = 20, message = "Deve ter entre 1 e 20 caracteres")
 	private String nick;
@@ -56,4 +64,7 @@ public class AddressDTO {
 	@NotBlank(message = "Campo obrigatório")
 	@Size(min = 1, max = 75, message = "Deve ter entre 1 e 75 caracteres")
 	private String referencePoint;
+	
+	@ApiModelProperty(hidden = true)
+	private Boolean main;
 }

@@ -27,19 +27,44 @@ INSERT INTO privilege (id, name, description, created_at) VALUES (1, 'CONSULT_CA
 INSERT INTO privilege (id, name, description, created_at) VALUES (2, 'EDIT_CATEGORIES', 'Allow edit categories', NOW());
 INSERT INTO privilege (id, name, description, created_at) VALUES (3, 'CONSULT_USERS', 'Allow consult users', NOW());
 INSERT INTO privilege (id, name, description, created_at) VALUES (4, 'EDIT_USERS', 'Allow edit users', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (5, 'CONSULT_ADDRESSES', 'Allow consult addresses', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (6, 'EDIT_ADDRESSES', 'Allow edit addresses', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (7, 'EDIT_FILE', 'Allow edit file', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (8, 'CONSULT_PRODUCTS', 'Allow consult products', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (9, 'EDIT_PRODUCTS', 'Allow edit products', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (10, 'CONSULT_ROLES', 'Allow consult roles', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (11, 'EDIT_ROLES', 'Allow edit roles', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (12, 'CONSULT_USER_ROLES', 'Allow consult user roles', NOW());
+INSERT INTO privilege (id, name, description, created_at) VALUES (13, 'EDIT_USER_ROLES', 'Allow edit user roles', NOW());
 
 /* ROLE_PRIVILEGE */
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (1, 1);
-
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 1);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 2);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 3);
-
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 4);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 5);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 6);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 7);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 8);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 9);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 10);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 11);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 12);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (2, 13);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 1);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 2);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 3);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 4);
-
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 5);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 6);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 7);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 8);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 9);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 10);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 11);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 12);
+INSERT INTO role_privilege (role_id, privilege_id) VALUES (3, 13);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (4, 1);
 
 /* USER_ROLE */

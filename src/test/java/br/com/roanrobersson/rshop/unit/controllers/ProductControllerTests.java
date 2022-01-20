@@ -35,9 +35,9 @@ import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
-import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.domain.dto.ProductDTO;
+import br.com.roanrobersson.rshop.domain.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.domain.dto.response.ProductResponseDTO;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
 import br.com.roanrobersson.rshop.services.ProductService;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;

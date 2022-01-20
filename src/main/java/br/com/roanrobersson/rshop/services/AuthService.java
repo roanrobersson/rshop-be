@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.domain.entities.User;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 import br.com.roanrobersson.rshop.services.exceptions.UnauthorizedException;
 

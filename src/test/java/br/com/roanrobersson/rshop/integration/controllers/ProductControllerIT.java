@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.domain.dto.product.ProductUpdateDTO;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
 import br.com.roanrobersson.rshop.factories.TokenUtil;
 

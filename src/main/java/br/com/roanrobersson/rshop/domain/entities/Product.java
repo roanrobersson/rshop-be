@@ -1,16 +1,24 @@
-package br.com.roanrobersson.rshop.entities;
+package br.com.roanrobersson.rshop.domain.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,7 +31,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Image implements Serializable {
+public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,17 +40,22 @@ public class Image implements Serializable {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@Column(nullable = false, length = 255)
-	private String fileName;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	@Setter(value = AccessLevel.NONE)
+	Set<Category> categories = new HashSet<>();
+
+	@Column(unique = true, nullable = false, length = 127)
+	private String name;
+
+	@Column(columnDefinition = "TEXT")
+	private String description;
+
+	@Column(nullable = false, precision = 10, scale = 2)
+	private BigDecimal price;
 
 	@Column(nullable = false, length = 255)
-	private String originalFileName;
-
-	@Column(nullable = false, length = 50)
-	private String contentType;
-
-	@Column(nullable = false)
-	private Integer fileSize;
+	private String imgUrl;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
 	private Instant createdAt;

@@ -1,9 +1,12 @@
 package br.com.roanrobersson.rshop.controllers;
 
 import java.net.URI;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.config.CheckSecurity;
-import br.com.roanrobersson.rshop.dto.ProductDTO;
-import br.com.roanrobersson.rshop.dto.response.ProductResponseDTO;
-import br.com.roanrobersson.rshop.entities.Product;
+import br.com.roanrobersson.rshop.domain.dto.ProductDTO;
+import br.com.roanrobersson.rshop.domain.entities.Product;
 import br.com.roanrobersson.rshop.services.ProductService;
 
 @RestController
@@ -35,10 +37,13 @@ public class ProductController {
 	@Autowired
 	private ProductService service;
 
+	@Autowired
+	private ModelMapper mapper;
+
 	@GetMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.Product.CanConsult
-	public ResponseEntity<Page<ProductResponseDTO>> findAll(
+	public ResponseEntity<Page<ProductDTO>> findAll(
 			@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
 			@RequestParam(value = "name", defaultValue = "") String name,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -46,25 +51,25 @@ public class ProductController {
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		Page<Product> productPage = service.findAllPaged(categoryId, name.trim(), pageRequest);
-		Page<ProductResponseDTO> productResponseDTOPage = productPage.map(x -> new ProductResponseDTO(x));
-		return ResponseEntity.ok().body(productResponseDTOPage);
+		Page<Product> products = service.findAllPaged(categoryId, name.trim(), pageRequest);
+		Page<ProductDTO> productResponseDTOs = products.map(x -> mapper.map(x, ProductDTO.class));
+		return ResponseEntity.ok().body(productResponseDTOs);
 	}
 
 	@GetMapping(value = "/{productId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long productId) {
+	public ResponseEntity<ProductDTO> findById(@PathVariable Long productId) {
 		Product product = service.findById(productId);
-		ProductResponseDTO productResponseDTO = new ProductResponseDTO(product);
+		ProductDTO productResponseDTO = mapper.map(product, ProductDTO.class);
 		return ResponseEntity.ok().body(productResponseDTO);
 	}
 
 	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	@CheckSecurity.Product.CanEdit
-	public ResponseEntity<ProductResponseDTO> insert(@Valid @RequestBody ProductDTO productDTO) {
+	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO productDTO) {
 		Product product = service.insert(productDTO);
-		ProductResponseDTO productResponseDTO = new ProductResponseDTO(product);
+		ProductDTO productResponseDTO = convertToDto(product);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(productResponseDTO.getId()).toUri();
 		return ResponseEntity.created(uri).body(productResponseDTO);
@@ -73,10 +78,9 @@ public class ProductController {
 	@PutMapping(value = "/{productId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.Product.CanEdit
-	public ResponseEntity<ProductResponseDTO> update(@PathVariable Long productId,
-			@Valid @RequestBody ProductDTO productDTO) {
+	public ResponseEntity<ProductDTO> update(@PathVariable Long productId, @Valid @RequestBody ProductDTO productDTO) {
 		Product product = service.update(productId, productDTO);
-		ProductResponseDTO productResponseDTO = new ProductResponseDTO(product);
+		ProductDTO productResponseDTO = convertToDto(product);
 		return ResponseEntity.ok().body(productResponseDTO);
 	}
 
@@ -88,4 +92,10 @@ public class ProductController {
 		return ResponseEntity.noContent().build();
 	}
 
+	private ProductDTO convertToDto(Product product) {
+		ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+		Set<Long> categoriesIds = product.getCategories().stream().map(x -> x.getId()).collect(Collectors.toSet());
+		productDTO.setCategoriesIds(categoriesIds);
+		return productDTO;
+	}
 }

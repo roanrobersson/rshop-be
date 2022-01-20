@@ -12,9 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
-import br.com.roanrobersson.rshop.entities.Category;
-import br.com.roanrobersson.rshop.entities.Product;
+import br.com.roanrobersson.rshop.domain.dto.ProductDTO;
+import br.com.roanrobersson.rshop.domain.entities.Category;
+import br.com.roanrobersson.rshop.domain.entities.Product;
 import br.com.roanrobersson.rshop.repositories.ProductRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
@@ -29,7 +29,7 @@ public class ProductService {
 	private CategoryService categoryService;
 
 	@Autowired
-	private ModelMapper modelMapper;
+	private ModelMapper mapper;
 
 	@Transactional(readOnly = true)
 	public Page<Product> findAllPaged(Long categoryId, String name, PageRequest pageRequest) {
@@ -69,9 +69,9 @@ public class ProductService {
 	}
 
 	private void copyDtoToEntity(ProductDTO productDTO, Product product) {
-		modelMapper.map(productDTO, product);
+		mapper.map(productDTO, product);
 		product.getCategories().clear();
-		for (Long id : productDTO.getCategoriesId()) {
+		for (Long id : productDTO.getCategoriesIds()) {
 			Category category = categoryService.findById(id);
 			product.getCategories().add(category);
 		}

@@ -29,10 +29,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.RoleDTO;
-import br.com.roanrobersson.rshop.dto.response.RoleResponseDTO;
-import br.com.roanrobersson.rshop.dto.role.RoleUpdateDTO;
-import br.com.roanrobersson.rshop.entities.Role;
+import br.com.roanrobersson.rshop.domain.dto.RoleDTO;
+import br.com.roanrobersson.rshop.domain.dto.response.RoleResponseDTO;
+import br.com.roanrobersson.rshop.domain.dto.role.RoleUpdateDTO;
+import br.com.roanrobersson.rshop.domain.entities.Role;
 import br.com.roanrobersson.rshop.factories.RoleFactory;
 import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.services.RoleService;

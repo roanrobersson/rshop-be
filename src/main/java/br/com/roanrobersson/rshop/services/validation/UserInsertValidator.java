@@ -10,8 +10,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.roanrobersson.rshop.controllers.exceptions.FieldMessage;
-import br.com.roanrobersson.rshop.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.domain.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.domain.entities.User;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {

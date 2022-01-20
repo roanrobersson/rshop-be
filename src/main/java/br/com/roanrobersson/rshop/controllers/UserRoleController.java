@@ -27,8 +27,8 @@ public class UserRoleController {
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.UserRole.CanConsult
 	public ResponseEntity<Set<Long>> findAll(@PathVariable Long userId) {
-		Set<Long> roleSet = service.getRoles(userId);
-		return ResponseEntity.ok().body(roleSet);
+		Set<Long> rolesIds = service.getRoles(userId);
+		return ResponseEntity.ok().body(rolesIds);
 	}
 
 	@PutMapping(value = "/{roleId}")

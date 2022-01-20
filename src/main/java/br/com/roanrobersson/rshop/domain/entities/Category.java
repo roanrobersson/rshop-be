@@ -1,18 +1,14 @@
-package br.com.roanrobersson.rshop.entities;
+package br.com.roanrobersson.rshop.domain.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -28,15 +24,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Role implements Serializable {
-
-	public static final String CLIENT = "ROLE_CLIENT";
-
-	public static final String OPERATOR = "ROLE_OPERATOR";
-
-	public static final String ADMIN = "ROLE_ADMIN";
-
-	public static final String TEST = "ROLE_TEST";
+public class Category implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,12 +33,11 @@ public class Role implements Serializable {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "role_privilege", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id"))
+	@ManyToMany(mappedBy = "categories")
 	@Setter(value = AccessLevel.NONE)
-	private Set<Privilege> privileges = new HashSet<>();
-	
-	@Column(unique = true, nullable = false, length = 30)
+	private List<Product> products;
+
+	@Column(unique = true, nullable = false, length = 127)
 	private String name;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
@@ -59,7 +46,7 @@ public class Role implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Role(Long id, String name, Instant createdAt, Instant updatedAt) {
+	public Category(long id, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.name = name;
 		this.createdAt = createdAt;

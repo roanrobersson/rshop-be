@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.config.CheckSecurity;
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.dto.response.CategoryResponseDTO;
-import br.com.roanrobersson.rshop.entities.Category;
+import br.com.roanrobersson.rshop.domain.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.domain.entities.Category;
 import br.com.roanrobersson.rshop.services.CategoryService;
 
 @RestController
@@ -35,35 +35,38 @@ public class CategoryController {
 	@Autowired
 	private CategoryService service;
 
+	@Autowired
+	private ModelMapper mapper;
+	
 	@GetMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.Category.CanConsult
-	public ResponseEntity<Page<CategoryResponseDTO>> findAll(
+	public ResponseEntity<Page<CategoryDTO>> findAll(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<Category> categories = service.findAllPaged(pageRequest);
-		Page<CategoryResponseDTO> categoryResponseDTOs = categories.map(x -> new CategoryResponseDTO(x));
+		Page<CategoryDTO> categoryResponseDTOs = categories.map(x -> mapper.map(x, CategoryDTO.class));
 		return ResponseEntity.ok().body(categoryResponseDTOs);
 	}
 
 	@GetMapping(value = "/{categoryId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.Category.CanConsult
-	public ResponseEntity<CategoryResponseDTO> findById(@PathVariable Long categoryId) {
+	public ResponseEntity<CategoryDTO> findById(@PathVariable Long categoryId) {
 		Category category = service.findById(categoryId);
-		CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO(category);
+		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
 		return ResponseEntity.ok().body(categoryResponseDTO);
 	}
 
 	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	@CheckSecurity.Category.CanEdit
-	public ResponseEntity<CategoryResponseDTO> insert(@Valid @RequestBody CategoryDTO categoryDTO) {
+	public ResponseEntity<CategoryDTO> insert(@Valid @RequestBody CategoryDTO categoryDTO) {
 		Category category = service.insert(categoryDTO);
-		CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO(category);
+		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(categoryResponseDTO.getId()).toUri();
 		return ResponseEntity.created(uri).body(categoryResponseDTO);
@@ -72,11 +75,11 @@ public class CategoryController {
 	@PutMapping(value = "/{categoryId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
 	@CheckSecurity.Category.CanEdit
-	public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long categoryId,
+	public ResponseEntity<CategoryDTO> update(@PathVariable Long categoryId,
 			@Valid @RequestBody CategoryDTO categoryDTO) {
 		Category category = service.update(categoryId, categoryDTO);
-		CategoryResponseDTO responseDTO = new CategoryResponseDTO(category);
-		return ResponseEntity.ok().body(responseDTO);
+		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
+		return ResponseEntity.ok().body(categoryResponseDTO);
 	}
 
 	@DeleteMapping(value = "/{categoryId}")

@@ -1,7 +1,6 @@
-package br.com.roanrobersson.rshop.entities;
+package br.com.roanrobersson.rshop.domain.entities;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +18,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +27,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Product implements Serializable {
+public class Role implements Serializable {
+
+	public static final String CLIENT = "ROLE_CLIENT";
+
+	public static final String OPERATOR = "ROLE_OPERATOR";
+
+	public static final String ADMIN = "ROLE_ADMIN";
+
+	public static final String TEST = "ROLE_TEST";
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,27 +46,25 @@ public class Product implements Serializable {
 	private Long id;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	@JoinTable(name = "role_privilege", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id"))
 	@Setter(value = AccessLevel.NONE)
-	Set<Category> categories = new HashSet<>();
-
-	@Column(unique = true, nullable = false, length = 127)
+	private Set<Privilege> privileges = new HashSet<>();
+	
+	@Column(unique = true, nullable = false, length = 30)
 	private String name;
-
-	@Column(columnDefinition = "TEXT")
-	private String description;
-
-	@Column(nullable = false, precision = 10, scale = 2)
-	private BigDecimal price;
-
-	@Column(nullable = false, length = 255)
-	private String imgUrl;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
 	private Instant createdAt;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
+
+	public Role(Long id, String name, Instant createdAt, Instant updatedAt) {
+		this.id = id;
+		this.name = name;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 
 	@PrePersist
 	public void prePersist() {

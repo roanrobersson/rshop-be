@@ -12,8 +12,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import br.com.roanrobersson.rshop.entities.Category;
-import br.com.roanrobersson.rshop.entities.Product;
+import br.com.roanrobersson.rshop.domain.entities.Category;
+import br.com.roanrobersson.rshop.domain.entities.Product;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
 import br.com.roanrobersson.rshop.repositories.ProductRepository;
 

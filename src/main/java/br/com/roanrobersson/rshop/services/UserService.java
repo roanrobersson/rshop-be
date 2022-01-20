@@ -19,11 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
-import br.com.roanrobersson.rshop.entities.Role;
-import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.domain.dto.UserChangePasswordDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.domain.entities.Role;
+import br.com.roanrobersson.rshop.domain.entities.User;
 import br.com.roanrobersson.rshop.repositories.UserRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
 	private RoleService roleService;
 	
 	@Autowired
-	private ModelMapper modelMapper;
+	private ModelMapper mapper;
 
 	private Long defaultUserRoleId = 1L;
 
@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
 	@Transactional
 	public User update(Long userId, UserUpdateDTO userUpdateDTO) {
 		User user = findUserOrThrow(userId);
-		modelMapper.map(userUpdateDTO, user);
+		mapper.map(userUpdateDTO, user);
 		return repository.save(user);
 	}
 
@@ -128,7 +128,7 @@ public class UserService implements UserDetailsService {
 
 	private void copyDtoToEntity(UserInsertDTO userInsertDTO, User user) {
 		Role defaultRole = roleService.findById(defaultUserRoleId);
-		modelMapper.map(userInsertDTO, user);
+		mapper.map(userInsertDTO, user);
 		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
 		user.getRoles().add(defaultRole);
 	}

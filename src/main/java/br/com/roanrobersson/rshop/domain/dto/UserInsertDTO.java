@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.dto;
+package br.com.roanrobersson.rshop.domain.dto;
 
 import java.time.Instant;
 
@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.services.validation.UserInsertValid;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @UserInsertValid
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInsertDTO {

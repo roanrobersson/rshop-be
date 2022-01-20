@@ -11,9 +11,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.AddressDTO;
-import br.com.roanrobersson.rshop.entities.Address;
-import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.domain.dto.AddressDTO;
+import br.com.roanrobersson.rshop.domain.entities.Address;
+import br.com.roanrobersson.rshop.domain.entities.User;
 import br.com.roanrobersson.rshop.repositories.AddressRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ForbiddenException;
@@ -29,7 +29,7 @@ public class AddressService {
 	private UserService userService;
 
 	@Autowired
-	private ModelMapper modelMapper;
+	private ModelMapper mapper;
 
 	@Transactional(readOnly = true)
 	public List<Address> findAll(Long userId, Sort sort) {
@@ -47,9 +47,10 @@ public class AddressService {
 	}
 
 	@Transactional
-	public Address insert(Long userId, AddressDTO addressDTO) {		
-		Address address = new Address();
-		copyDtoToEntity(userId, addressDTO, address);
+	public Address insert(Long userId, AddressDTO addressDTO) {
+		Address address = mapper.map(addressDTO, Address.class);
+		User user = userService.findById(userId);
+		address.setUser(user);
 		address.setMain(false);
 		return repository.save(address);
 	}
@@ -57,7 +58,8 @@ public class AddressService {
 	@Transactional
 	public Address update(Long userId, Long addressId, AddressDTO addressDTO) {
 		Address address = findAddressOrThrow(userId, addressId);
-		copyDtoToEntity(userId, addressDTO, address);
+		addressDTO.setMain(null);
+		mapper.map(addressDTO, address);
 		return repository.save(address);
 	}
 
@@ -74,25 +76,21 @@ public class AddressService {
 	@Transactional
 	public void setMain(Long userId, Long addressId) {
 		Address address = findAddressOrThrow(userId, addressId);
-		if (address.getMain()) return;
+		if (address.getMain())
+			return;
 		unsetMain(userId);
 		address.setMain(true);
 		repository.save(address);
 	}
-	
+
 	@Transactional
 	public void unsetMain(Long userId) {
 		Optional<Address> optional = findMain(userId);
-		if(optional.isEmpty()) return;
+		if (optional.isEmpty())
+			return;
 		Address address = optional.get();
 		address.setMain(false);
 		repository.save(address);
-	}
-
-	private void copyDtoToEntity(Long userId, AddressDTO addressDTO, Address address) {
-		User user = userService.findById(userId);
-		modelMapper.map(addressDTO, address);
-		address.setUser(user);
 	}
 
 	private Address findAddressOrThrow(Long userId, Long addressId) {

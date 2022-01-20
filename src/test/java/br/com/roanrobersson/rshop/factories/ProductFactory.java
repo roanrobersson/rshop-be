@@ -5,11 +5,11 @@ import java.time.Instant;
 
 import org.modelmapper.ModelMapper;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
-import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.dto.response.ProductResponseDTO;
-import br.com.roanrobersson.rshop.entities.Category;
-import br.com.roanrobersson.rshop.entities.Product;
+import br.com.roanrobersson.rshop.domain.dto.ProductDTO;
+import br.com.roanrobersson.rshop.domain.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.domain.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.domain.entities.Category;
+import br.com.roanrobersson.rshop.domain.entities.Product;
 
 public class ProductFactory {
 	

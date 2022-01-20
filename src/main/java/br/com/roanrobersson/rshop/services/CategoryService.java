@@ -8,8 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.entities.Category;
+import br.com.roanrobersson.rshop.domain.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.domain.entities.Category;
 import br.com.roanrobersson.rshop.repositories.CategoryRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;

@@ -1,17 +1,19 @@
-package br.com.roanrobersson.rshop.entities;
+package br.com.roanrobersson.rshop.domain.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,19 +23,24 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ValueType implements Serializable {
+public class Privilege implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
-	private String id;
+	private Long id;
 
-	@Column(nullable = false, unique = true, length = 15)
+	@ManyToMany(mappedBy = "privileges")
+	private Set<Role> roles = new HashSet<>();
+	
+	@Column(unique = true, nullable = false, length = 30)
 	private String name;
+	
+	@Column(nullable = false, length = 100)
+	private String description;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
 	private Instant createdAt;

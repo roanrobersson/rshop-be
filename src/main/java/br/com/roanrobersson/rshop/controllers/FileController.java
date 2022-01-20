@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.roanrobersson.rshop.config.CheckSecurity;
-import br.com.roanrobersson.rshop.dto.UriDTO;
+import br.com.roanrobersson.rshop.domain.dto.UriDTO;
 import br.com.roanrobersson.rshop.services.FileService;
 
 @RestController

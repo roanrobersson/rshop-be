@@ -1,19 +1,17 @@
-package br.com.roanrobersson.rshop.entities;
+package br.com.roanrobersson.rshop.domain.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,21 +21,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Category implements Serializable {
+public class ValueType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
-	private long id;
+	private String id;
 
-	@ManyToMany(mappedBy = "categories")
-	@Setter(value = AccessLevel.NONE)
-	private List<Product> products;
-
-	@Column(unique = true, nullable = false, length = 127)
+	@Column(nullable = false, unique = true, length = 15)
 	private String name;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
@@ -45,13 +40,6 @@ public class Category implements Serializable {
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
-
-	public Category(long id, String name, Instant createdAt, Instant updatedAt) {
-		this.id = id;
-		this.name = name;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
 
 	@PrePersist
 	public void prePersist() {

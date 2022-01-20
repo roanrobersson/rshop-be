@@ -13,14 +13,14 @@ public @interface CheckSecurity {
 	public @interface Address {
 
 		@PreAuthorize("isAuthenticated() and @authService.authenticatedUserIdEquals(#userId) or "
-				+ "hasAuthority('CONSULT_ADDRESS')")
+				+ "hasAuthority('CONSULT_ADDRESSES')")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface CanConsult {
 		}
 
 		@PreAuthorize("isAuthenticated() and @authService.authenticatedUserIdEquals(#userId) or "
-				+ "hasAuthority('EDIT_ADDRESS')")
+				+ "hasAuthority('EDIT_ADDRESSES')")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface CanEdit {

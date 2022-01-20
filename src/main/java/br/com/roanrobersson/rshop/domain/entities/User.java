@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.entities;
+package br.com.roanrobersson.rshop.domain.entities;
 
 import java.time.Instant;
 import java.util.ArrayList;

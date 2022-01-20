@@ -33,12 +33,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.dto.UserUpdateDTO;
-import br.com.roanrobersson.rshop.dto.response.UserResponseDTO;
-import br.com.roanrobersson.rshop.entities.Role;
-import br.com.roanrobersson.rshop.entities.User;
+import br.com.roanrobersson.rshop.domain.dto.UserChangePasswordDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.domain.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.domain.entities.Role;
+import br.com.roanrobersson.rshop.domain.entities.User;
 import br.com.roanrobersson.rshop.factories.RoleFactory;
 import br.com.roanrobersson.rshop.factories.UserFactory;
 import br.com.roanrobersson.rshop.repositories.RoleRepository;
@@ -128,7 +128,7 @@ public class UserServiceTests {
 	public void findAllPagedShouldReturnPage() {
 		PageRequest pageRequest = PageRequest.of(0, 10);
 		
-		Page<UserResponseDTO> result = service.findAllPaged(pageRequest);
+		Page<UserDTO> result = service.findAllPaged(pageRequest);
 		
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
@@ -138,7 +138,7 @@ public class UserServiceTests {
 	@Test
 	public void findByIdShouldReturnUserDTOWhenIdExist() {
 
-		UserResponseDTO result = service.findById(existingId);
+		UserDTO result = service.findById(existingId);
 		
 		assertNotNull(result);
 	}
@@ -155,7 +155,7 @@ public class UserServiceTests {
 	public void insertShouldReturnUserResponseDTO( ) {
 		UserInsertDTO dto = new UserInsertDTO();
 		
-		UserResponseDTO result = service.insert(dto);
+		UserDTO result = service.insert(dto);
 		
 		assertNotNull(result);
 	}
@@ -164,7 +164,7 @@ public class UserServiceTests {
 	public void updateShouldReturnUserDTOWhenIdExist() {
 		UserUpdateDTO dto = new UserUpdateDTO();
 		
-		UserResponseDTO result = service.update(existingId, dto);
+		UserDTO result = service.update(existingId, dto);
 		
 		assertNotNull(result);
 	}

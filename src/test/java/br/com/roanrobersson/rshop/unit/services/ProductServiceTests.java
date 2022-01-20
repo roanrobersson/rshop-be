@@ -30,10 +30,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.ProductDTO;
-import br.com.roanrobersson.rshop.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.dto.response.ProductResponseDTO;
-import br.com.roanrobersson.rshop.entities.Product;
+import br.com.roanrobersson.rshop.domain.dto.ProductDTO;
+import br.com.roanrobersson.rshop.domain.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.domain.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.domain.entities.Product;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
 import br.com.roanrobersson.rshop.repositories.ProductRepository;
 import br.com.roanrobersson.rshop.services.ProductService;

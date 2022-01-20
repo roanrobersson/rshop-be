@@ -28,10 +28,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.dto.category.CategoryUpdateDTO;
-import br.com.roanrobersson.rshop.dto.response.CategoryResponseDTO;
-import br.com.roanrobersson.rshop.entities.Category;
+import br.com.roanrobersson.rshop.domain.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.domain.dto.category.CategoryUpdateDTO;
+import br.com.roanrobersson.rshop.domain.dto.response.CategoryResponseDTO;
+import br.com.roanrobersson.rshop.domain.entities.Category;
 import br.com.roanrobersson.rshop.factories.CategoryFactory;
 import br.com.roanrobersson.rshop.repositories.CategoryRepository;
 import br.com.roanrobersson.rshop.services.CategoryService;

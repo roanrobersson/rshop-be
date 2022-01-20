@@ -10,8 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.dto.RoleDTO;
-import br.com.roanrobersson.rshop.entities.Role;
+import br.com.roanrobersson.rshop.domain.dto.RoleDTO;
+import br.com.roanrobersson.rshop.domain.entities.Role;
 import br.com.roanrobersson.rshop.repositories.RoleRepository;
 import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
 import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
@@ -23,7 +23,7 @@ public class RoleService {
 	private RoleRepository repository;
 
 	@Autowired
-	private ModelMapper modelMapper;
+	private ModelMapper mapper;
 
 	@Transactional(readOnly = true)
 	public List<Role> findAll(Sort sort) {
@@ -37,14 +37,14 @@ public class RoleService {
 
 	@Transactional
 	public Role insert(RoleDTO roleDTO) {
-		Role role = modelMapper.map(roleDTO, Role.class);
+		Role role = mapper.map(roleDTO, Role.class);
 		return repository.save(role);
 	}
 
 	@Transactional
 	public Role update(Long roleId, RoleDTO roleDTO) {
 		Role role = findRoleOrThrow(roleId);
-		modelMapper.map(roleDTO, role);
+		mapper.map(roleDTO, role);
 		return repository.save(role);
 	}
 
