@@ -2,8 +2,8 @@ package br.com.roanrobersson.rshop.factories;
 
 import java.time.Instant;
 
-import br.com.roanrobersson.rshop.domain.dto.UserDTO;
-import br.com.roanrobersson.rshop.domain.entities.User;
+import br.com.roanrobersson.rshop.api.v1.dto.UserDTO;
+import br.com.roanrobersson.rshop.domain.User;
 
 public class UserFactory {
 

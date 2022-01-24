@@ -2,8 +2,8 @@ package br.com.roanrobersson.rshop.factories;
 
 import java.time.Instant;
 
-import br.com.roanrobersson.rshop.domain.dto.response.CategoryResponseDTO;
-import br.com.roanrobersson.rshop.domain.entities.Category;
+import br.com.roanrobersson.rshop.api.v1.dto.response.CategoryResponseDTO;
+import br.com.roanrobersson.rshop.domain.Category;
 
 public class CategoryFactory {
 

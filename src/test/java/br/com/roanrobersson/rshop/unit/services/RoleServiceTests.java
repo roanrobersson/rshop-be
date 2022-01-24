@@ -29,15 +29,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.domain.dto.RoleDTO;
-import br.com.roanrobersson.rshop.domain.dto.response.RoleResponseDTO;
-import br.com.roanrobersson.rshop.domain.dto.role.RoleUpdateDTO;
-import br.com.roanrobersson.rshop.domain.entities.Role;
+import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.response.RoleResponseDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.role.RoleUpdateDTO;
+import br.com.roanrobersson.rshop.domain.Role;
+import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
+import br.com.roanrobersson.rshop.domain.service.RoleService;
+import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 import br.com.roanrobersson.rshop.factories.RoleFactory;
-import br.com.roanrobersson.rshop.repositories.RoleRepository;
-import br.com.roanrobersson.rshop.services.RoleService;
-import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
-import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @ExtendWith(SpringExtension.class)
 public class RoleServiceTests {

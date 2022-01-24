@@ -30,15 +30,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.domain.dto.ProductDTO;
-import br.com.roanrobersson.rshop.domain.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.domain.dto.response.ProductResponseDTO;
-import br.com.roanrobersson.rshop.domain.entities.Product;
+import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.domain.Product;
+import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
+import br.com.roanrobersson.rshop.domain.service.ProductService;
+import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
-import br.com.roanrobersson.rshop.repositories.ProductRepository;
-import br.com.roanrobersson.rshop.services.ProductService;
-import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
-import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @ExtendWith(SpringExtension.class)
 public class ProductServiceTests {

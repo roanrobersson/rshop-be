@@ -4,8 +4,8 @@ import java.time.Instant;
 
 import org.modelmapper.ModelMapper;
 
-import br.com.roanrobersson.rshop.domain.dto.RoleDTO;
-import br.com.roanrobersson.rshop.domain.entities.Role;
+import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
+import br.com.roanrobersson.rshop.domain.Role;
 
 public class RoleFactory {
 

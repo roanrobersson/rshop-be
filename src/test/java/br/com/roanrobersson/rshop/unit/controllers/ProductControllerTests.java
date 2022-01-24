@@ -35,13 +35,13 @@ import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.domain.dto.ProductDTO;
-import br.com.roanrobersson.rshop.domain.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.domain.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.product.ProductUpdateDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.domain.service.ProductService;
+import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
-import br.com.roanrobersson.rshop.services.ProductService;
-import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
-import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @SpringBootTest
 @AutoConfigureMockMvc

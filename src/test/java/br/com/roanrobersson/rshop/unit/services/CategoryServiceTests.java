@@ -28,15 +28,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.domain.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.domain.dto.category.CategoryUpdateDTO;
-import br.com.roanrobersson.rshop.domain.dto.response.CategoryResponseDTO;
-import br.com.roanrobersson.rshop.domain.entities.Category;
+import br.com.roanrobersson.rshop.api.v1.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.category.CategoryUpdateDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.response.CategoryResponseDTO;
+import br.com.roanrobersson.rshop.domain.Category;
+import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
+import br.com.roanrobersson.rshop.domain.service.CategoryService;
+import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 import br.com.roanrobersson.rshop.factories.CategoryFactory;
-import br.com.roanrobersson.rshop.repositories.CategoryRepository;
-import br.com.roanrobersson.rshop.services.CategoryService;
-import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
-import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @ExtendWith(SpringExtension.class)
 public class CategoryServiceTests {

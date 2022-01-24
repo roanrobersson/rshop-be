@@ -10,10 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.domain.dto.response.ProductResponseDTO;
-import br.com.roanrobersson.rshop.repositories.ProductRepository;
-import br.com.roanrobersson.rshop.services.ProductService;
-import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.api.v1.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
+import br.com.roanrobersson.rshop.domain.service.ProductService;
+import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 
 @SpringBootTest
 @Transactional

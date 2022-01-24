@@ -33,20 +33,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.domain.dto.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.domain.dto.UserDTO;
-import br.com.roanrobersson.rshop.domain.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.domain.dto.UserUpdateDTO;
-import br.com.roanrobersson.rshop.domain.entities.Role;
-import br.com.roanrobersson.rshop.domain.entities.User;
+import br.com.roanrobersson.rshop.api.v1.dto.UserChangePasswordDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.UserDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.UserInsertDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.domain.Role;
+import br.com.roanrobersson.rshop.domain.User;
+import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
+import br.com.roanrobersson.rshop.domain.repository.UserRepository;
+import br.com.roanrobersson.rshop.domain.service.AuthService;
+import br.com.roanrobersson.rshop.domain.service.UserService;
+import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 import br.com.roanrobersson.rshop.factories.RoleFactory;
 import br.com.roanrobersson.rshop.factories.UserFactory;
-import br.com.roanrobersson.rshop.repositories.RoleRepository;
-import br.com.roanrobersson.rshop.repositories.UserRepository;
-import br.com.roanrobersson.rshop.services.AuthService;
-import br.com.roanrobersson.rshop.services.UserService;
-import br.com.roanrobersson.rshop.services.exceptions.DatabaseException;
-import br.com.roanrobersson.rshop.services.exceptions.ResourceNotFoundException;
 
 @ExtendWith(SpringExtension.class)
 public class UserServiceTests {

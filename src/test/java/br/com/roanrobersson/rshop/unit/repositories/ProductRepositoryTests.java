@@ -12,10 +12,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import br.com.roanrobersson.rshop.domain.entities.Category;
-import br.com.roanrobersson.rshop.domain.entities.Product;
+import br.com.roanrobersson.rshop.domain.Category;
+import br.com.roanrobersson.rshop.domain.Product;
+import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.factories.ProductFactory;
-import br.com.roanrobersson.rshop.repositories.ProductRepository;
 
 @DataJpaTest
 public class ProductRepositoryTests {
