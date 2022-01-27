@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.Category;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
@@ -83,8 +84,8 @@ public class CategoryController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error")})
-	public ResponseEntity<CategoryDTO> insert(@Valid @RequestBody CategoryDTO categoryDTO) {
-		Category category = service.insert(categoryDTO);
+	public ResponseEntity<CategoryDTO> insert(@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
+		Category category = service.insert(categoryInputDTO);
 		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(categoryResponseDTO.getId()).toUri();
@@ -101,8 +102,8 @@ public class CategoryController {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	public ResponseEntity<CategoryDTO> update(@PathVariable Long categoryId,
-			@Valid @RequestBody CategoryDTO categoryDTO) {
-		Category category = service.update(categoryId, categoryDTO);
+			@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
+		Category category = service.update(categoryId, categoryInputDTO);
 		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
 		return ResponseEntity.ok().body(categoryResponseDTO);
 	}

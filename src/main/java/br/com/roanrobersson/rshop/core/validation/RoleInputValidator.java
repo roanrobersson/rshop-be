@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.domain.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 
-public class RoleValidator implements ConstraintValidator<RoleValid, RoleDTO> {
+public class RoleInputValidator implements ConstraintValidator<RoleInputValid, RoleInputDTO> {
 
 	@Autowired
 	private HttpServletRequest request;
@@ -26,11 +26,11 @@ public class RoleValidator implements ConstraintValidator<RoleValid, RoleDTO> {
 	private RoleRepository repository;
 
 	@Override
-	public void initialize(RoleValid ann) {
+	public void initialize(RoleInputValid ann) {
 	}
 
 	@Override
-	public boolean isValid(RoleDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(RoleInputDTO dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -19,9 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.domain.Role;
 import br.com.roanrobersson.rshop.domain.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
@@ -41,7 +40,7 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private RoleService roleService;
-	
+
 	@Autowired
 	private ModelMapper mapper;
 
@@ -49,12 +48,19 @@ public class UserService implements UserDetailsService {
 
 	@Transactional(readOnly = true)
 	public Page<User> findAllPaged(PageRequest pageRequest) {
-		return repository.findAll(pageRequest);
+		Page<User> users = repository.findAll(pageRequest);
+		repository.findWithRolesAndPrivileges(users.toList());
+		return users;
 	}
 
 	@Transactional(readOnly = true)
 	public User findById(Long userId) {
 		return findUserOrThrow(userId);
+	}
+
+	@Transactional(readOnly = true)
+	public User findByEmail(String email) {
+		return findUserOrThrow(email);
 	}
 
 	@Transactional
@@ -82,16 +88,16 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public void changePassword(Long userId, UserChangePasswordDTO userChangePasswordDTO) {
+	public void changePassword(Long userId, UserChangePasswordInputDTO userChangePasswordDTO) {
 		User user = findUserOrThrow(userId);
 		user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
 		repository.save(user);
 	}
 
 	@Transactional
-	public Set<Long> getRoles(Long userId) {
+	public Set<Role> getRoles(Long userId) {
 		User user = findUserOrThrow(userId);
-		return user.getRoles().stream().map(r -> r.getId()).collect(Collectors.toSet());
+		return user.getRoles();
 	}
 
 	@Transactional
@@ -112,7 +118,7 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		Optional<User> optional = repository.findByEmail(email);
+		Optional<User> optional = repository.findByEmailWithRolesAndPrivileges(email);
 		if (optional.isEmpty()) {
 			logger.error("User not found: " + email);
 			throw new UsernameNotFoundException("Username not found");
@@ -122,8 +128,13 @@ public class UserService implements UserDetailsService {
 	}
 
 	private User findUserOrThrow(Long userId) {
-		return repository.findById(userId)
+		return repository.findByIdWithRolesAndPrivileges(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found"));
+	}
+
+	private User findUserOrThrow(String email) {
+		return repository.findByEmailWithRolesAndPrivileges(email)
+				.orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
 	}
 
 	private void copyDtoToEntity(UserInsertDTO userInsertDTO, User user) {

@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.domain.service;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.domain.Category;
 import br.com.roanrobersson.rshop.domain.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
@@ -32,10 +31,10 @@ public class ProductService {
 	private ModelMapper mapper;
 
 	@Transactional(readOnly = true)
-	public Page<Product> findAllPaged(Long categoryId, String name, PageRequest pageRequest) {
-		List<Category> categoryList = (categoryId == 0) ? null : Arrays.asList(categoryService.findById(categoryId));
-		Page<Product> productPage = repository.search(categoryList, name, pageRequest);
-		repository.findProductsWithCategories(productPage.toList());
+	public Page<Product> findAllPaged(Set<Long> categoriesIds, String name, PageRequest pageRequest) {
+		if (categoriesIds.size() == 0) categoriesIds = null;
+		Page<Product> productPage = repository.search(categoriesIds, name, pageRequest);
+		repository.findWithCategories(productPage.toList());
 		return productPage;
 	}
 
@@ -45,16 +44,16 @@ public class ProductService {
 	}
 
 	@Transactional
-	public Product insert(ProductDTO productDTO) {
+	public Product insert(ProductInputDTO productInputDTO) {
 		Product product = new Product();
-		copyDtoToEntity(productDTO, product);
+		copyDtoToEntity(productInputDTO, product);
 		return repository.save(product);
 	}
 
 	@Transactional
-	public Product update(Long productId, ProductDTO productDTO) {
+	public Product update(Long productId, ProductInputDTO productInputDTO) {
 		Product product = findOrThrow(productId);
-		copyDtoToEntity(productDTO, product);
+		copyDtoToEntity(productInputDTO, product);
 		return repository.save(product);
 	}
 
@@ -68,17 +67,17 @@ public class ProductService {
 		}
 	}
 
-	private void copyDtoToEntity(ProductDTO productDTO, Product product) {
-		mapper.map(productDTO, product);
+	private void copyDtoToEntity(ProductInputDTO productInputDTO, Product product) {
+		mapper.map(productInputDTO, product);
 		product.getCategories().clear();
-		for (Long id : productDTO.getCategoriesIds()) {
+		for (Long id : productInputDTO.getCategoriesIds()) {
 			Category category = categoryService.findById(id);
 			product.getCategories().add(category);
 		}
 	}
 
 	private Product findOrThrow(Long productId) {
-		return repository.findById(productId)
+		return repository.findByIdWithCategories(productId)
 				.orElseThrow(() -> new ResourceNotFoundException("Product " + productId + " not found"));
 	}
 }

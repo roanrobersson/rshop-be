@@ -24,14 +24,12 @@ import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.response.RoleResponseDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.role.RoleUpdateDTO;
 import br.com.roanrobersson.rshop.domain.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
@@ -44,129 +42,127 @@ public class RoleServiceTests {
 
 	@InjectMocks
 	private RoleService service;
-	
+
 	@Mock
 	private RoleRepository repository;
-	
+
 	@Mock
 	private ModelMapper modelMapper;
-	
+
 	private Long existingId;
 	private Long nonExistingId;
 	private Long dependentId;
 	private Role role;
-	private PageImpl<Role> page;
-	
+	private List<Role> roles;
+	private RoleDTO roleDTO;
+
 	@BeforeEach
 	void setUp() throws Exception {
-		
+
 		existingId = 1L;
 		nonExistingId = Long.MAX_VALUE;
 		dependentId = 3L;
-		
 		role = RoleFactory.createRole();
-		page = new PageImpl<>(List.of(role));
-		
+		roles = List.of(role);
+		roleDTO = new RoleDTO();
+
 		// findAllPaged
-		when(repository.findAll(any(PageRequest.class))).thenReturn(page);
-		
+		when(repository.findAll(any(Sort.class))).thenReturn(roles);
+
 		// findById
 		when(repository.findById(existingId)).thenReturn(Optional.of(role));
 		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
-		
+
 		// insert
 		when(repository.save(any())).thenReturn(role);
-		
+
 		// update
 		when(repository.getById(existingId)).thenReturn(role);
 		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
-		
+
 		// delete
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-		
+
 		// modelMapper
 		when(modelMapper.map(any(), any())).thenReturn(role);
 	}
-	
+
 	@Test
 	public void findAllPaged_ReturnPage() {
-		PageRequest pageRequest = PageRequest.of(0, 10);
-		
-		Page<RoleResponseDTO> result = service.findAllPaged(pageRequest);
-		
+		Sort sort = Sort.by(new Order(Direction.fromString("ASC"), "name"));
+
+		List<Role> result = service.findAll(sort);
+
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
-		verify(repository, times(1)).findAll(pageRequest);
+		verify(repository, times(1)).findAll(sort);
 	}
-	
+
 	@Test
 	public void findById_ReturnRoleDTO_IdExist() {
 
-		RoleResponseDTO result = service.findById(existingId);
-		
+		Role result = service.findById(existingId);
+
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void findById_ThrowResourceNotFoundException_IdDoesNotExist() {
-		
+
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
 	}
-	
+
 	@Test
-	public void insert_ReturnProductDTO( ) {
-		RoleDTO dto = new RoleDTO();
-		
-		RoleResponseDTO result = service.insert(dto);
-		
+	public void insert_ReturnProductDTO() {
+
+		Role result = service.insert(roleDTO);
+
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void update_ReturnRoleDTO_IdExist() {
-		RoleUpdateDTO dto = new RoleUpdateDTO();
-		
-		RoleResponseDTO result = service.update(existingId, dto);
-		
+
+		Role result = service.update(existingId, roleDTO);
+
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void update_ThrowResourceNotFoundException_IdDoesNotExist() {
-		RoleUpdateDTO dto = new RoleUpdateDTO();
-		
+
 		assertThrows(ResourceNotFoundException.class, () -> {
-			service.update(nonExistingId, dto);
+			service.update(nonExistingId, roleDTO);
 		});
 	}
-	
+
 	@Test
 	public void delete_DoNothingIdExists() {
 
 		assertDoesNotThrow(() -> {
 			service.delete(existingId);
 		});
-		
+
 		verify(repository, times(1)).deleteById(existingId);
 	}
-	
+
 	@Test
 	public void delete_ThrowResourceNotFoundException_IdDoesNotExist() {
-		
+
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.delete(nonExistingId);
 		});
-		
+
 		verify(repository, times(1)).deleteById(nonExistingId);
 	}
-	
+
 	@Test
 	public void delete_ThrowDatabaseException_DependentId() {
-		
+
 		assertThrows(DatabaseException.class, () -> {
 			service.delete(dependentId);
 		});

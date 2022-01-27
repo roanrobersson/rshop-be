@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.api.v1.dto;
+package br.com.roanrobersson.rshop.api.v1.dto.input;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -17,9 +17,9 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "UserChangePasswordRequest")
+@ApiModel(value = "UserChangePasswordInput")
 @ToString
-public class UserChangePasswordDTO {
+public class UserChangePasswordInputDTO {
 
 	@NotEmpty(message = "Required field")
 	@Size(min = 8, max = 50, message = "Must be between 8 and 60 characters")

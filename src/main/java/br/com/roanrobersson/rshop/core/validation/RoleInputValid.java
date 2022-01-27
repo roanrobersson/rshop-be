@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Constraint(validatedBy = AddressValidator.class)
+@Constraint(validatedBy = RoleInputValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface AddressValid {
+public @interface RoleInputValid {
 	String message() default "Validation error";
 
 	Class<?>[] groups() default {};

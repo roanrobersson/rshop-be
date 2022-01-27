@@ -13,7 +13,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "UriRequest")
+@ApiModel(value = "Uri")
 @ToString
 public class UriDTO {
 

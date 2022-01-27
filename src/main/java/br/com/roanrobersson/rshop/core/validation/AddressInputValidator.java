@@ -13,46 +13,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.domain.Category;
-import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
+import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
+import br.com.roanrobersson.rshop.domain.Address;
+import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 
-public class CategoryValidator implements ConstraintValidator<CategoryValid, CategoryDTO> {
+public class AddressInputValidator implements ConstraintValidator<AddressInputValid, AddressInputDTO> {
 
 	@Autowired
 	private HttpServletRequest request;
 
 	@Autowired
-	private CategoryRepository repository;
+	private AddressRepository repository;
 
 	@Override
-	public void initialize(CategoryValid ann) {
+	public void initialize(AddressInputValid ann) {
 	}
 
 	@Override
-	public boolean isValid(CategoryDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(AddressInputDTO dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-		boolean isUpdateRequest = uriVars.containsKey("categoryId");
-
+		boolean isUpdateRequest = uriVars.containsKey("addressId");
+		
 		List<FieldMessage> list = new ArrayList<>();
 
-		Optional<Category> optional = repository.findByName(dto.getName());
+		Long userId = Long.parseLong(uriVars.get("userId"));
+		Optional<Address> optional = repository.findByUserIdAndNick(userId, dto.getNick());
 
 		if (optional.isEmpty())
 			return true;
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("name", "Category already exists"));
+			list.add(new FieldMessage("nick", "Address is already exists"));
 		}
 
 		// Update
 		if (isUpdateRequest) {
-			long categoryId = Long.parseLong(uriVars.get("categoryId"));
-			if (categoryId != optional.get().getId()) {
-				list.add(new FieldMessage("name", "Category already exists"));
+			Long addressId = Long.parseLong(uriVars.get("addressId"));
+			if (addressId != optional.get().getId()) {
+				list.add(new FieldMessage("nick", "Address is already exists"));
 			}
 		}
 

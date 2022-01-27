@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.AddressDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
 import br.com.roanrobersson.rshop.domain.Address;
 import br.com.roanrobersson.rshop.domain.User;
 import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
@@ -47,8 +47,8 @@ public class AddressService {
 	}
 
 	@Transactional
-	public Address insert(Long userId, AddressDTO addressDTO) {
-		Address address = mapper.map(addressDTO, Address.class);
+	public Address insert(Long userId, AddressInputDTO addressInputDTO) {
+		Address address = mapper.map(addressInputDTO, Address.class);
 		User user = userService.findById(userId);
 		address.setUser(user);
 		address.setMain(false);
@@ -56,10 +56,9 @@ public class AddressService {
 	}
 
 	@Transactional
-	public Address update(Long userId, Long addressId, AddressDTO addressDTO) {
+	public Address update(Long userId, Long addressId, AddressInputDTO addressInputDTO) {
 		Address address = findAddressOrThrow(userId, addressId);
-		addressDTO.setMain(null);
-		mapper.map(addressDTO, address);
+		mapper.map(addressInputDTO, address);
 		return repository.save(address);
 	}
 

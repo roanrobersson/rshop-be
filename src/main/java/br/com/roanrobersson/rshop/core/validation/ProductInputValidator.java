@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.domain.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 
-public class ProductValidator implements ConstraintValidator<ProductValid, ProductDTO> {
+public class ProductInputValidator implements ConstraintValidator<ProductInputValid, ProductInputDTO> {
 
 	@Autowired
 	private HttpServletRequest request;
@@ -26,11 +26,11 @@ public class ProductValidator implements ConstraintValidator<ProductValid, Produ
 	private ProductRepository repository;
 
 	@Override
-	public void initialize(ProductValid ann) {
+	public void initialize(ProductInputValid ann) {
 	}
 
 	@Override
-	public boolean isValid(ProductDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(ProductInputDTO dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

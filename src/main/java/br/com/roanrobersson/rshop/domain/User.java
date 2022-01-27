@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,7 +26,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +35,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements UserDetails {
 
@@ -48,7 +45,7 @@ public class User implements UserDetails {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@Setter(value = AccessLevel.NONE)
 	private Set<Role> roles = new HashSet<>();
@@ -97,6 +94,27 @@ public class User implements UserDetails {
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
+
+	public User(Long id, Set<Role> roles, List<Address> addresses, Image image, String firstName, String name,
+			Instant birthDate, String cpf, String rg, String email, String password, String primaryTelephone,
+			String secondaryTelephone, Instant verifiedAt, Instant createdAt, Instant updatedAt) {
+		this.id = id;
+		this.roles.addAll(roles);
+		this.addresses.addAll(addresses);
+		this.image = image;
+		this.firstName = firstName;
+		this.name = name;
+		this.birthDate = birthDate;
+		this.cpf = cpf;
+		this.rg = rg;
+		this.email = email;
+		this.password = password;
+		this.primaryTelephone = primaryTelephone;
+		this.secondaryTelephone = secondaryTelephone;
+		this.verifiedAt = verifiedAt;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 
 	@PrePersist
 	public void prePersist() {

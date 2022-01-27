@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.CategoryDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
 import br.com.roanrobersson.rshop.domain.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
@@ -31,16 +31,16 @@ public class CategoryService {
 	}
 
 	@Transactional
-	public Category insert(CategoryDTO categoryDTO) {
+	public Category insert(CategoryInputDTO categoryInputDTO) {
 		Category category = new Category();
-		category.setName(categoryDTO.getName());
+		category.setName(categoryInputDTO.getName());
 		return repository.save(category);
 	}
 
 	@Transactional
-	public Category update(Long categoryId, CategoryDTO categoryDTO) {
+	public Category update(Long categoryId, CategoryInputDTO categoryInputDTO) {
 		Category category = findOrThrow(categoryId);
-		category.setName(categoryDTO.getName());
+		category.setName(categoryInputDTO.getName());
 		return repository.save(category);
 	}
 

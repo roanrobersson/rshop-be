@@ -35,10 +35,10 @@ public class Privilege implements Serializable {
 
 	@ManyToMany(mappedBy = "privileges")
 	private Set<Role> roles = new HashSet<>();
-	
+
 	@Column(unique = true, nullable = false, length = 30)
 	private String name;
-	
+
 	@Column(nullable = false, length = 100)
 	private String description;
 
@@ -47,6 +47,15 @@ public class Privilege implements Serializable {
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
+
+	public Privilege(Long id, Set<Role> roles, String name, String description, Instant createdAt, Instant updatedAt) {
+		this.id = id;
+		this.roles.addAll(roles);
+		this.name = name;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	};
 
 	@PrePersist
 	public void prePersist() {

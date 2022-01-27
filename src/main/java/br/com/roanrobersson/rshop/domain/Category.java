@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -35,7 +36,7 @@ public class Category implements Serializable {
 
 	@ManyToMany(mappedBy = "categories")
 	@Setter(value = AccessLevel.NONE)
-	private List<Product> products;
+	private List<Product> products = new ArrayList<>();
 
 	@Column(unique = true, nullable = false, length = 127)
 	private String name;

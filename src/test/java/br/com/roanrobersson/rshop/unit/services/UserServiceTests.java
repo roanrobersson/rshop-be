@@ -33,10 +33,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.dto.UserChangePasswordDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.UserDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.UserInsertDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.UserUpdateDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.domain.Role;
 import br.com.roanrobersson.rshop.domain.User;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
@@ -53,22 +52,22 @@ public class UserServiceTests {
 
 	@InjectMocks
 	private UserService service;
-	
+
 	@Mock
 	private UserRepository repository;
-	
+
 	@Mock
 	private RoleRepository roleRepository;
 
 	@Mock
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Mock
 	private AuthService authService;
-	
+
 	@Mock
 	private ModelMapper modelMapper;
-	
+
 	private long existingId;
 	private long nonExistingId;
 	private long dependentId;
@@ -76,37 +75,40 @@ public class UserServiceTests {
 	private String nonExistingUserName;
 	private String validPassword;
 	private User user;
+	private UserInsertDTO userInsertDTO;
+	private UserUpdateDTO userUpdateDTO;
 	private PageImpl<User> page;
-	private UserChangePasswordDTO changePasswordDTO;
+	private UserChangePasswordInputDTO changePasswordDTO;
 	private Role role;
-	
+
 	@BeforeEach
 	void setUp() throws Exception {
-		
+
 		existingId = 1L;
 		nonExistingId = Long.MAX_VALUE;
 		dependentId = 4L;
 		existingUserName = "alex@gmail.com";
 		nonExistingUserName = "a1b2c3d4e5f6@gmail.com";
 		validPassword = "123456";
-		
 		user = UserFactory.createUser();
+		userInsertDTO = UserFactory.createUserInsertDTO();
+		userUpdateDTO = UserFactory.createUserUpdateDTO();
 		page = new PageImpl<>(List.of(user));
-		changePasswordDTO = new UserChangePasswordDTO(validPassword); 
-		role = RoleFactory.createRole();		
-		
+		changePasswordDTO = new UserChangePasswordInputDTO(validPassword);
+		role = RoleFactory.createRole();
+
 		// findAllPaged
 		when(repository.findAll(any(PageRequest.class))).thenReturn(page);
-		
+
 		// findById
 		when(repository.findById(existingId)).thenReturn(Optional.of(user));
 		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
-		
+
 		// insert
 		when(repository.save(any())).thenReturn(user);
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
 		when(roleRepository.findById(any())).thenReturn(Optional.of(role));
-		
+
 		// update
 		when(repository.getById(existingId)).thenReturn(user);
 		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
@@ -115,134 +117,131 @@ public class UserServiceTests {
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-		
+
 		// loadUserByUsername
-		when(repository.findByUserName(anyString())).thenReturn(user);
-		doThrow(UsernameNotFoundException.class).when(repository).findByUserName(nonExistingUserName);
-		
+		when(repository.findByEmail(anyString())).thenReturn(Optional.of(user));
+		doThrow(UsernameNotFoundException.class).when(repository).findByEmail(nonExistingUserName);
+
 		// modelMapper
 		when(modelMapper.map(any(), any())).thenReturn(user);
 	}
-	
+
 	@Test
 	public void findAllPagedShouldReturnPage() {
 		PageRequest pageRequest = PageRequest.of(0, 10);
-		
-		Page<UserDTO> result = service.findAllPaged(pageRequest);
-		
+
+		Page<User> result = service.findAllPaged(pageRequest);
+
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
 		verify(repository, times(1)).findAll(pageRequest);
 	}
-	
+
 	@Test
 	public void findByIdShouldReturnUserDTOWhenIdExist() {
 
-		UserDTO result = service.findById(existingId);
-		
+		User result = service.findById(existingId);
+
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void findByIdShouldShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
-		
+
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
 	}
-	
+
 	@Test
-	public void insertShouldReturnUserResponseDTO( ) {
-		UserInsertDTO dto = new UserInsertDTO();
-		
-		UserDTO result = service.insert(dto);
-		
+	public void insertShouldReturnUserResponseDTO() {
+
+		User result = service.insert(userInsertDTO);
+
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void updateShouldReturnUserDTOWhenIdExist() {
-		UserUpdateDTO dto = new UserUpdateDTO();
-		
-		UserDTO result = service.update(existingId, dto);
-		
+
+		User result = service.update(existingId, userUpdateDTO);
+
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void updateShouldShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
-		UserUpdateDTO dto = new UserUpdateDTO();
-		
+
 		assertThrows(ResourceNotFoundException.class, () -> {
-			service.update(nonExistingId, dto);
+			service.update(nonExistingId, userUpdateDTO);
 		});
 	}
-	
+
 	@Test
 	public void deleteShouldDoNothingWhenIdExists() {
 
 		assertDoesNotThrow(() -> {
 			service.delete(existingId);
 		});
-		
+
 		verify(repository, times(1)).deleteById(existingId);
 	}
-	
+
 	@Test
 	public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
-		
+
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.delete(nonExistingId);
 		});
-		
+
 		verify(repository, times(1)).deleteById(nonExistingId);
 	}
-	
+
 	@Test
 	public void deleteShouldThrowDatabaseExceptionWhenDependentId() {
-		
+
 		assertThrows(DatabaseException.class, () -> {
 			service.delete(dependentId);
 		});
 
 		verify(repository, times(1)).deleteById(dependentId);
 	}
-	
+
 	@Test
 	public void changePasswordShouldDoNothingWhenIdExists() {
 
 		assertDoesNotThrow(() -> {
 			service.changePassword(existingId, changePasswordDTO);
 		});
-		
+
 		verify(repository, times(1)).save(user);
 	}
 
 	@Test
 	public void changePasswordShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
-		
+
 		assertThrows(ResourceNotFoundException.class, () -> {
 			service.changePassword(nonExistingId, changePasswordDTO);
 		});
-		
+
 		verify(repository, times(1)).findById(nonExistingId);
 	}
-	
+
 	@Test
 	public void loadUserByUsernameShouldReturnUserDetailsWhenIdExist() {
 
 		UserDetails result = service.loadUserByUsername(existingUserName);
-		
+
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void loadUserByUsernameShouldThrowUsernameNotFoundExceptionWhenEmailDoesNotExist() {
-		
+
 		assertThrows(UsernameNotFoundException.class, () -> {
 			service.loadUserByUsername(nonExistingUserName);
 		});
 
-		verify(repository, times(1)).findByUserName(nonExistingUserName);
+		verify(repository, times(1)).findByEmail(nonExistingUserName);
 	}
 }

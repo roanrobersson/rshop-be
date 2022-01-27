@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Constraint(validatedBy = ProductValidator.class)
+@Constraint(validatedBy = ProductInputValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface ProductValid {
+public @interface ProductInputValid {
 	String message() default "Validation error";
 
 	Class<?>[] groups() default {};

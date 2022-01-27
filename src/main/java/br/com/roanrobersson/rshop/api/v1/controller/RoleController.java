@@ -2,11 +2,14 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.Role;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
@@ -44,7 +48,13 @@ public class RoleController {
 
 	@Autowired
 	private ModelMapper mapper;
-	
+
+	@PostConstruct
+	private void setup() {
+		TypeMap<Role, RoleDTO> roleTypeMap = mapper.createTypeMap(Role.class, RoleDTO.class);
+		roleTypeMap.addMappings(x -> x.skip(RoleDTO::setPrivileges));
+	}
+
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
@@ -52,14 +62,13 @@ public class RoleController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
+			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<List<RoleDTO>> getRoles(
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
 		List<Role> roles = service.findAll(sort);
-		List<RoleDTO> roleResponseDTOs = roles.stream().map(x -> mapper.map(x, RoleDTO.class))
-				.collect(Collectors.toList());
+		List<RoleDTO> roleResponseDTOs = roles.stream().map(role -> convertToDTO(role)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(roleResponseDTOs);
 	}
 
@@ -70,10 +79,10 @@ public class RoleController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
+			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> findById(@PathVariable Long roleId) {
 		Role role = service.findById(roleId);
-		RoleDTO roleResponseDTO = mapper.map(role, RoleDTO.class);
+		RoleDTO roleResponseDTO = convertToDTO(role);
 		return ResponseEntity.ok().body(roleResponseDTO);
 	}
 
@@ -84,10 +93,10 @@ public class RoleController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error")})
-	public ResponseEntity<RoleDTO> insert(@Valid @RequestBody RoleDTO roleDTO) {
-		Role role = service.insert(roleDTO);
-		RoleDTO roleResponseDTO = mapper.map(role, RoleDTO.class);
+			@ApiResponse(code = 500, message = "Internal server error") })
+	public ResponseEntity<RoleDTO> insert(@Valid @RequestBody RoleInputDTO roleInputDTO) {
+		Role role = service.insert(roleInputDTO);
+		RoleDTO roleResponseDTO = convertToDTO(role);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(roleResponseDTO.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(roleResponseDTO);
@@ -101,10 +110,10 @@ public class RoleController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error")})
-	public ResponseEntity<RoleDTO> update(@PathVariable Long roleId, @Valid @RequestBody RoleDTO roleDTO) {
-		Role role = service.update(roleId, roleDTO);
-		RoleDTO roleResponseDTO = mapper.map(role, RoleDTO.class);
+			@ApiResponse(code = 500, message = "Internal server error") })
+	public ResponseEntity<RoleDTO> update(@PathVariable Long roleId, @Valid @RequestBody RoleInputDTO roleInputDTO) {
+		Role role = service.update(roleId, roleInputDTO);
+		RoleDTO roleResponseDTO = convertToDTO(role);
 		return ResponseEntity.ok().body(roleResponseDTO);
 	}
 
@@ -115,9 +124,16 @@ public class RoleController {
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
+			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(@PathVariable Long roleId) {
 		service.delete(roleId);
 		return ResponseEntity.noContent().build();
+	}
+
+	private RoleDTO convertToDTO(Role role) {
+		RoleDTO roleDTO = mapper.map(role, RoleDTO.class);
+		Set<Long> privileges = role.getPrivileges().stream().map(x -> x.getId()).collect(Collectors.toSet());
+		roleDTO.setPrivileges(privileges);
+		return roleDTO;
 	}
 }

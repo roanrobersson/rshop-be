@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,7 +44,7 @@ public class Role implements Serializable {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "role_privilege", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id"))
 	@Setter(value = AccessLevel.NONE)
 	private Set<Privilege> privileges = new HashSet<>();
@@ -59,8 +58,9 @@ public class Role implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Role(Long id, String name, Instant createdAt, Instant updatedAt) {
+	public Role(Long id, Set<Privilege> privileges, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
+		this.privileges.addAll(privileges);
 		this.name = name;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
