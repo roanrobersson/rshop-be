@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.unit.controllers;
+package br.com.roanrobersson.rshop.unit.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -36,12 +36,12 @@ import org.springframework.util.MultiValueMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.response.ProductResponseDTO;
+import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
-import br.com.roanrobersson.rshop.factories.ProductFactory;
+import br.com.roanrobersson.rshop.factory.ProductFactory;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -65,26 +65,22 @@ public class ProductControllerTests {
 	private Long existingId;
 	private Long nonExistingId;
 	private Long dependentId;
-	private ProductDTO productInsertDTO;
-	private ProductUpdateDTO productUpdateDTO;
-	private ProductResponseDTO existingProductResponseDTO;
-	private PageImpl<ProductResponseDTO> page;
+	private Product product;
+	private ProductInputDTO productInputDTO;
+	private ProductDTO productDTO;
+	private PageImpl<Product> page;
 	private String username;
 	private String password;
 	
 	@BeforeEach
 	void setUp() throws Exception {
-			
 		existingId = 1L;
 		nonExistingId = 2L;
 		dependentId = 3L;
-		
-		productInsertDTO = ProductFactory.createProductInsertDTO();
-		productUpdateDTO = ProductFactory.createProductUpdateDTO();
-		existingProductResponseDTO = ProductFactory.createProductResponseDTO(existingId);
-		
-		page = new PageImpl<>(List.of(existingProductResponseDTO));
-		
+		product = ProductFactory.createProduct();
+		productInputDTO = ProductFactory.createProductInputDTO();
+		productDTO = ProductFactory.createProductDTO();
+		page = new PageImpl<>(List.of(product));
 		username = "administrador@gmail.com";
 		password = "12345678";
 		
@@ -92,14 +88,14 @@ public class ProductControllerTests {
 		when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
 		
 		// findById
-		when(service.findById(existingId)).thenReturn(existingProductResponseDTO);
+		when(service.findById(existingId)).thenReturn(product);
 		when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
 	
 		// insert
-		when(service.insert(any())).thenReturn(existingProductResponseDTO);
+		when(service.insert(any())).thenReturn(product);
 		
 		// update
-		when(service.update(eq(existingId), any())).thenReturn(existingProductResponseDTO);
+		when(service.update(eq(existingId), any())).thenReturn(product);
 		when(service.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
 
 		// delete
@@ -142,11 +138,11 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void insert_ReturnProductResponseDTO_ValidProductInsertDTO() throws Exception{
+	public void insert_ReturnProductDTO_ValidProductInputDTO() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
-		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
-		ProductResponseDTO expectedProductResponseDTO = ProductFactory.createProductResponseDTO(existingId);
-		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductResponseDTO); 
+		String jsonBody = objectMapper.writeValueAsString(productDTO);
+		ProductDTO expectedProductDTO = ProductFactory.createProductDTO();
+		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductDTO); 
 				
 		ResultActions result =
 				mockMvc.perform(post("/products")
@@ -162,9 +158,9 @@ public class ProductControllerTests {
 	@Test
 	public void insert_ReturnUnprocessableEntity_NoPositivePrice() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
-		ProductDTO invalidProductInsertDTO = ProductFactory.createProductInsertDTO();
-		invalidProductInsertDTO.setPrice(BigDecimal.valueOf(0));
-		String jsonBody = objectMapper.writeValueAsString(invalidProductInsertDTO);
+		ProductInputDTO invalidProductInputDTO = ProductFactory.createProductInputDTO();
+		invalidProductInputDTO.setPrice(BigDecimal.valueOf(0));
+		String jsonBody = objectMapper.writeValueAsString(invalidProductInputDTO);
 		
 		ResultActions result =
 				mockMvc.perform(post("/products")
@@ -177,10 +173,10 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void update_ReturnProductResponseDTO_IdExists() throws Exception{
+	public void update_ReturnProductDTO_IdExists() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
-		String jsonBody = objectMapper.writeValueAsString(productInsertDTO);
-		String expectedJsonBody = objectMapper.writeValueAsString(existingProductResponseDTO); 
+		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
+		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
 				
 		ResultActions result =
 				mockMvc.perform(put("/products/{id}", existingId)
@@ -196,7 +192,7 @@ public class ProductControllerTests {
 	@Test
 	public void update_ReturnNotFound_IdDoesNotExist() throws Exception{
 		String accessToken = obtainAccessToken(username, password);
-		String jsonBody = objectMapper.writeValueAsString(productUpdateDTO);
+		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
 		
 		ResultActions result =
 				mockMvc.perform(put("/products/{id}", nonExistingId)

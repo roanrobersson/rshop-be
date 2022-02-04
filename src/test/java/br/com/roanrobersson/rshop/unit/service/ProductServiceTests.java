@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.unit.services;
+package br.com.roanrobersson.rshop.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -23,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -31,13 +31,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
-import br.com.roanrobersson.rshop.domain.Product;
+import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
+import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
-import br.com.roanrobersson.rshop.factories.ProductFactory;
+import br.com.roanrobersson.rshop.factory.ProductFactory;
 
 @ExtendWith(SpringExtension.class)
 public class ProductServiceTests {
@@ -49,14 +50,14 @@ public class ProductServiceTests {
 	private ProductRepository repository;
 
 	@Mock
-	private ModelMapper modelMapper;
+	private ProductMapper mapper;
 
 	private long existingId;
 	private long nonExistingId;
 	private long dependentId;
 	private Product product;
 	private PageImpl<Product> products;
-	private ProductDTO productDTO;
+	private ProductInputDTO productInputDTO;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -65,14 +66,14 @@ public class ProductServiceTests {
 		dependentId = 4L;
 		product = ProductFactory.createProduct();
 		products = new PageImpl<>(List.of(product));
-		productDTO = new ProductDTO();
+		productInputDTO = new ProductInputDTO();
 
 		// findAllPaged
-		when(repository.search(any(), anyString(), any())).thenReturn(products);
+		when(repository.search(anySet(), anyString(), any(PageRequest.class))).thenReturn(products);
 
 		// findById
-		when(repository.findById(existingId)).thenReturn(Optional.of(product));
-		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+		when(repository.findByIdWithCategories(existingId)).thenReturn(Optional.of(product));
+		when(repository.findByIdWithCategories(nonExistingId)).thenReturn(Optional.empty());
 
 		// insert
 		when(repository.save(any())).thenReturn(product);
@@ -85,19 +86,16 @@ public class ProductServiceTests {
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-
-		// modelMapper
-		when(modelMapper.map(any(), any())).thenReturn(product);
 	}
 
 	@Test
 	public void findAllPagedShouldReturnPage() {
-		Set<Long> categories = null;
+		Set<Long> categories = Set.of(1L, 2L ,3L);
 		String name = "";
 		PageRequest pageRequest = PageRequest.of(0, 10);
 
 		Page<Product> result = service.findAllPaged(categories, name, pageRequest);
-		
+
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
 		verify(repository, times(1)).search(categories, name, pageRequest);
@@ -122,7 +120,7 @@ public class ProductServiceTests {
 	@Test
 	public void insertShouldReturnProductDTO() {
 
-		Product result = service.insert(productDTO);
+		Product result = service.insert(productInputDTO);
 
 		assertNotNull(result);
 	}
@@ -130,7 +128,7 @@ public class ProductServiceTests {
 	@Test
 	public void updateShouldReturnProductDTOWhenIdExist() {
 
-		Product result = service.update(existingId, productDTO);
+		Product result = service.update(existingId, productInputDTO);
 
 		assertNotNull(result);
 	}
@@ -139,7 +137,7 @@ public class ProductServiceTests {
 	public void updateShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
 
 		assertThrows(ResourceNotFoundException.class, () -> {
-			service.update(nonExistingId, productDTO);
+			service.update(nonExistingId, productInputDTO);
 		});
 	}
 

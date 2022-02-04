@@ -17,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.api.v1.dto.product.ProductUpdateDTO;
-import br.com.roanrobersson.rshop.factories.ProductFactory;
-import br.com.roanrobersson.rshop.factories.TokenUtil;
+import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
+import br.com.roanrobersson.rshop.factory.ProductFactory;
+import br.com.roanrobersson.rshop.factory.TokenUtil;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,18 +38,18 @@ public class ProductControllerIT {
 	private Long existingId;
 	private Long nonExistingId;
 	private Long countTotalProducts;
-	
 	private String username;
 	private String password;
+	private ProductInputDTO productInputDTO;
 	
 	@BeforeEach
 	void setUp() throws Exception {
 		existingId = 1L;
 		nonExistingId = 1000L;
 		countTotalProducts = 25L;
-		
 		username = "administrador@gmail.com";
 		password = "12345678";
+		productInputDTO = ProductFactory.createProductInputDTO();
 	}
 	
 	@Test
@@ -70,14 +70,10 @@ public class ProductControllerIT {
 	
 	@Test
 	public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
-		
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
-		
-		ProductUpdateDTO productUpdateDTO = ProductFactory.createProductUpdateDTO();
-		String jsonBody = objectMapper.writeValueAsString(productUpdateDTO);
-		
-		String expectedName = productUpdateDTO.getName();
-		String expectedDescription = productUpdateDTO.getDescription();
+		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
+		String expectedName = productInputDTO.getName();
+		String expectedDescription = productInputDTO.getDescription();
 		
 		ResultActions result = 
 				mockMvc.perform(put("/products/{id}", existingId)
@@ -94,11 +90,8 @@ public class ProductControllerIT {
 	
 	@Test
 	public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
-		
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
-
-		ProductUpdateDTO productDTO = ProductFactory.createProductUpdateDTO();
-		String jsonBody = objectMapper.writeValueAsString(productDTO);
+		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
 		
 		ResultActions result = 
 				mockMvc.perform(put("/products/{id}", nonExistingId)

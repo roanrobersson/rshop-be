@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.unit.services;
+package br.com.roanrobersson.rshop.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,89 +21,85 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
-import br.com.roanrobersson.rshop.domain.Role;
-import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
-import br.com.roanrobersson.rshop.domain.service.RoleService;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
-import br.com.roanrobersson.rshop.factories.RoleFactory;
+import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
+import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Category;
+import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
+import br.com.roanrobersson.rshop.domain.service.CategoryService;
+import br.com.roanrobersson.rshop.factory.CategoryFactory;
 
 @ExtendWith(SpringExtension.class)
-public class RoleServiceTests {
+public class CategoryServiceTests {
 
 	@InjectMocks
-	private RoleService service;
+	private CategoryService service;
 
 	@Mock
-	private RoleRepository repository;
-
+	private CategoryRepository repository;
+	
 	@Mock
-	private ModelMapper modelMapper;
+	private CategoryMapper mapper;
 
-	private Long existingId;
-	private Long nonExistingId;
-	private Long dependentId;
-	private Role role;
-	private List<Role> roles;
-	private RoleDTO roleDTO;
+	private long existingId;
+	private long nonExistingId;
+	private long dependentId;
+	private Category category;
+	private PageImpl<Category> categories;
+	private CategoryInputDTO categoryInputDTO;
 
 	@BeforeEach
 	void setUp() throws Exception {
-
 		existingId = 1L;
 		nonExistingId = Long.MAX_VALUE;
-		dependentId = 3L;
-		role = RoleFactory.createRole();
-		roles = List.of(role);
-		roleDTO = new RoleDTO();
+		dependentId = 4L;
+		categoryInputDTO = CategoryFactory.createCategoryInputDTO();
+		category = CategoryFactory.createCategory();
+		categories = new PageImpl<>(List.of(category));
 
 		// findAllPaged
-		when(repository.findAll(any(Sort.class))).thenReturn(roles);
+		when(repository.findAll(any(PageRequest.class))).thenReturn(categories);
 
 		// findById
-		when(repository.findById(existingId)).thenReturn(Optional.of(role));
+		when(repository.findById(existingId)).thenReturn(Optional.of(category));
 		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
 
 		// insert
-		when(repository.save(any())).thenReturn(role);
+		when(repository.save(any())).thenReturn(category);
 
 		// update
-		when(repository.getById(existingId)).thenReturn(role);
+		when(repository.getById(existingId)).thenReturn(category);
 		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
 
 		// delete
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-
-		// modelMapper
-		when(modelMapper.map(any(), any())).thenReturn(role);
 	}
 
 	@Test
 	public void findAllPaged_ReturnPage() {
-		Sort sort = Sort.by(new Order(Direction.fromString("ASC"), "name"));
+		PageRequest pageRequest = PageRequest.of(0, 10);
 
-		List<Role> result = service.findAll(sort);
+		Page<Category> result = service.findAllPaged(pageRequest);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
-		verify(repository, times(1)).findAll(sort);
+		verify(repository, times(1)).findAll(pageRequest);
 	}
 
 	@Test
-	public void findById_ReturnRoleDTO_IdExist() {
+	public void findById_ReturnCategoryDTO_IdExist() {
 
-		Role result = service.findById(existingId);
+		Category result = service.findById(existingId);
 
 		assertNotNull(result);
 	}
@@ -117,17 +113,17 @@ public class RoleServiceTests {
 	}
 
 	@Test
-	public void insert_ReturnProductDTO() {
+	public void insert_ReturnCategoryDTO() {
 
-		Role result = service.insert(roleDTO);
+		Category result = service.insert(categoryInputDTO);
 
 		assertNotNull(result);
 	}
 
 	@Test
-	public void update_ReturnRoleDTO_IdExist() {
+	public void update_ReturnCategoryDTO_IdExist() {
 
-		Role result = service.update(existingId, roleDTO);
+		Category result = service.update(existingId, categoryInputDTO);
 
 		assertNotNull(result);
 	}
@@ -136,7 +132,7 @@ public class RoleServiceTests {
 	public void update_ThrowResourceNotFoundException_IdDoesNotExist() {
 
 		assertThrows(ResourceNotFoundException.class, () -> {
-			service.update(nonExistingId, roleDTO);
+			service.update(nonExistingId, categoryInputDTO);
 		});
 	}
 

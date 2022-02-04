@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.unit.repositories;
+package br.com.roanrobersson.rshop.unit.repository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,9 +12,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import br.com.roanrobersson.rshop.domain.Product;
+import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
-import br.com.roanrobersson.rshop.factories.ProductFactory;
+import br.com.roanrobersson.rshop.factory.ProductFactory;
 
 @DataJpaTest
 public class ProductRepositoryTests {
@@ -89,7 +89,7 @@ public class ProductRepositoryTests {
 	public void findProductsWithCategories_ReturnProducts() {
 		List<Product> products = Arrays.asList(ProductFactory.createProduct());
 
-		List<Product> result = repository.findProductsWithCategories(products);
+		List<Product> result = repository.findWithCategories(products);
 
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(1, result.get(0).getCategories().size());

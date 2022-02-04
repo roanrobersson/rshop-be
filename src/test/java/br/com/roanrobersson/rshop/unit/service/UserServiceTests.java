@@ -1,10 +1,11 @@
-package br.com.roanrobersson.rshop.unit.services;
+package br.com.roanrobersson.rshop.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -36,16 +36,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
-import br.com.roanrobersson.rshop.domain.Role;
-import br.com.roanrobersson.rshop.domain.User;
-import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
+import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Role;
+import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 import br.com.roanrobersson.rshop.domain.service.AuthService;
+import br.com.roanrobersson.rshop.domain.service.RoleService;
 import br.com.roanrobersson.rshop.domain.service.UserService;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
-import br.com.roanrobersson.rshop.factories.RoleFactory;
-import br.com.roanrobersson.rshop.factories.UserFactory;
+import br.com.roanrobersson.rshop.factory.RoleFactory;
+import br.com.roanrobersson.rshop.factory.UserFactory;
 
 @ExtendWith(SpringExtension.class)
 public class UserServiceTests {
@@ -57,7 +58,7 @@ public class UserServiceTests {
 	private UserRepository repository;
 
 	@Mock
-	private RoleRepository roleRepository;
+	private RoleService roleService;
 
 	@Mock
 	private BCryptPasswordEncoder passwordEncoder;
@@ -66,7 +67,7 @@ public class UserServiceTests {
 	private AuthService authService;
 
 	@Mock
-	private ModelMapper modelMapper;
+	private UserMapper mapper;
 
 	private long existingId;
 	private long nonExistingId;
@@ -83,7 +84,6 @@ public class UserServiceTests {
 
 	@BeforeEach
 	void setUp() throws Exception {
-
 		existingId = 1L;
 		nonExistingId = Long.MAX_VALUE;
 		dependentId = 4L;
@@ -101,13 +101,17 @@ public class UserServiceTests {
 		when(repository.findAll(any(PageRequest.class))).thenReturn(page);
 
 		// findById
-		when(repository.findById(existingId)).thenReturn(Optional.of(user));
-		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+		when(repository.findByIdWithRolesAndPrivileges(existingId)).thenReturn(Optional.of(user));
+		when(repository.findByIdWithRolesAndPrivileges(nonExistingId)).thenReturn(Optional.empty());
 
+		// findByUsername
+		when(repository.findByEmailWithRolesAndPrivileges(existingUserName)).thenReturn(Optional.of(user));
+		
 		// insert
 		when(repository.save(any())).thenReturn(user);
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
-		when(roleRepository.findById(any())).thenReturn(Optional.of(role));
+		when(roleService.findById(anyLong())).thenReturn(role);
+		when(mapper.toUser(userInsertDTO)).thenReturn(user);
 
 		// update
 		when(repository.getById(existingId)).thenReturn(user);
@@ -121,9 +125,6 @@ public class UserServiceTests {
 		// loadUserByUsername
 		when(repository.findByEmail(anyString())).thenReturn(Optional.of(user));
 		doThrow(UsernameNotFoundException.class).when(repository).findByEmail(nonExistingUserName);
-
-		// modelMapper
-		when(modelMapper.map(any(), any())).thenReturn(user);
 	}
 
 	@Test
@@ -154,7 +155,7 @@ public class UserServiceTests {
 	}
 
 	@Test
-	public void insertShouldReturnUserResponseDTO() {
+	public void insertShouldReturnUserDTO() {
 
 		User result = service.insert(userInsertDTO);
 
@@ -224,7 +225,7 @@ public class UserServiceTests {
 			service.changePassword(nonExistingId, changePasswordDTO);
 		});
 
-		verify(repository, times(1)).findById(nonExistingId);
+		verify(repository, times(1)).findByIdWithRolesAndPrivileges(nonExistingId);
 	}
 
 	@Test
@@ -242,6 +243,6 @@ public class UserServiceTests {
 			service.loadUserByUsername(nonExistingUserName);
 		});
 
-		verify(repository, times(1)).findByEmail(nonExistingUserName);
+		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(nonExistingUserName);
 	}
 }
