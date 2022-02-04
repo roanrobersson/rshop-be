@@ -9,16 +9,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
-import br.com.roanrobersson.rshop.domain.Category;
+import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 
 @Service
 public class CategoryService {
 
 	@Autowired
 	private CategoryRepository repository;
+	
+	@Autowired
+	private CategoryMapper mapper;
 
 	@Transactional(readOnly = true)
 	public Page<Category> findAllPaged(PageRequest pageRequest) {
@@ -32,15 +36,14 @@ public class CategoryService {
 
 	@Transactional
 	public Category insert(CategoryInputDTO categoryInputDTO) {
-		Category category = new Category();
-		category.setName(categoryInputDTO.getName());
+		Category category = mapper.toCategory(categoryInputDTO);
 		return repository.save(category);
 	}
 
 	@Transactional
 	public Category update(Long categoryId, CategoryInputDTO categoryInputDTO) {
 		Category category = findOrThrow(categoryId);
-		category.setName(categoryInputDTO.getName());
+		mapper.update(categoryInputDTO, category);
 		return repository.save(category);
 	}
 

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
-import br.com.roanrobersson.rshop.domain.Product;
+import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 
 public class ProductInputValidator implements ConstraintValidator<ProductInputValid, ProductInputDTO> {

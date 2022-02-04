@@ -2,13 +2,9 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,8 +25,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
+import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
-import br.com.roanrobersson.rshop.domain.Product;
+import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,13 +43,7 @@ public class ProductController {
 	private ProductService service;
 
 	@Autowired
-	private ModelMapper mapper;
-
-	@PostConstruct
-	private void setup() {
-		TypeMap<Product, ProductDTO> productTypeMap = mapper.createTypeMap(Product.class, ProductDTO.class);
-		productTypeMap.addMappings(x -> x.skip(ProductDTO::setCategories));
-	}
+	private ProductMapper mapper;
 
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Product.CanConsult
@@ -73,7 +64,7 @@ public class ProductController {
 			categories = new Long[0];
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<Product> products = service.findAllPaged(Set.of(categories), name.trim(), pageRequest);
-		Page<ProductDTO> productResponseDTOs = products.map(x -> convertToDto(x));
+		Page<ProductDTO> productResponseDTOs = products.map(x -> mapper.toProductDTO(x));
 		return ResponseEntity.ok().body(productResponseDTOs);
 	}
 
@@ -86,7 +77,7 @@ public class ProductController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> findById(@PathVariable Long productId) {
 		Product product = service.findById(productId);
-		ProductDTO productResponseDTO = convertToDto(product);
+		ProductDTO productResponseDTO = mapper.toProductDTO(product);
 		return ResponseEntity.ok().body(productResponseDTO);
 	}
 
@@ -100,7 +91,7 @@ public class ProductController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductInputDTO productInputDTO) {
 		Product product = service.insert(productInputDTO);
-		ProductDTO productResponseDTO = convertToDto(product);
+		ProductDTO productResponseDTO = mapper.toProductDTO(product);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(productResponseDTO.getId()).toUri();
 		return ResponseEntity.created(uri).body(productResponseDTO);
@@ -118,7 +109,7 @@ public class ProductController {
 	public ResponseEntity<ProductDTO> update(@PathVariable Long productId,
 			@Valid @RequestBody ProductInputDTO productInputDTO) {
 		Product product = service.update(productId, productInputDTO);
-		ProductDTO productResponseDTO = convertToDto(product);
+		ProductDTO productResponseDTO = mapper.toProductDTO(product);
 		return ResponseEntity.ok().body(productResponseDTO);
 	}
 
@@ -133,12 +124,5 @@ public class ProductController {
 	public ResponseEntity<Void> delete(@PathVariable Long productId) {
 		service.delete(productId);
 		return ResponseEntity.noContent().build();
-	}
-
-	private ProductDTO convertToDto(Product product) {
-		ProductDTO productDTO = mapper.map(product, ProductDTO.class);
-		Set<Long> categories = product.getCategories().stream().map(x -> x.getId()).collect(Collectors.toSet());
-		productDTO.setCategories(categories);
-		return productDTO;
 	}
 }

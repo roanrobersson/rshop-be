@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
 import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
-import br.com.roanrobersson.rshop.domain.Role;
+import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 
 public class RoleInputValidator implements ConstraintValidator<RoleInputValid, RoleInputDTO> {

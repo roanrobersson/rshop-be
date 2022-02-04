@@ -28,7 +28,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.roanrobersson.rshop.api.v1.dto.AddressDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
-import br.com.roanrobersson.rshop.domain.Address;
+import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.service.AddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

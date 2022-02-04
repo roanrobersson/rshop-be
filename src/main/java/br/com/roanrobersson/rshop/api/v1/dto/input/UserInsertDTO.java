@@ -4,7 +4,6 @@ import java.time.Instant;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.core.validation.UserInsertValid;
@@ -24,12 +23,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "UserInsert")
-@ToString(of = {"firstName"})
+@ToString(of = { "firstName" })
 public class UserInsertDTO {
-
-	@Positive
-	@ApiModelProperty(example = "22102", required = false)
-	public Long imageId;
 
 	@NotBlank(message = "Required field")
 	@Size(min = 2, max = 50, message = "Must be between 2 and 50 characters")

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
 import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
-import br.com.roanrobersson.rshop.domain.Address;
+import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 
 public class AddressInputValidator implements ConstraintValidator<AddressInputValid, AddressInputDTO> {

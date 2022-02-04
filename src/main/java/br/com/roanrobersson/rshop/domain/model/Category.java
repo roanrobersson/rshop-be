@@ -1,9 +1,9 @@
-package br.com.roanrobersson.rshop.domain;
+package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,17 +14,20 @@ import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Privilege implements Serializable {
+@ToString(of = { "id", "name" })
+public class Category implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,14 +36,12 @@ public class Privilege implements Serializable {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@ManyToMany(mappedBy = "privileges")
-	private Set<Role> roles = new HashSet<>();
+	@ManyToMany(mappedBy = "categories")
+	@Setter(value = AccessLevel.NONE)
+	private List<Product> products = new ArrayList<>();
 
-	@Column(unique = true, nullable = false, length = 30)
+	@Column(unique = true, nullable = false, length = 127)
 	private String name;
-
-	@Column(nullable = false, length = 100)
-	private String description;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
 	private Instant createdAt;
@@ -48,14 +49,12 @@ public class Privilege implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Privilege(Long id, Set<Role> roles, String name, String description, Instant createdAt, Instant updatedAt) {
+	public Category(long id, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
-		this.roles.addAll(roles);
 		this.name = name;
-		this.description = description;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-	};
+	}
 
 	@PrePersist
 	public void prePersist() {

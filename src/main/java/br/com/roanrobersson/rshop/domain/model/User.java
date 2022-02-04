@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.domain;
+package br.com.roanrobersson.rshop.domain.model;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -16,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -30,12 +29,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(of = { "id", "firstName" })
 public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
@@ -53,11 +54,6 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "user")
 	@Setter(value = AccessLevel.NONE)
 	private List<Address> addresses = new ArrayList<>();
-
-	@ManyToOne
-	@JoinColumn(name = "image_id")
-	@Setter(value = AccessLevel.NONE)
-	private Image image;
 
 	@Column(nullable = false, length = 50)
 	private String firstName;
@@ -95,13 +91,11 @@ public class User implements UserDetails {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public User(Long id, Set<Role> roles, List<Address> addresses, Image image, String firstName, String name,
+	public User(Long id, Set<Role> roles, List<Address> addresses, String firstName, String name,
 			Instant birthDate, String cpf, String rg, String email, String password, String primaryTelephone,
 			String secondaryTelephone, Instant verifiedAt, Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.roles.addAll(roles);
-		this.addresses.addAll(addresses);
-		this.image = image;
 		this.firstName = firstName;
 		this.name = name;
 		this.birthDate = birthDate;

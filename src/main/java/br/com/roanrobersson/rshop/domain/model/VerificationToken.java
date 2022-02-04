@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.domain;
+package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -18,6 +18,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -25,6 +26,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(of = { "id", "user", "expiryDate" })
 public class VerificationToken implements Serializable {
 
 	private static final long serialVersionUID = 1L;

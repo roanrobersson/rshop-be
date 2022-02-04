@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,11 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
-import br.com.roanrobersson.rshop.domain.Privilege;
-import br.com.roanrobersson.rshop.domain.Role;
+import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 
 @Service
 public class RoleService {
@@ -24,10 +23,7 @@ public class RoleService {
 	private RoleRepository repository;
 
 	@Autowired
-	private PrivilegeService privilegeService;
-
-	@Autowired
-	private ModelMapper mapper;
+	private RoleMapper mapper;
 
 	@Transactional(readOnly = true)
 	public List<Role> findAll(Sort sort) {
@@ -43,15 +39,16 @@ public class RoleService {
 
 	@Transactional
 	public Role insert(RoleInputDTO roleInputDTO) {
-		Role role = new Role();
-		copyDtoToEntity(roleInputDTO, role);
-		return repository.save(role);
+		Role role = mapper.toRole(roleInputDTO);
+		role = repository.save(role);
+		System.out.println(role.toString());
+		return role;
 	}
 
 	@Transactional
 	public Role update(Long roleId, RoleInputDTO roleInputDTO) {
 		Role role = findRoleOrThrow(roleId);
-		copyDtoToEntity(roleInputDTO, role);
+		mapper.update(roleInputDTO, role);
 		return repository.save(role);
 	}
 
@@ -65,17 +62,8 @@ public class RoleService {
 		}
 	}
 
-	private void copyDtoToEntity(RoleInputDTO roleInputDTO, Role role) {
-		mapper.map(roleInputDTO, role);
-		role.getPrivileges().clear();
-		for (Long id : roleInputDTO.getPrivilegesIds()) {
-			Privilege privilege = privilegeService.findById(id);
-			role.getPrivileges().add(privilege);
-		}
-	}
-
 	private Role findRoleOrThrow(Long roleId) {
 		return repository.findByIdWithPrivileges(roleId)
-				.orElseThrow(() -> new ResourceNotFoundException("Role" + roleId + "not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Role " + roleId + " not found"));
 	}
 }

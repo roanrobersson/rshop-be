@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "Privilege")
-@ToString
+@ToString(of = { "id", "name" })
 public class PrivilegeDTO {
 
 	@ApiModelProperty(example = "2")

@@ -27,13 +27,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "ProductInput")
-@ToString(of = { "name", "categoriesIds" })
+@ToString(of = { "name", "categories" })
 public class ProductInputDTO {
 
-	@NotEmpty(message = "Uncategorized product is not allowed ")
+	@NotEmpty(message = "Must have a set of categories")
 	@Builder.Default
 	@ApiModelProperty(example = "[2, 4, 9]", required = true)
-	private Set<Long> categoriesIds = new HashSet<>();
+	private Set<Long> categories = new HashSet<>();
 
 	@NotBlank(message = "Required field")
 	@Size(min = 3, max = 127, message = "Must be between 8 and 127 characters")

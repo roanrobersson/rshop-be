@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.domain;
+package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
 import java.time.Instant;

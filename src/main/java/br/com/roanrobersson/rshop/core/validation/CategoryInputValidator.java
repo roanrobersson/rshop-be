@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
 import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
-import br.com.roanrobersson.rshop.domain.Category;
+import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 
 public class CategoryInputValidator implements ConstraintValidator<CategoryInputValid, CategoryInputDTO> {

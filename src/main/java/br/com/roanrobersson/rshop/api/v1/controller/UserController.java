@@ -1,14 +1,9 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +27,9 @@ import br.com.roanrobersson.rshop.api.v1.dto.UserDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
+import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
-import br.com.roanrobersson.rshop.domain.User;
+import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,14 +45,7 @@ public class UserController {
 	private UserService service;
 
 	@Autowired
-	private ModelMapper mapper;
-
-	@PostConstruct
-	private void setup() {
-		TypeMap<User, UserDTO> userTypeMap = mapper.createTypeMap(User.class, UserDTO.class);
-		userTypeMap.addMappings(x -> x.skip(UserDTO::setRoles)).addMappings(x -> x.skip(UserDTO::setPrivileges))
-				.addMappings(x -> x.skip(UserDTO::setImage));
-	}
+	private UserMapper mapper;
 
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.User.CanConsult
@@ -72,7 +61,7 @@ public class UserController {
 			@RequestParam(value = "orderby", defaultValue = "email") String orderBy) {
 		PageRequest request = PageRequest.of(page, linesPerPage, Direction.fromString(direction), orderBy);
 		Page<User> userPage = service.findAllPaged(request);
-		Page<UserDTO> userResponseDTOs = userPage.map(x -> convertToDTO(x));
+		Page<UserDTO> userResponseDTOs = userPage.map(x -> mapper.toUserDTO(x));
 		return ResponseEntity.ok(userResponseDTOs);
 	}
 
@@ -87,7 +76,7 @@ public class UserController {
 	public ResponseEntity<UserDTO> findById(@PathVariable Long userId) {
 		User user = service.findById(userId);
 		UserDTO userResponseDTO = new UserDTO();
-		copyEntityToDTO(user, userResponseDTO);
+		mapper.update(user, userResponseDTO);
 		return ResponseEntity.ok(userResponseDTO);
 	}
 
@@ -101,7 +90,7 @@ public class UserController {
 		User user = service.insert(userInsertDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(user.getId()).toUri();
 		UserDTO userResponseDTO = new UserDTO();
-		copyEntityToDTO(user, userResponseDTO);
+		mapper.update(user, userResponseDTO);
 		return ResponseEntity.created(uri).body(userResponseDTO);
 	}
 
@@ -117,7 +106,7 @@ public class UserController {
 	public ResponseEntity<UserDTO> update(@PathVariable Long userId, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
 		User user = service.update(userId, userUpdateDTO);
 		UserDTO userResponseDTO = new UserDTO();
-		copyEntityToDTO(user, userResponseDTO);
+		mapper.update(user, userResponseDTO);
 		return ResponseEntity.ok(userResponseDTO);
 	}
 
@@ -146,22 +135,5 @@ public class UserController {
 			@Valid @RequestBody UserChangePasswordInputDTO userChangePasswordDTO) {
 		service.changePassword(userId, userChangePasswordDTO);
 		return ResponseEntity.noContent().build();
-	}
-
-	private void copyEntityToDTO(User user, UserDTO userDTO) {
-		mapper.map(user, userDTO);
-		Set<Long> roles = user.getRoles().stream().map(x -> x.getId()).collect(Collectors.toSet());
-		Set<Long> privileges = user.getRoles().stream().flatMap(role -> role.getPrivileges().stream())
-				.map(priv -> priv.getId()).collect(Collectors.toSet());
-		Long image = user.getImage() != null ? user.getImage().getId() : null;
-		userDTO.setImage(image);
-		userDTO.setRoles(roles);
-		userDTO.setPrivileges(privileges);
-	}
-
-	private UserDTO convertToDTO(User user) {
-		UserDTO userDTO = new UserDTO();
-		copyEntityToDTO(user, userDTO);
-		return userDTO;
 	}
 }

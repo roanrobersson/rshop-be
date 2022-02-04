@@ -5,9 +5,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.domain.User;
+import br.com.roanrobersson.rshop.domain.exception.UnauthorizedException;
+import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
-import br.com.roanrobersson.rshop.domain.service.exception.UnauthorizedException;
 
 @Service
 public class AuthService {

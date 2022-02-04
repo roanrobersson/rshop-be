@@ -4,7 +4,6 @@ import java.time.Instant;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -24,10 +23,6 @@ import lombok.ToString;
 @ApiModel(value = "UserUpdate")
 @ToString(of = { "firstName" })
 public class UserUpdateDTO {
-
-	@Positive
-	@ApiModelProperty(example = "22102", required = false)
-	public Long imageId;
 
 	@NotBlank(message = "Required field")
 	@Size(min = 2, max = 50, message = "Must be between 2 and 50 characters")

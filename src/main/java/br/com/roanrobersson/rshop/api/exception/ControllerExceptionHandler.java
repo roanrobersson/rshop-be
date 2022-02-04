@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ForbiddenException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
-import br.com.roanrobersson.rshop.domain.service.exception.UnauthorizedException;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ForbiddenException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UnauthorizedException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {

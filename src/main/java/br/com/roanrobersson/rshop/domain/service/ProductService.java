@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Set;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,11 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
-import br.com.roanrobersson.rshop.domain.Category;
-import br.com.roanrobersson.rshop.domain.Product;
+import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 
 @Service
 public class ProductService {
@@ -25,14 +24,12 @@ public class ProductService {
 	private ProductRepository repository;
 
 	@Autowired
-	private CategoryService categoryService;
-
-	@Autowired
-	private ModelMapper mapper;
+	private ProductMapper mapper;
 
 	@Transactional(readOnly = true)
 	public Page<Product> findAllPaged(Set<Long> categoriesIds, String name, PageRequest pageRequest) {
-		if (categoriesIds.size() == 0) categoriesIds = null;
+		if (categoriesIds.size() == 0)
+			categoriesIds = null;
 		Page<Product> productPage = repository.search(categoriesIds, name, pageRequest);
 		repository.findWithCategories(productPage.toList());
 		return productPage;
@@ -45,15 +42,14 @@ public class ProductService {
 
 	@Transactional
 	public Product insert(ProductInputDTO productInputDTO) {
-		Product product = new Product();
-		copyDtoToEntity(productInputDTO, product);
+		Product product = mapper.toProduct(productInputDTO);
 		return repository.save(product);
 	}
 
 	@Transactional
 	public Product update(Long productId, ProductInputDTO productInputDTO) {
 		Product product = findOrThrow(productId);
-		copyDtoToEntity(productInputDTO, product);
+		mapper.update(productInputDTO, product);
 		return repository.save(product);
 	}
 
@@ -64,15 +60,6 @@ public class ProductService {
 			throw new ResourceNotFoundException("Id " + productId + " not found ");
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Integrity violation");
-		}
-	}
-
-	private void copyDtoToEntity(ProductInputDTO productInputDTO, Product product) {
-		mapper.map(productInputDTO, product);
-		product.getCategories().clear();
-		for (Long id : productInputDTO.getCategoriesIds()) {
-			Category category = categoryService.findById(id);
-			product.getCategories().add(category);
 		}
 	}
 

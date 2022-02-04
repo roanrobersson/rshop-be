@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.domain;
+package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -21,6 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = {"nick", "user_id"}) })
@@ -29,6 +30,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(of = { "id", "nick", "main" })
 public class Address implements Serializable {
 
 	private static final long serialVersionUID = 1L;

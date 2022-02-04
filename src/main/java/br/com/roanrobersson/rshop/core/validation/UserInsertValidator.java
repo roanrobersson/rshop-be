@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
-import br.com.roanrobersson.rshop.domain.User;
+import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {

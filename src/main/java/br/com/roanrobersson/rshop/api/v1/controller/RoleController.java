@@ -2,14 +2,10 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -30,8 +26,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
+import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
-import br.com.roanrobersson.rshop.domain.Role;
+import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,13 +44,7 @@ public class RoleController {
 	RoleService service;
 
 	@Autowired
-	private ModelMapper mapper;
-
-	@PostConstruct
-	private void setup() {
-		TypeMap<Role, RoleDTO> roleTypeMap = mapper.createTypeMap(Role.class, RoleDTO.class);
-		roleTypeMap.addMappings(x -> x.skip(RoleDTO::setPrivileges));
-	}
+	private RoleMapper mapper;
 
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
@@ -68,7 +59,8 @@ public class RoleController {
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
 		List<Role> roles = service.findAll(sort);
-		List<RoleDTO> roleResponseDTOs = roles.stream().map(role -> convertToDTO(role)).collect(Collectors.toList());
+		List<RoleDTO> roleResponseDTOs = roles.stream().map(role -> mapper.toRoleDTO(role))
+				.collect(Collectors.toList());
 		return ResponseEntity.ok().body(roleResponseDTOs);
 	}
 
@@ -82,7 +74,7 @@ public class RoleController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> findById(@PathVariable Long roleId) {
 		Role role = service.findById(roleId);
-		RoleDTO roleResponseDTO = convertToDTO(role);
+		RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
 		return ResponseEntity.ok().body(roleResponseDTO);
 	}
 
@@ -96,7 +88,7 @@ public class RoleController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> insert(@Valid @RequestBody RoleInputDTO roleInputDTO) {
 		Role role = service.insert(roleInputDTO);
-		RoleDTO roleResponseDTO = convertToDTO(role);
+		RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(roleResponseDTO.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(roleResponseDTO);
@@ -113,7 +105,7 @@ public class RoleController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> update(@PathVariable Long roleId, @Valid @RequestBody RoleInputDTO roleInputDTO) {
 		Role role = service.update(roleId, roleInputDTO);
-		RoleDTO roleResponseDTO = convertToDTO(role);
+		RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
 		return ResponseEntity.ok().body(roleResponseDTO);
 	}
 
@@ -128,12 +120,5 @@ public class RoleController {
 	public ResponseEntity<Void> delete(@PathVariable Long roleId) {
 		service.delete(roleId);
 		return ResponseEntity.noContent().build();
-	}
-
-	private RoleDTO convertToDTO(Role role) {
-		RoleDTO roleDTO = mapper.map(role, RoleDTO.class);
-		Set<Long> privileges = role.getPrivileges().stream().map(x -> x.getId()).collect(Collectors.toSet());
-		roleDTO.setPrivileges(privileges);
-		return roleDTO;
 	}
 }

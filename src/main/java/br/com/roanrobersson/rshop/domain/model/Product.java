@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.domain;
+package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,12 +22,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(of = { "id", "name", "categories" })
 public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;

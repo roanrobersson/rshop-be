@@ -3,7 +3,6 @@ package br.com.roanrobersson.rshop.domain.service;
 import java.util.Optional;
 import java.util.Set;
 
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
-import br.com.roanrobersson.rshop.domain.Role;
-import br.com.roanrobersson.rshop.domain.User;
+import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Role;
+import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
-import br.com.roanrobersson.rshop.domain.service.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.service.exception.ResourceNotFoundException;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -42,7 +42,7 @@ public class UserService implements UserDetailsService {
 	private RoleService roleService;
 
 	@Autowired
-	private ModelMapper mapper;
+	private UserMapper mapper;
 
 	private Long defaultUserRoleId = 1L;
 
@@ -65,15 +65,17 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public User insert(UserInsertDTO userInsertDTO) {
-		User user = new User();
-		copyDtoToEntity(userInsertDTO, user);
+		User user = mapper.toUser(userInsertDTO);
+		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
+		Role defaultRole = roleService.findById(defaultUserRoleId);
+		user.getRoles().add(defaultRole);
 		return repository.save(user);
 	}
 
 	@Transactional
 	public User update(Long userId, UserUpdateDTO userUpdateDTO) {
 		User user = findUserOrThrow(userId);
-		mapper.map(userUpdateDTO, user);
+		mapper.update(userUpdateDTO, user);
 		return repository.save(user);
 	}
 
@@ -135,12 +137,5 @@ public class UserService implements UserDetailsService {
 	private User findUserOrThrow(String email) {
 		return repository.findByEmailWithRolesAndPrivileges(email)
 				.orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
-	}
-
-	private void copyDtoToEntity(UserInsertDTO userInsertDTO, User user) {
-		Role defaultRole = roleService.findById(defaultUserRoleId);
-		mapper.map(userInsertDTO, user);
-		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
-		user.getRoles().add(defaultRole);
 	}
 }
