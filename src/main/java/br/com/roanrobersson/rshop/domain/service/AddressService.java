@@ -42,8 +42,8 @@ public class AddressService {
 	}
 
 	@Transactional(readOnly = true)
-	public Optional<Address> findMain(Long userId) {
-		return repository.findFirstByUserIdAndMain(userId, true);
+	public Address findMain(Long userId) {
+		return findMainAddressOrThrow(userId);
 	}
 
 	@Transactional
@@ -84,10 +84,12 @@ public class AddressService {
 
 	@Transactional
 	public void unsetMain(Long userId) {
-		Optional<Address> optional = findMain(userId);
-		if (optional.isEmpty())
+		Address address;
+		try {
+			address = findMain(userId);
+		} catch (ResourceNotFoundException e) {
 			return;
-		Address address = optional.get();
+		}
 		address.setMain(false);
 		repository.save(address);
 	}
@@ -97,6 +99,12 @@ public class AddressService {
 				.orElseThrow(() -> new ResourceNotFoundException("Address " + addressId + " not found"));
 		validateAddressOwner(userId, address);
 		return address;
+	}
+
+	private Address findMainAddressOrThrow(Long userId) {
+		Optional<Address> optional = repository.findFirstByUserIdAndMain(userId, true);
+		return optional
+				.orElseThrow(() -> new ResourceNotFoundException("User " + userId + " dont have a main address"));
 	}
 
 	private void validateAddressOwner(Long userId, Address address) {

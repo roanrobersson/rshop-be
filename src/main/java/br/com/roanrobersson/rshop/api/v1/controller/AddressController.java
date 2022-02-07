@@ -78,6 +78,20 @@ public class AddressController {
 		return ResponseEntity.ok().body(addressResponseDTO);
 	}
 
+	@GetMapping(value = "/main", produces = "application/json")
+	@CheckSecurity.Address.CanConsult
+	@ResponseStatus(HttpStatus.OK)
+	@ApiOperation(value = "Retrives the main address")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
+			@ApiResponse(code = 401, message = "Unauthorized access"),
+			@ApiResponse(code = 404, message = "Resource not found"),
+			@ApiResponse(code = 500, message = "Internal server error") })
+	public ResponseEntity<AddressDTO> findMain(@PathVariable Long userId) {
+		Address address = service.findMain(userId);
+		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
+		return ResponseEntity.ok().body(addressResponseDTO);
+	}
+	
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
