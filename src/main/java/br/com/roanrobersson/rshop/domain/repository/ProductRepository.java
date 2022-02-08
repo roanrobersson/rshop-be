@@ -24,13 +24,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 	@Query("SELECT obj " 
 			+ "FROM Product obj " 
-			+ "JOIN FETCH obj.categories " 
+			+ "LEFT JOIN FETCH obj.categories " 
 			+ "WHERE obj IN :products")
 	List<Product> findWithCategories(List<Product> products);
 
 	@Query("SELECT obj " 
 			+ "FROM Product obj " 
-			+ "JOIN FETCH obj.categories " 
+			+ "LEFT JOIN FETCH obj.categories " 
 			+ "WHERE obj.id = :id")
 	Optional<Product> findByIdWithCategories(Long id);
 	

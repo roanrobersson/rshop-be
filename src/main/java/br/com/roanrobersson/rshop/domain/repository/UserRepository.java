@@ -14,15 +14,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query("SELECT obj " 
 			+ "FROM User obj " 
-			+ "JOIN FETCH obj.roles roles " 
-			+ "JOIN FETCH roles.privileges " 
+			+ "LEFT JOIN FETCH obj.roles roles " 
+			+ "LEFT JOIN FETCH roles.privileges " 
 			+ "WHERE obj IN :users")
 	List<User> findWithRolesAndPrivileges(List<User> users);
 	
 	@Query("SELECT obj " 
 			+ "FROM User obj " 
-			+ "JOIN FETCH obj.roles roles "
-			+ "JOIN FETCH roles.privileges "
+			+ "LEFT JOIN FETCH obj.roles roles "
+			+ "LEFT JOIN FETCH roles.privileges "
 			+ "WHERE obj.id = :id")
 	Optional<User> findByIdWithRolesAndPrivileges(Long id);
 	
@@ -30,8 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("SELECT obj " 
 			+ "FROM User obj " 
-			+ "JOIN FETCH obj.roles roles "
-			+ "JOIN FETCH roles.privileges "
+			+ "LEFT JOIN FETCH obj.roles roles "
+			+ "LEFT JOIN FETCH roles.privileges "
 			+ "WHERE obj.email = :email")
 	Optional<User> findByEmailWithRolesAndPrivileges(String email);
 }

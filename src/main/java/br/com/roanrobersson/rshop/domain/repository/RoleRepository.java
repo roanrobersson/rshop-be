@@ -17,13 +17,13 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 	
 	@Query("SELECT obj " 
 			+ "FROM Role obj " 
-			+ "JOIN FETCH obj.privileges " 
+			+ "LEFT JOIN FETCH obj.privileges " 
 			+ "WHERE obj IN :roles")
 	List<Role> findRolesWithPrivileges(List<Role> roles);
 	
 	@Query("SELECT obj " 
 			+ "FROM Role obj " 
-			+ "JOIN FETCH obj.privileges " 
+			+ "LEFT JOIN FETCH obj.privileges " 
 			+ "WHERE obj.id = :id")
 	Optional<Role> findByIdWithPrivileges(Long id);
 	
