@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.integration.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.factory.ProductFactory;
 import br.com.roanrobersson.rshop.factory.TokenUtil;
@@ -41,6 +43,7 @@ public class ProductControllerIT {
 	private String username;
 	private String password;
 	private ProductInputDTO productInputDTO;
+	private ProductDTO productDTO;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -50,6 +53,7 @@ public class ProductControllerIT {
 		username = "administrador@gmail.com";
 		password = "12345678";
 		productInputDTO = ProductFactory.createProductInputDTO();
+		productDTO = ProductFactory.createProductDTO();
 	}
 	
 	@Test
@@ -71,21 +75,18 @@ public class ProductControllerIT {
 	@Test
 	public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
-		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
-		String expectedName = productInputDTO.getName();
-		String expectedDescription = productInputDTO.getDescription();
+		String inputJsonBody = objectMapper.writeValueAsString(productInputDTO);
+		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
 		
 		ResultActions result = 
 				mockMvc.perform(put("/products/{id}", existingId)
 					.header("Authorization", "Bearer " + accessToken)
-					.content(jsonBody)
+					.content(inputJsonBody)
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON));
 		
 		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$.id").value(existingId));
-		result.andExpect(jsonPath("$.name").value(expectedName));
-		result.andExpect(jsonPath("$.description").value(expectedDescription));
+		result.andExpect(content().json(expectedJsonBody));
 	}
 	
 	@Test

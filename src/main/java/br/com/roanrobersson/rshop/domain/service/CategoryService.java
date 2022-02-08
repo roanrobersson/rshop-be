@@ -10,17 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 
 @Service
 public class CategoryService {
 
+	private static final String MSG_CATEGORY_IN_USE = "Category with ID %d cannot be removed, because it is in use";
+
 	@Autowired
 	private CategoryRepository repository;
-	
+
 	@Autowired
 	private CategoryMapper mapper;
 
@@ -31,7 +33,7 @@ public class CategoryService {
 
 	@Transactional(readOnly = true)
 	public Category findById(Long categoryId) {
-		return findOrThrow(categoryId);
+		return repository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
 	}
 
 	@Transactional
@@ -42,7 +44,7 @@ public class CategoryService {
 
 	@Transactional
 	public Category update(Long categoryId, CategoryInputDTO categoryInputDTO) {
-		Category category = findOrThrow(categoryId);
+		Category category = findById(categoryId);
 		mapper.update(categoryInputDTO, category);
 		return repository.save(category);
 	}
@@ -51,13 +53,9 @@ public class CategoryService {
 		try {
 			repository.deleteById(categoryId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Id " + categoryId + " not found ");
+			throw new CategoryNotFoundException(categoryId);
 		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException("Integrity violation");
+			throw new EntityInUseException(String.format(MSG_CATEGORY_IN_USE, categoryId));
 		}
-	}
-
-	private Category findOrThrow(Long categoryId) {
-		return repository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 	}
 }

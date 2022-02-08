@@ -12,14 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
+import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 
 @Service
 public class ProductService {
 
+	private static final String MSG_PRODUCT_IN_USE = "Product with ID %d cannot be removed, because it is in use";
+	
 	@Autowired
 	private ProductRepository repository;
 
@@ -37,7 +39,8 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Product findById(Long productId) {
-		return findOrThrow(productId);
+		return repository.findByIdWithCategories(productId)
+				.orElseThrow(() -> new ProductNotFoundException(productId));
 	}
 
 	@Transactional
@@ -48,7 +51,7 @@ public class ProductService {
 
 	@Transactional
 	public Product update(Long productId, ProductInputDTO productInputDTO) {
-		Product product = findOrThrow(productId);
+		Product product = findById(productId);
 		mapper.update(productInputDTO, product);
 		return repository.save(product);
 	}
@@ -57,14 +60,9 @@ public class ProductService {
 		try {
 			repository.deleteById(productId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Id " + productId + " not found ");
+			throw new ProductNotFoundException(productId);
 		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException("Integrity violation");
+			throw new EntityInUseException(String.format(MSG_PRODUCT_IN_USE, productId));
 		}
-	}
-
-	private Product findOrThrow(Long productId) {
-		return repository.findByIdWithCategories(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("Product " + productId + " not found"));
 	}
 }

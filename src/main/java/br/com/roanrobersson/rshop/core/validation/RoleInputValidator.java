@@ -19,6 +19,8 @@ import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 
 public class RoleInputValidator implements ConstraintValidator<RoleInputValid, RoleInputDTO> {
 
+	private static final String MSG_ROLE_ALREADY_EXISTS = "Role is already exists";
+
 	@Autowired
 	private HttpServletRequest request;
 
@@ -45,14 +47,14 @@ public class RoleInputValidator implements ConstraintValidator<RoleInputValid, R
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("name", "Role already exists"));
+			list.add(new FieldMessage("name", MSG_ROLE_ALREADY_EXISTS));
 		}
 
 		// Update
 		if (isUpdateRequest) {
 			Long roleId = Long.valueOf(uriVars.get("roleId"));
 			if (roleId != optional.get().getId()) {
-				list.add(new FieldMessage("name", "Role already exists"));
+				list.add(new FieldMessage("name", MSG_ROLE_ALREADY_EXISTS));
 			}
 		}
 

@@ -19,6 +19,8 @@ import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 
 public class CategoryInputValidator implements ConstraintValidator<CategoryInputValid, CategoryInputDTO> {
 
+	private static final String MSG_CATEGORY_ALREADY_EXISTS = "Category already exists";
+
 	@Autowired
 	private HttpServletRequest request;
 
@@ -45,14 +47,14 @@ public class CategoryInputValidator implements ConstraintValidator<CategoryInput
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("name", "Category already exists"));
+			list.add(new FieldMessage("name", MSG_CATEGORY_ALREADY_EXISTS));
 		}
 
 		// Update
 		if (isUpdateRequest) {
 			long categoryId = Long.parseLong(uriVars.get("categoryId"));
 			if (categoryId != optional.get().getId()) {
-				list.add(new FieldMessage("name", "Category already exists"));
+				list.add(new FieldMessage("name", MSG_CATEGORY_ALREADY_EXISTS));
 			}
 		}
 

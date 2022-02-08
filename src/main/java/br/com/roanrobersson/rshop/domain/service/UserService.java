@@ -21,14 +21,17 @@ import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
+import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
+
+	private static final String MSG_USER_IN_USE = "Role with ID %d cannot be removed, because it is in use";
+	private static final String MSG_USER_WITH_EMAIL_NOT_FOUND = "User with email %d not found";
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -55,12 +58,13 @@ public class UserService implements UserDetailsService {
 
 	@Transactional(readOnly = true)
 	public User findById(Long userId) {
-		return findUserOrThrow(userId);
+		return repository.findByIdWithRolesAndPrivileges(userId).orElseThrow(() -> new UserNotFoundException(userId));
 	}
 
 	@Transactional(readOnly = true)
 	public User findByEmail(String email) {
-		return findUserOrThrow(email);
+		return repository.findByEmailWithRolesAndPrivileges(email)
+				.orElseThrow(() -> new UserNotFoundException(String.format(MSG_USER_WITH_EMAIL_NOT_FOUND, email)));
 	}
 
 	@Transactional
@@ -74,7 +78,7 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public User update(Long userId, UserUpdateDTO userUpdateDTO) {
-		User user = findUserOrThrow(userId);
+		User user = findById(userId);
 		mapper.update(userUpdateDTO, user);
 		return repository.save(user);
 	}
@@ -83,28 +87,28 @@ public class UserService implements UserDetailsService {
 		try {
 			repository.deleteById(userId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Id " + userId + " not found");
+			throw new UserNotFoundException(userId);
 		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException("Integrity violation");
+			throw new EntityInUseException(String.format(MSG_USER_IN_USE, userId));
 		}
 	}
 
 	@Transactional
 	public void changePassword(Long userId, UserChangePasswordInputDTO userChangePasswordDTO) {
-		User user = findUserOrThrow(userId);
+		User user = findById(userId);
 		user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
 		repository.save(user);
 	}
 
 	@Transactional
 	public Set<Role> getRoles(Long userId) {
-		User user = findUserOrThrow(userId);
+		User user = findById(userId);
 		return user.getRoles();
 	}
 
 	@Transactional
 	public void grantRole(Long userId, Long roleId) {
-		User user = findUserOrThrow(userId);
+		User user = findById(userId);
 		Role role = roleService.findById(roleId);
 		user.getRoles().add(role);
 		repository.save(user);
@@ -112,7 +116,7 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public void revokeRole(Long userId, Long roleId) {
-		User user = findUserOrThrow(userId);
+		User user = findById(userId);
 		Role role = roleService.findById(roleId);
 		user.getRoles().remove(role);
 		repository.save(user);
@@ -127,15 +131,5 @@ public class UserService implements UserDetailsService {
 		}
 		logger.info("User found: " + email);
 		return optional.get();
-	}
-
-	private User findUserOrThrow(Long userId) {
-		return repository.findByIdWithRolesAndPrivileges(userId)
-				.orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found"));
-	}
-
-	private User findUserOrThrow(String email) {
-		return repository.findByEmailWithRolesAndPrivileges(email)
-				.orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
 	}
 }

@@ -11,14 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
+import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 
 @Service
 public class RoleService {
 
+	private static final String MSG_ROLE_IN_USE = "Role with ID %d cannot be removed, because it is in use";
+	
 	@Autowired
 	private RoleRepository repository;
 
@@ -34,20 +36,20 @@ public class RoleService {
 
 	@Transactional(readOnly = true)
 	public Role findById(Long roleId) {
-		return findRoleOrThrow(roleId);
+		return repository.findByIdWithPrivileges(roleId)
+				.orElseThrow(() -> new RoleNotFoundException(roleId));
 	}
 
 	@Transactional
 	public Role insert(RoleInputDTO roleInputDTO) {
 		Role role = mapper.toRole(roleInputDTO);
 		role = repository.save(role);
-		System.out.println(role.toString());
 		return role;
 	}
 
 	@Transactional
 	public Role update(Long roleId, RoleInputDTO roleInputDTO) {
-		Role role = findRoleOrThrow(roleId);
+		Role role = findById(roleId);
 		mapper.update(roleInputDTO, role);
 		return repository.save(role);
 	}
@@ -56,14 +58,9 @@ public class RoleService {
 		try {
 			repository.deleteById(roleId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Id " + roleId + " not found ");
+			throw new RoleNotFoundException(roleId);
 		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException("Integrity violation");
+			throw new EntityInUseException(String.format(MSG_ROLE_IN_USE, roleId));
 		}
-	}
-
-	private Role findRoleOrThrow(Long roleId) {
-		return repository.findByIdWithPrivileges(roleId)
-				.orElseThrow(() -> new ResourceNotFoundException("Role " + roleId + " not found"));
 	}
 }

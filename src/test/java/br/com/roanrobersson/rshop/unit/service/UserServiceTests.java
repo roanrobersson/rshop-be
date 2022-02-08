@@ -16,8 +16,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +36,7 @@ import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
@@ -115,7 +113,7 @@ public class UserServiceTests {
 
 		// update
 		when(repository.getById(existingId)).thenReturn(user);
-		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
+		doThrow(UserNotFoundException.class).when(repository).getById(nonExistingId);
 
 		// delete
 		doNothing().when(repository).deleteById(existingId);
@@ -147,9 +145,9 @@ public class UserServiceTests {
 	}
 
 	@Test
-	public void findByIdShouldShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+	public void findByIdShouldThrowUserNotFoundExceptionWhenIdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(UserNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
 	}
@@ -171,9 +169,9 @@ public class UserServiceTests {
 	}
 
 	@Test
-	public void updateShouldShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+	public void updateShouldThrowUserNotFoundExceptionWhenIdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(UserNotFoundException.class, () -> {
 			service.update(nonExistingId, userUpdateDTO);
 		});
 	}
@@ -189,9 +187,9 @@ public class UserServiceTests {
 	}
 
 	@Test
-	public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+	public void deleteShouldThrowUserNotFoundExceptionWhenIdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(UserNotFoundException.class, () -> {
 			service.delete(nonExistingId);
 		});
 
@@ -219,9 +217,9 @@ public class UserServiceTests {
 	}
 
 	@Test
-	public void changePasswordShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+	public void changePasswordShouldThrowUserNotFoundExceptionWhenIdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(UserNotFoundException.class, () -> {
 			service.changePassword(nonExistingId, changePasswordDTO);
 		});
 

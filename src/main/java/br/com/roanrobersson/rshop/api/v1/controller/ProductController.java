@@ -27,6 +27,8 @@ import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
+import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 import io.swagger.annotations.Api;
@@ -90,11 +92,15 @@ public class ProductController {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductInputDTO productInputDTO) {
-		Product product = service.insert(productInputDTO);
-		ProductDTO productResponseDTO = mapper.toProductDTO(product);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(productResponseDTO.getId()).toUri();
-		return ResponseEntity.created(uri).body(productResponseDTO);
+		try {
+			Product product = service.insert(productInputDTO);
+			ProductDTO productResponseDTO = mapper.toProductDTO(product);
+			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(productResponseDTO.getId()).toUri();
+			return ResponseEntity.created(uri).body(productResponseDTO);
+		} catch (CategoryNotFoundException e) {
+			throw new BusinessException(e.getMessage(), e);
+		}
 	}
 
 	@PutMapping(value = "/{productId}", produces = "application/json")
@@ -108,9 +114,13 @@ public class ProductController {
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> update(@PathVariable Long productId,
 			@Valid @RequestBody ProductInputDTO productInputDTO) {
-		Product product = service.update(productId, productInputDTO);
-		ProductDTO productResponseDTO = mapper.toProductDTO(product);
-		return ResponseEntity.ok().body(productResponseDTO);
+		try {
+			Product product = service.update(productId, productInputDTO);
+			ProductDTO productResponseDTO = mapper.toProductDTO(product);
+			return ResponseEntity.ok().body(productResponseDTO);
+		} catch (CategoryNotFoundException e) {
+			throw new BusinessException(e.getMessage(), e);
+		}
 	}
 
 	@DeleteMapping(value = "/{productId}")

@@ -19,6 +19,8 @@ import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 
 public class AddressInputValidator implements ConstraintValidator<AddressInputValid, AddressInputDTO> {
 
+	private static final String MSG_ADDRESS_ALREADY_EXISTS = "Address is already exists";
+
 	@Autowired
 	private HttpServletRequest request;
 
@@ -35,7 +37,7 @@ public class AddressInputValidator implements ConstraintValidator<AddressInputVa
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		boolean isUpdateRequest = uriVars.containsKey("addressId");
-		
+
 		List<FieldMessage> list = new ArrayList<>();
 
 		Long userId = Long.parseLong(uriVars.get("userId"));
@@ -46,14 +48,14 @@ public class AddressInputValidator implements ConstraintValidator<AddressInputVa
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("nick", "Address is already exists"));
+			list.add(new FieldMessage("nick", MSG_ADDRESS_ALREADY_EXISTS));
 		}
 
 		// Update
 		if (isUpdateRequest) {
 			Long addressId = Long.parseLong(uriVars.get("addressId"));
 			if (addressId != optional.get().getId()) {
-				list.add(new FieldMessage("nick", "Address is already exists"));
+				list.add(new FieldMessage("nick", MSG_ADDRESS_ALREADY_EXISTS));
 			}
 		}
 

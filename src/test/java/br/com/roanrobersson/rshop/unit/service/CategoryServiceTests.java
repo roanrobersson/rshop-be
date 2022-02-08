@@ -14,8 +14,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +28,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
+import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
@@ -77,7 +75,7 @@ public class CategoryServiceTests {
 
 		// update
 		when(repository.getById(existingId)).thenReturn(category);
-		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
+		doThrow(CategoryNotFoundException.class).when(repository).getById(nonExistingId);
 
 		// delete
 		doNothing().when(repository).deleteById(existingId);
@@ -105,9 +103,9 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void findById_ThrowResourceNotFoundException_IdDoesNotExist() {
+	public void findById_ThrowCategoryNotFoundException_IdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(CategoryNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
 	}
@@ -129,9 +127,9 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void update_ThrowResourceNotFoundException_IdDoesNotExist() {
+	public void update_ThrowCategoryNotFoundException_IdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(CategoryNotFoundException.class, () -> {
 			service.update(nonExistingId, categoryInputDTO);
 		});
 	}
@@ -147,9 +145,9 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void delete_ThrowResourceNotFoundException_IdDoesNotExist() {
+	public void delete_ThrowCategoryNotFoundException_IdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(CategoryNotFoundException.class, () -> {
 			service.delete(nonExistingId);
 		});
 

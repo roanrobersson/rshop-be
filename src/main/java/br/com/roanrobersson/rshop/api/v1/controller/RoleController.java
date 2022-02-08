@@ -28,6 +28,8 @@ import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
+import br.com.roanrobersson.rshop.domain.exception.PrivilegeNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
 import io.swagger.annotations.Api;
@@ -87,11 +89,15 @@ public class RoleController {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> insert(@Valid @RequestBody RoleInputDTO roleInputDTO) {
-		Role role = service.insert(roleInputDTO);
-		RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(roleResponseDTO.getId())
-				.toUri();
-		return ResponseEntity.created(uri).body(roleResponseDTO);
+		try {
+			Role role = service.insert(roleInputDTO);
+			RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
+			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(roleResponseDTO.getId()).toUri();
+			return ResponseEntity.created(uri).body(roleResponseDTO);
+		} catch (PrivilegeNotFoundException e) {
+			throw new BusinessException(e.getMessage(), e);
+		}
 	}
 
 	@PutMapping(value = "/{roleId}", produces = "application/json")
@@ -104,9 +110,13 @@ public class RoleController {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> update(@PathVariable Long roleId, @Valid @RequestBody RoleInputDTO roleInputDTO) {
-		Role role = service.update(roleId, roleInputDTO);
-		RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
-		return ResponseEntity.ok().body(roleResponseDTO);
+		try {
+			Role role = service.update(roleId, roleInputDTO);
+			RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
+			return ResponseEntity.ok().body(roleResponseDTO);
+		} catch (PrivilegeNotFoundException e) {
+			throw new BusinessException(e.getMessage(), e);
+		}
 	}
 
 	@DeleteMapping(value = "/{roleId}")

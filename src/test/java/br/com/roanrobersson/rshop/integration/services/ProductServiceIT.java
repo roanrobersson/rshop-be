@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
@@ -142,7 +142,7 @@ public class ProductServiceIT {
 	@Test
 	public void delete_ThrowResourceNotFoundException_IdDoesNotExist() {
 
-		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+		Assertions.assertThrows(EntityNotFoundException.class, () -> {
 			service.delete(nonExistingId);
 		});
 	}

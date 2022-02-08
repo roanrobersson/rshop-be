@@ -12,15 +12,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.AddressNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
+import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.ForbiddenException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 
 @Service
 public class AddressService {
+
+	private static final String MSG_ADDRESS_IN_USE = "Address with ID %d cannot be removed, because it is in use";
 
 	@Autowired
 	private AddressRepository repository;
@@ -38,12 +41,17 @@ public class AddressService {
 
 	@Transactional(readOnly = true)
 	public Address findById(Long userId, Long addressId) {
-		return findAddressOrThrow(userId, addressId);
+		Address address = repository.findByUserIdAndId(userId, addressId)
+				.orElseThrow(() -> new AddressNotFoundException(addressId));
+		validateAddressOwner(userId, address);
+		return address;
 	}
 
 	@Transactional(readOnly = true)
 	public Address findMain(Long userId) {
-		return findMainAddressOrThrow(userId);
+		Optional<Address> optional = repository.findFirstByUserIdAndMain(userId, true);
+		return optional.orElseThrow(() -> new AddressNotFoundException(
+				String.format("User with the ID %d dont have a main address", userId)));
 	}
 
 	@Transactional
@@ -57,7 +65,7 @@ public class AddressService {
 
 	@Transactional
 	public Address update(Long userId, Long addressId, AddressInputDTO addressInputDTO) {
-		Address address = findAddressOrThrow(userId, addressId);
+		Address address = findById(userId, addressId);
 		mapper.map(addressInputDTO, address);
 		return repository.save(address);
 	}
@@ -66,15 +74,15 @@ public class AddressService {
 		try {
 			repository.deleteById(addressId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Shipping address " + addressId + " not found");
+			throw new AddressNotFoundException(addressId);
 		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException("Integrity violation");
+			throw new EntityInUseException(String.format(MSG_ADDRESS_IN_USE, addressId));
 		}
 	}
 
 	@Transactional
 	public void setMain(Long userId, Long addressId) {
-		Address address = findAddressOrThrow(userId, addressId);
+		Address address = findById(userId, addressId);
 		if (address.getMain())
 			return;
 		unsetMain(userId);
@@ -87,30 +95,17 @@ public class AddressService {
 		Address address;
 		try {
 			address = findMain(userId);
-		} catch (ResourceNotFoundException e) {
+		} catch (EntityNotFoundException e) {
 			return;
 		}
 		address.setMain(false);
 		repository.save(address);
 	}
 
-	private Address findAddressOrThrow(Long userId, Long addressId) {
-		Address address = repository.findByUserIdAndId(userId, addressId)
-				.orElseThrow(() -> new ResourceNotFoundException("Address " + addressId + " not found"));
-		validateAddressOwner(userId, address);
-		return address;
-	}
-
-	private Address findMainAddressOrThrow(Long userId) {
-		Optional<Address> optional = repository.findFirstByUserIdAndMain(userId, true);
-		return optional
-				.orElseThrow(() -> new ResourceNotFoundException("User " + userId + " dont have a main address"));
-	}
-
 	private void validateAddressOwner(Long userId, Address address) {
 		if (address.getUser().getId() != userId) {
-			String msg = "Address " + address.getId() + " does not belong to user " + userId;
-			throw new ForbiddenException(msg);
+			String message = String.format("Address with ID %d does not belong to user", userId);
+			throw new ForbiddenException(message);
 		}
 	}
 }

@@ -19,6 +19,8 @@ import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 
 public class ProductInputValidator implements ConstraintValidator<ProductInputValid, ProductInputDTO> {
 
+	private static final String MSG_PRODUCT_ALREADY_EXISTS = "Product already exists";
+
 	@Autowired
 	private HttpServletRequest request;
 
@@ -45,14 +47,14 @@ public class ProductInputValidator implements ConstraintValidator<ProductInputVa
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("name", "Product already exists"));
+			list.add(new FieldMessage("name", MSG_PRODUCT_ALREADY_EXISTS));
 		}
 
 		// Update
 		if (isUpdateRequest) {
 			Long productId = Long.parseLong(uriVars.get("productId"));
 			if (productId != optional.get().getId()) {
-				list.add(new FieldMessage("name", "Product already exists"));
+				list.add(new FieldMessage("name", MSG_PRODUCT_ALREADY_EXISTS));
 			}
 		}
 

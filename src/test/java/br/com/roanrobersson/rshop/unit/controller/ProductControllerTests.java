@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 import br.com.roanrobersson.rshop.factory.ProductFactory;
@@ -89,18 +89,18 @@ public class ProductControllerTests {
 		
 		// findById
 		when(service.findById(existingId)).thenReturn(product);
-		when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
+		when(service.findById(nonExistingId)).thenThrow(ProductNotFoundException.class);
 	
 		// insert
 		when(service.insert(any())).thenReturn(product);
 		
 		// update
 		when(service.update(eq(existingId), any())).thenReturn(product);
-		when(service.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
+		when(service.update(eq(nonExistingId), any())).thenThrow(ProductNotFoundException.class);
 
 		// delete
 		doNothing().when(service).delete(existingId);
-		doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
+		doThrow(ProductNotFoundException.class).when(service).delete(nonExistingId);
 		doThrow(DatabaseException.class).when(service).delete(dependentId);
 	}
 	
@@ -138,16 +138,15 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void insert_ReturnProductDTO_ValidProductInputDTO() throws Exception{
+	public void insert_ReturnProductDTO_ValidProductInputDTO() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
-		String jsonBody = objectMapper.writeValueAsString(productDTO);
-		ProductDTO expectedProductDTO = ProductFactory.createProductDTO();
-		String expectedJsonBody = objectMapper.writeValueAsString(expectedProductDTO); 
+		String inputJsonBody = objectMapper.writeValueAsString(productInputDTO);
+		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
 				
 		ResultActions result =
 				mockMvc.perform(post("/products")
 					.header("Authorization", "Bearer " + accessToken)
-					.content(jsonBody)
+					.content(inputJsonBody)
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON));
 					
@@ -156,7 +155,7 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void insert_ReturnUnprocessableEntity_NoPositivePrice() throws Exception{
+	public void insert_ReturnBadRequest_NoPositivePrice() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
 		ProductInputDTO invalidProductInputDTO = ProductFactory.createProductInputDTO();
 		invalidProductInputDTO.setPrice(BigDecimal.valueOf(0));
@@ -169,11 +168,11 @@ public class ProductControllerTests {
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON));
 					
-		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(status().isBadRequest());
 	}
 	
 	@Test
-	public void update_ReturnProductDTO_IdExists() throws Exception{
+	public void update_ReturnProductDTO_IdExists() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
 		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
 		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
@@ -190,7 +189,7 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void update_ReturnNotFound_IdDoesNotExist() throws Exception{
+	public void update_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
 		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
 		

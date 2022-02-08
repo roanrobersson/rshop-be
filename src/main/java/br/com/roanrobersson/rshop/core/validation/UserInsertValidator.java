@@ -16,6 +16,8 @@ import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
 
+	private static final String MSG_EMAIL_IN_USE = "Email is already in use";
+
 	@Autowired
 	private UserRepository repository;
 
@@ -31,7 +33,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 		Optional<User> optional = repository.findByEmail(dto.getEmail());
 
 		if (optional.isPresent()) {
-			list.add(new FieldMessage("email", "Email is already in use"));
+			list.add(new FieldMessage("email", MSG_EMAIL_IN_USE));
 		}
 
 		for (FieldMessage e : list) {

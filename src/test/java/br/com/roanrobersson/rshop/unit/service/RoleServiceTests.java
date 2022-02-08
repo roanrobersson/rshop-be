@@ -15,8 +15,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
@@ -86,7 +84,7 @@ public class RoleServiceTests {
 
 		// update
 		when(repository.getById(existingId)).thenReturn(role);
-		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
+		doThrow(RoleNotFoundException.class).when(repository).getById(nonExistingId);
 
 		// delete
 		doNothing().when(repository).deleteById(existingId);
@@ -117,9 +115,9 @@ public class RoleServiceTests {
 	}
 
 	@Test
-	public void findById_ThrowResourceNotFoundException_IdDoesNotExist() {
+	public void findById_ThrowRoleNotFoundException_IdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(RoleNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
 	}
@@ -141,9 +139,9 @@ public class RoleServiceTests {
 	}
 
 	@Test
-	public void update_ThrowResourceNotFoundException_IdDoesNotExist() {
+	public void update_ThrowRoleNotFoundException_IdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(RoleNotFoundException.class, () -> {
 			service.update(nonExistingId, roleInputDTO);
 		});
 	}
@@ -159,9 +157,9 @@ public class RoleServiceTests {
 	}
 
 	@Test
-	public void delete_ThrowResourceNotFoundException_IdDoesNotExist() {
+	public void delete_ThrowRoleNotFoundException_IdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(RoleNotFoundException.class, () -> {
 			service.delete(nonExistingId);
 		});
 

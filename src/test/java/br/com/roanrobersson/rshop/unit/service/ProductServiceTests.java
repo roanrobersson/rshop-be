@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -16,8 +16,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
-import br.com.roanrobersson.rshop.domain.exception.ResourceNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
@@ -80,7 +78,7 @@ public class ProductServiceTests {
 
 		// update
 		when(repository.getById(existingId)).thenReturn(product);
-		doThrow(EntityNotFoundException.class).when(repository).getById(nonExistingId);
+		doThrow(ProductNotFoundException.class).when(repository).getById(nonExistingId);
 
 		// delete
 		doNothing().when(repository).deleteById(existingId);
@@ -110,9 +108,9 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void findByIdShouldShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+	public void findByIdShouldShouldThrowProductNotFoundExceptionWhenIdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(ProductNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
 	}
@@ -134,9 +132,9 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void updateShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+	public void updateShouldThrowProductNotFoundExceptionWhenIdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(ProductNotFoundException.class, () -> {
 			service.update(nonExistingId, productInputDTO);
 		});
 	}
@@ -152,9 +150,9 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+	public void deleteShouldThrowProductNotFoundExceptionWhenIdDoesNotExist() {
 
-		assertThrows(ResourceNotFoundException.class, () -> {
+		assertThrows(ProductNotFoundException.class, () -> {
 			service.delete(nonExistingId);
 		});
 
