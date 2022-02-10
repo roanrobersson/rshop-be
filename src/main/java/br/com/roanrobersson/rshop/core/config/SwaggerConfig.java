@@ -20,12 +20,12 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors
-				.withClassAnnotation(RestController.class))
-				.paths(PathSelectors.any())
-				.build()
+		return new Docket(DocumentationType.SWAGGER_2)
 				.apiInfo(apiInfo())
+			    .select()
+				.apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+				.paths(PathSelectors.any())
+				.build()		
 				.useDefaultResponseMessages(false)
 				.tags(new Tag("Address", ""), 
 						new Tag("Category", ""), 
@@ -39,11 +39,11 @@ public class SwaggerConfig {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
 				.title("rShop API")
-				.description("Project in development")
-				.version("1.0.0")
+				.description("Project in development").version("1.0.0")
 				.license("MIT License")
 				.licenseUrl("https://mit-license.org/")
-				.contact(new Contact("Roan Oliveira", "https://www.linkedin.com/in/roanoliveira", "roanrobersson@gmail.com"))
+				.contact(new Contact("Roan Oliveira",
+						"https://www.linkedin.com/in/roanoliveira", "roanrobersson@gmail.com"))
 				.build();
 	}
 }
