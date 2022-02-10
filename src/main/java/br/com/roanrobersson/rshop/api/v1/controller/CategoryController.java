@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/categories")
+@RequestMapping(value = "/v1/categories")
 @Api(tags = "Category")
 public class CategoryController {
 

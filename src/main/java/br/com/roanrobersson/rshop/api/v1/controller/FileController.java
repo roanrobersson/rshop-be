@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/files")
+@RequestMapping(value = "/v1/files")
 @Api(tags = "File")
 public class FileController {
 

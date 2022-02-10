@@ -60,7 +60,7 @@ public class ProductControllerIT {
 	public void findAllShouldReturnSortedPageWhenSortByName() throws Exception {
 		
 		ResultActions result = 
-				mockMvc.perform(get("/products?page=0&size=12&sort=name,asc")
+				mockMvc.perform(get("/v1/products?page=0&size=12&sort=name,asc")
 					.accept(MediaType.APPLICATION_JSON));
 		
 		result.andExpect(status().isOk());
@@ -79,7 +79,7 @@ public class ProductControllerIT {
 		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
 		
 		ResultActions result = 
-				mockMvc.perform(put("/products/{id}", existingId)
+				mockMvc.perform(put("/v1/products/{id}", existingId)
 					.header("Authorization", "Bearer " + accessToken)
 					.content(inputJsonBody)
 					.contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +95,7 @@ public class ProductControllerIT {
 		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
 		
 		ResultActions result = 
-				mockMvc.perform(put("/products/{id}", nonExistingId)
+				mockMvc.perform(put("/v1/products/{id}", nonExistingId)
 					.header("Authorization", "Bearer " + accessToken)
 					.content(jsonBody)
 					.contentType(MediaType.APPLICATION_JSON)

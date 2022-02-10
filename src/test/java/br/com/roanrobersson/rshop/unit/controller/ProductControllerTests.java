@@ -49,19 +49,19 @@ public class ProductControllerTests {
 
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@MockBean
 	private ProductService service;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	@Value("${security.oauth2.client.client-id}")
 	private String clientId;
-	
+
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
-	
+
 	private Long existingId;
 	private Long nonExistingId;
 	private Long dependentId;
@@ -71,7 +71,7 @@ public class ProductControllerTests {
 	private PageImpl<Product> page;
 	private String username;
 	private String password;
-	
+
 	@BeforeEach
 	void setUp() throws Exception {
 		existingId = 1L;
@@ -83,14 +83,14 @@ public class ProductControllerTests {
 		page = new PageImpl<>(List.of(product));
 		username = "administrador@gmail.com";
 		password = "12345678";
-		
+
 		// findAll
 		when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
-		
+
 		// findById
 		when(service.findById(existingId)).thenReturn(product);
 		when(service.findById(nonExistingId)).thenThrow(ProductNotFoundException.class);
-	
+
 		// insert
 		when(service.insert(any())).thenReturn(product);
 		
@@ -106,68 +106,68 @@ public class ProductControllerTests {
 	
 	@Test
 	public void findAll_ReturnPage() throws Exception {
-		
+
 		ResultActions result =
-			mockMvc.perform(get("/products")
+			mockMvc.perform(get("/v1/products")
 				.accept(MediaType.APPLICATION_JSON));
 				
 		result.andExpect(status().isOk());
 		result.andExpect(jsonPath("$.content").exists());
 	}
-	
+
 	@Test
 	public void findById_ReturnProduct_IdExist() throws Exception {
-		
+
 		ResultActions result =
-			mockMvc.perform(get("/products/{id}", existingId)
+			mockMvc.perform(get("/v1/products/{id}", existingId)
 				.accept(MediaType.APPLICATION_JSON));
-				
+	
 		result.andExpect(status().isOk());
 		result.andExpect(jsonPath("$.id").exists());
 		result.andExpect(jsonPath("$.id").value(existingId));
 	}
-	
+
 	@Test
 	public void findById_ReturnNotFound_IdDoesNotExist() throws Exception {
-		
+
 		ResultActions result =
-				mockMvc.perform(get("/products/{id}", nonExistingId)
+				mockMvc.perform(get("/v1/products/{id}", nonExistingId)
 					.accept(MediaType.APPLICATION_JSON));
-					
+			
 		result.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void insert_ReturnProductDTO_ValidProductInputDTO() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
 		String inputJsonBody = objectMapper.writeValueAsString(productInputDTO);
 		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
-				
+	
 		ResultActions result =
-				mockMvc.perform(post("/products")
+				mockMvc.perform(post("/v1/products")
 					.header("Authorization", "Bearer " + accessToken)
 					.content(inputJsonBody)
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON));
-					
+		
 		result.andExpect(status().isCreated());
 		result.andExpect(content().json(expectedJsonBody));
 	}
-	
+
 	@Test
 	public void insert_ReturnBadRequest_NoPositivePrice() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
 		ProductInputDTO invalidProductInputDTO = ProductFactory.createProductInputDTO();
 		invalidProductInputDTO.setPrice(BigDecimal.valueOf(0));
 		String jsonBody = objectMapper.writeValueAsString(invalidProductInputDTO);
-		
+
 		ResultActions result =
-				mockMvc.perform(post("/products")
+				mockMvc.perform(post("/v1/products")
 					.header("Authorization", "Bearer " + accessToken)
 					.content(jsonBody)
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON));
-					
+		
 		result.andExpect(status().isBadRequest());
 	}
 	
@@ -176,64 +176,64 @@ public class ProductControllerTests {
 		String accessToken = obtainAccessToken(username, password);
 		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
 		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
-				
+	
 		ResultActions result =
-				mockMvc.perform(put("/products/{id}", existingId)
+				mockMvc.perform(put("/v1/products/{id}", existingId)
 					.header("Authorization", "Bearer " + accessToken)
 					.content(jsonBody)
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON));
-					
+		
 		result.andExpect(status().isOk());
 		result.andExpect(content().json(expectedJsonBody));
 	}
-	
+
 	@Test
 	public void update_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
 		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
-		
+
 		ResultActions result =
-				mockMvc.perform(put("/products/{id}", nonExistingId)
+				mockMvc.perform(put("/v1/products/{id}", nonExistingId)
 					.header("Authorization", "Bearer " + accessToken)
 					.content(jsonBody)
 					.contentType(MediaType.APPLICATION_JSON)
 					.accept(MediaType.APPLICATION_JSON));
-					
+		
 		result.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void delete_ReturnNoContent_IdExist() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
-		
+
 		ResultActions result =
-			mockMvc.perform(delete("/products/{id}", existingId)
+			mockMvc.perform(delete("/v1/products/{id}", existingId)
 				.header("Authorization", "Bearer " + accessToken)
 				.accept(MediaType.APPLICATION_JSON));
-				
+	
 		result.andExpect(status().isNoContent());
 	}
-	
+
 	@Test
 	public void delete_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
-		
+
 		ResultActions result =
-				mockMvc.perform(delete("/products/{id}", nonExistingId)
+				mockMvc.perform(delete("/v1/products/{id}", nonExistingId)
 					.header("Authorization", "Bearer " + accessToken)
 					.accept(MediaType.APPLICATION_JSON));
-					
+	
 		result.andExpect(status().isNotFound());
 	}
-	
+
 	private String obtainAccessToken(String username, String password) throws Exception {
 	    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 	    params.add("grant_type", "password");
 	    params.add("client_id", clientId);
 	    params.add("username", username);
 	    params.add("password", password);
-	 
+
 	    ResultActions result 
 	    	= mockMvc.perform(post("/oauth/token")
 	    		.params(params)
@@ -241,7 +241,7 @@ public class ProductControllerTests {
 	    		.accept("application/json;charset=UTF-8"))
 	        	.andExpect(status().isOk())
 	        	.andExpect(content().contentType("application/json;charset=UTF-8"));
-	 
+
 	    String resultString = result.andReturn().getResponse().getContentAsString();
 	 
 	    JacksonJsonParser jsonParser = new JacksonJsonParser();

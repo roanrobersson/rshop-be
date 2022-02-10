@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/users/{userId}/roles")
+@RequestMapping(value = "/v1/users/{userId}/roles")
 @Api(tags = "User Role")
 public class UserRoleController {
 

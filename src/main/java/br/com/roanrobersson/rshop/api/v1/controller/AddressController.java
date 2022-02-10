@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/users/{userId}/addresses")
+@RequestMapping(value = "/v1/users/{userId}/addresses")
 @Api(tags = "Address")
 public class AddressController {
 
