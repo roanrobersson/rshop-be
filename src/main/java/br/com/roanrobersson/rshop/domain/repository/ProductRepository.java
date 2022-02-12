@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.domain.repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,14 +14,14 @@ import org.springframework.stereotype.Repository;
 import br.com.roanrobersson.rshop.domain.model.Product;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, UUID> {
 	
 	@Query("SELECT DISTINCT obj " 
 			+ "FROM Product obj " 
 			+ "INNER JOIN obj.categories cats "
 			+ "WHERE (COALESCE(:categories) IS NULL OR cats.id IN :categories) "
 			+ "AND (LOWER(obj.name) LIKE LOWER(CONCAT('%',:name,'%')) )")
-	Page<Product> search(Set<Long> categories, String name, Pageable page);
+	Page<Product> search(Set<UUID> categories, String name, Pageable page);
 
 	@Query("SELECT obj " 
 			+ "FROM Product obj " 
@@ -32,7 +33,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 			+ "FROM Product obj " 
 			+ "LEFT JOIN FETCH obj.categories " 
 			+ "WHERE obj.id = :id")
-	Optional<Product> findByIdWithCategories(Long id);
+	Optional<Product> findByIdWithCategories(UUID id);
 	
 	Optional<Product> findByName(String name);
+
+	void deleteById(UUID productId);
 }

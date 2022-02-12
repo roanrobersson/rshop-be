@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.api.v1.dto.input;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
@@ -32,8 +33,8 @@ public class ProductInputDTO {
 
 	@NotEmpty(message = "Must have a set of categories")
 	@Builder.Default
-	@ApiModelProperty(example = "[2, 4, 9]", required = true)
-	private Set<Long> categories = new HashSet<>();
+	@ApiModelProperty(example = "[821e3c677f2246af978cb6269cb15387, d16c83fe3a2e42b697b4503b203647f6]", required = true)
+	private Set<UUID> categories = new HashSet<>();
 
 	@NotBlank(message = "Required field")
 	@Size(min = 3, max = 127, message = "Must be between 8 and 127 characters")

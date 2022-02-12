@@ -52,8 +52,7 @@ public class ProductInputValidator implements ConstraintValidator<ProductInputVa
 
 		// Update
 		if (isUpdateRequest) {
-			Long productId = Long.parseLong(uriVars.get("productId"));
-			if (productId != optional.get().getId()) {
+			if (uriVars.get("productId") != optional.get().getId().toString()) {
 				list.add(new FieldMessage("name", MSG_PRODUCT_ALREADY_EXISTS));
 			}
 		}

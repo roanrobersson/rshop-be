@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.api.v1.dto;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.validation.constraints.Size;
 
@@ -24,16 +25,16 @@ import lombok.ToString;
 @ToString(of = { "id", "firstName" })
 public class UserDTO {
 
-	@ApiModelProperty(example = "44")
-	private Long id;
+	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	private UUID id;
 
 	@Builder.Default
 	@ApiModelProperty(example = "[2, 4, 6]")
-	private Set<Long> roles = new HashSet<>();
+	private Set<UUID> roles = new HashSet<>();
 
 	@Builder.Default
 	@ApiModelProperty(example = "[4, 5, 6, 9, 13, 34]")
-	private Set<Long> privileges = new HashSet<>();
+	private Set<UUID> privileges = new HashSet<>();
 
 	@Size(min = 2, max = 50, message = "Must be between 2 and 50 characters")
 	private String firstName;

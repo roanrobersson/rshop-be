@@ -6,12 +6,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,6 +33,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
+@Table(name = "user", schema = "public")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,9 +44,9 @@ public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	@EqualsAndHashCode.Include
-	private Long id;
+	private UUID id;
 
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -91,9 +93,9 @@ public class User implements UserDetails {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public User(Long id, Set<Role> roles, List<Address> addresses, String firstName, String name,
-			Instant birthDate, String cpf, String rg, String email, String password, String primaryTelephone,
-			String secondaryTelephone, Instant verifiedAt, Instant createdAt, Instant updatedAt) {
+	public User(UUID id, Set<Role> roles, List<Address> addresses, String firstName, String name, Instant birthDate,
+			String cpf, String rg, String email, String password, String primaryTelephone, String secondaryTelephone,
+			Instant verifiedAt, Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.roles.addAll(roles);
 		this.firstName = firstName;
@@ -108,6 +110,7 @@ public class User implements UserDetails {
 		this.verifiedAt = verifiedAt;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+
 	}
 
 	@PrePersist

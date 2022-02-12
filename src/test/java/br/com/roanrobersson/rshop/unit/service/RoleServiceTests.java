@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -14,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,9 +54,9 @@ public class RoleServiceTests {
 	@Mock
 	private RoleMapper mapper;
 
-	private Long existingId;
-	private Long nonExistingId;
-	private Long dependentId;
+	private UUID existingId;
+	private UUID nonExistingId;
+	private UUID dependentId;
 	private Role role;
 	private List<Role> roles;
 	private RoleInputDTO roleInputDTO;
@@ -64,9 +64,9 @@ public class RoleServiceTests {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		existingId = 1L;
-		nonExistingId = Long.MAX_VALUE;
-		dependentId = 3L;
+		existingId = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
+		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		dependentId = UUID.fromString("5e0b121c-9f12-4fd3-a7e6-179b5007149a");
 		role = RoleFactory.createRole();
 		roles = List.of(role);
 		roleInputDTO = RoleFactory.createRoleInputDTO();
@@ -92,7 +92,7 @@ public class RoleServiceTests {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
 		
 		// PrivilegeService
-		when(privilegeService.findById(anyLong())).thenReturn(privilege);
+		when(privilegeService.findById(any(UUID.class))).thenReturn(privilege);
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import br.com.roanrobersson.rshop.domain.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
 	@Query("SELECT obj " 
 			+ "FROM User obj " 
@@ -24,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "LEFT JOIN FETCH obj.roles roles "
 			+ "LEFT JOIN FETCH roles.privileges "
 			+ "WHERE obj.id = :id")
-	Optional<User> findByIdWithRolesAndPrivileges(Long id);
+	Optional<User> findByIdWithRolesAndPrivileges(UUID id);
 	
 	Optional<User> findByEmail(String email);
 	
@@ -34,4 +35,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "LEFT JOIN FETCH roles.privileges "
 			+ "WHERE obj.email = :email")
 	Optional<User> findByEmailWithRolesAndPrivileges(String email);
+
+	void deleteById(UUID userId);
 }

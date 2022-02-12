@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.mapper;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -54,18 +55,18 @@ public abstract class UserMapper {
 	public abstract void update(User user, @MappingTarget UserUpdateDTO userUpdateDTO);
 
 	@Named("rolesToRolesIds")
-	protected Set<Long> rolesToRolesIds(Set<Role> roles) {
+	protected Set<UUID> rolesToRolesIds(Set<Role> roles) {
 		return roles.stream().map(x -> x.getId()).collect(Collectors.toSet());
 	}
 
 	@Named("rolesToPrivilegesIds")
-	protected Set<Long> rolesToPrivilegesIds(Set<Role> roles) {
+	protected Set<UUID> rolesToPrivilegesIds(Set<Role> roles) {
 		return roles.stream().map(x -> x.getId()).collect(Collectors.toSet());
 	}
 
-	protected Set<Role> rolesIdsToRoles(Set<Long> rolesIds) {
+	protected Set<Role> rolesIdsToRoles(Set<UUID> rolesIds) {
 		Set<Role> roles = new HashSet<>();
-		for (Long id : rolesIds) {
+		for (UUID id : rolesIds) {
 			Role role = roleService.findById(id);
 			roles.add(role);
 		}

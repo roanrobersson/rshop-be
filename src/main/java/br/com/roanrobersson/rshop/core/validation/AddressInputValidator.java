@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintValidator;
@@ -40,7 +41,7 @@ public class AddressInputValidator implements ConstraintValidator<AddressInputVa
 
 		List<FieldMessage> list = new ArrayList<>();
 
-		Long userId = Long.parseLong(uriVars.get("userId"));
+		UUID userId = UUID.fromString(uriVars.get("userId"));
 		Optional<Address> optional = repository.findByUserIdAndNick(userId, dto.getNick());
 
 		if (optional.isEmpty())
@@ -53,8 +54,7 @@ public class AddressInputValidator implements ConstraintValidator<AddressInputVa
 
 		// Update
 		if (isUpdateRequest) {
-			Long addressId = Long.parseLong(uriVars.get("addressId"));
-			if (addressId != optional.get().getId()) {
+			if (uriVars.get("addressId") != optional.get().getId().toString()) {
 				list.add(new FieldMessage("nick", MSG_ADDRESS_ALREADY_EXISTS));
 			}
 		}

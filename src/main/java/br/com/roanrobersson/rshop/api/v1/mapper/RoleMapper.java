@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.mapper;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -34,13 +35,13 @@ public abstract class RoleMapper {
 
 	public abstract void update(Role role, @MappingTarget RoleInputDTO roleInputDTO);
 
-	protected Set<Long> privilegesToPrivilegesIds(Set<Privilege> privileges) {
+	protected Set<UUID> privilegesToPrivilegesIds(Set<Privilege> privileges) {
 		return privileges.stream().map(x -> x.getId()).collect(Collectors.toSet());
 	}
 
-	protected Set<Privilege> privilegesIdsToPrivileges(Set<Long> privilegesIds) {
+	protected Set<Privilege> privilegesIdsToPrivileges(Set<UUID> privilegesIds) {
 		Set<Privilege> privileges = new HashSet<>();
-		for (Long id : privilegesIds) {
+		for (UUID id : privilegesIds) {
 			Privilege privilege = privilegeService.findById(id);
 			privileges.add(privilege);
 		}

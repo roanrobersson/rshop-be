@@ -52,8 +52,7 @@ public class RoleInputValidator implements ConstraintValidator<RoleInputValid, R
 
 		// Update
 		if (isUpdateRequest) {
-			Long roleId = Long.valueOf(uriVars.get("roleId"));
-			if (roleId != optional.get().getId()) {
+			if (uriVars.get("roleId") != optional.get().getId().toString()) {
 				list.add(new FieldMessage("name", MSG_ROLE_ALREADY_EXISTS));
 			}
 		}

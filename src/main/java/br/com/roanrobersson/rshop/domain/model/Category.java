@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
@@ -32,9 +32,9 @@ public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	@EqualsAndHashCode.Include
-	private Long id;
+	private UUID id;
 
 	@ManyToMany(mappedBy = "categories")
 	@Setter(value = AccessLevel.NONE)
@@ -49,7 +49,7 @@ public class Category implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Category(long id, String name, Instant createdAt, Instant updatedAt) {
+	public Category(UUID id, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.name = name;
 		this.createdAt = createdAt;

@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -35,9 +35,9 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	@EqualsAndHashCode.Include
-	private Long id;
+	private UUID id;
 
 	@ManyToMany
 	@JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
@@ -62,7 +62,7 @@ public class Product implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Product(Long id, Set<Category> categories, String name, String description, BigDecimal price, String imgUrl,
+	public Product(UUID id, Set<Category> categories, String name, String description, BigDecimal price, String imgUrl,
 			Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.categories.addAll(categories);

@@ -52,8 +52,7 @@ public class CategoryInputValidator implements ConstraintValidator<CategoryInput
 
 		// Update
 		if (isUpdateRequest) {
-			long categoryId = Long.parseLong(uriVars.get("categoryId"));
-			if (categoryId != optional.get().getId()) {
+			if (uriVars.get("categoryId") != optional.get().getId().toString()) {
 				list.add(new FieldMessage("name", MSG_CATEGORY_ALREADY_EXISTS));
 			}
 		}

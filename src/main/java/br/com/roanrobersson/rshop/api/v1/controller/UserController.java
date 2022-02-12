@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -73,7 +74,7 @@ public class UserController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<UserDTO> findById(@PathVariable Long userId) {
+	public ResponseEntity<UserDTO> findById(@PathVariable UUID userId) {
 		User user = service.findById(userId);
 		UserDTO userResponseDTO = new UserDTO();
 		mapper.update(user, userResponseDTO);
@@ -103,7 +104,7 @@ public class UserController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<UserDTO> update(@PathVariable Long userId, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
+	public ResponseEntity<UserDTO> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
 		User user = service.update(userId, userUpdateDTO);
 		UserDTO userResponseDTO = new UserDTO();
 		mapper.update(user, userResponseDTO);
@@ -118,7 +119,7 @@ public class UserController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> delete(@PathVariable Long userId) {
+	public ResponseEntity<Void> delete(@PathVariable UUID userId) {
 		service.delete(userId);
 		return ResponseEntity.noContent().build();
 	}
@@ -131,7 +132,7 @@ public class UserController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> changePassword(@PathVariable Long userId,
+	public ResponseEntity<Void> changePassword(@PathVariable UUID userId,
 			@Valid @RequestBody UserChangePasswordInputDTO userChangePasswordDTO) {
 		service.changePassword(userId, userChangePasswordDTO);
 		return ResponseEntity.noContent().build();

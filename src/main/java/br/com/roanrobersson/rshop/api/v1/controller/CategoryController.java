@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -70,7 +71,7 @@ public class CategoryController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
-	public ResponseEntity<CategoryDTO> findById(@PathVariable Long categoryId) {
+	public ResponseEntity<CategoryDTO> findById(@PathVariable UUID categoryId) {
 		Category category = service.findById(categoryId);
 		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
 		return ResponseEntity.ok().body(categoryResponseDTO);
@@ -101,7 +102,7 @@ public class CategoryController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error")})
-	public ResponseEntity<CategoryDTO> update(@PathVariable Long categoryId,
+	public ResponseEntity<CategoryDTO> update(@PathVariable UUID categoryId,
 			@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
 		Category category = service.update(categoryId, categoryInputDTO);
 		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
@@ -116,7 +117,7 @@ public class CategoryController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
-	public ResponseEntity<Void> delete(@PathVariable Long categoryId) {
+	public ResponseEntity<Void> delete(@PathVariable UUID categoryId) {
 		service.delete(categoryId);
 		return ResponseEntity.noContent().build();
 	}

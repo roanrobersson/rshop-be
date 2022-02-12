@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.unit.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -62,9 +65,9 @@ public class ProductControllerTests {
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
 
-	private Long existingId;
-	private Long nonExistingId;
-	private Long dependentId;
+	private UUID existingId;
+	private UUID nonExistingId;
+	private UUID dependentId;
 	private Product product;
 	private ProductInputDTO productInputDTO;
 	private ProductDTO productDTO;
@@ -74,9 +77,9 @@ public class ProductControllerTests {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		existingId = 1L;
-		nonExistingId = 2L;
-		dependentId = 3L;
+		existingId = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		dependentId = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
 		product = ProductFactory.createProduct();
 		productInputDTO = ProductFactory.createProductInputDTO();
 		productDTO = ProductFactory.createProductDTO();
@@ -85,18 +88,18 @@ public class ProductControllerTests {
 		password = "12345678";
 
 		// findAll
-		when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
+		when(service.findAllPaged(anySet(), anyString(), any(PageRequest.class))).thenReturn(page);
 
 		// findById
 		when(service.findById(existingId)).thenReturn(product);
 		when(service.findById(nonExistingId)).thenThrow(ProductNotFoundException.class);
 
 		// insert
-		when(service.insert(any())).thenReturn(product);
+		when(service.insert(any(ProductInputDTO.class))).thenReturn(product);
 		
 		// update
-		when(service.update(eq(existingId), any())).thenReturn(product);
-		when(service.update(eq(nonExistingId), any())).thenThrow(ProductNotFoundException.class);
+		when(service.update(eq(existingId), any(ProductInputDTO.class))).thenReturn(product);
+		when(service.update(eq(nonExistingId), any(ProductInputDTO.class))).thenThrow(ProductNotFoundException.class);
 
 		// delete
 		doNothing().when(service).delete(existingId);
@@ -117,14 +120,14 @@ public class ProductControllerTests {
 
 	@Test
 	public void findById_ReturnProduct_IdExist() throws Exception {
+		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
 
 		ResultActions result =
 			mockMvc.perform(get("/v1/products/{id}", existingId)
 				.accept(MediaType.APPLICATION_JSON));
 	
 		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$.id").exists());
-		result.andExpect(jsonPath("$.id").value(existingId));
+		result.andExpect(content().json(expectedJsonBody));
 	}
 
 	@Test

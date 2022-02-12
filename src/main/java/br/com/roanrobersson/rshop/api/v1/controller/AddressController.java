@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -54,7 +55,7 @@ public class AddressController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<List<AddressDTO>> findAllByUserId(@PathVariable Long userId,
+	public ResponseEntity<List<AddressDTO>> findAllByUserId(@PathVariable UUID userId,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderby", defaultValue = "nick") String orderBy) {
 		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
@@ -72,7 +73,7 @@ public class AddressController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> findById(@PathVariable Long userId, @PathVariable Long addressId) {
+	public ResponseEntity<AddressDTO> findById(@PathVariable UUID userId, @PathVariable UUID addressId) {
 		Address address = service.findById(userId, addressId);
 		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
 		return ResponseEntity.ok().body(addressResponseDTO);
@@ -86,7 +87,7 @@ public class AddressController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> findMain(@PathVariable Long userId) {
+	public ResponseEntity<AddressDTO> findMain(@PathVariable UUID userId) {
 		Address address = service.findMain(userId);
 		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
 		return ResponseEntity.ok().body(addressResponseDTO);
@@ -101,7 +102,7 @@ public class AddressController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> insert(@PathVariable Long userId,
+	public ResponseEntity<AddressDTO> insert(@PathVariable UUID userId,
 			@Valid @RequestBody AddressInputDTO addressInputDTO) {
 		Address address = service.insert(userId, addressInputDTO);
 		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
@@ -119,7 +120,7 @@ public class AddressController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> update(@PathVariable Long userId, @PathVariable Long addressId,
+	public ResponseEntity<AddressDTO> update(@PathVariable UUID userId, @PathVariable UUID addressId,
 			@Valid @RequestBody AddressInputDTO addressInputDTO) {
 		Address address = service.update(userId, addressId, addressInputDTO);
 		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
@@ -134,7 +135,7 @@ public class AddressController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long addressId) {
+	public ResponseEntity<Void> delete(@PathVariable UUID userId, @PathVariable UUID addressId) {
 		service.delete(userId, addressId);
 		return ResponseEntity.noContent().build();
 	}
@@ -147,7 +148,7 @@ public class AddressController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> setMain(@PathVariable Long userId, @PathVariable Long addressId) {
+	public ResponseEntity<Void> setMain(@PathVariable UUID userId, @PathVariable UUID addressId) {
 		service.setMain(userId, addressId);
 		return ResponseEntity.noContent().build();
 	}
@@ -160,7 +161,7 @@ public class AddressController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> unsetMain(@PathVariable Long userId) {
+	public ResponseEntity<Void> unsetMain(@PathVariable UUID userId) {
 		service.unsetMain(userId);
 		return ResponseEntity.noContent().build();
 	}

@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.factory;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -15,12 +16,14 @@ import br.com.roanrobersson.rshop.domain.model.User;
 public class UserFactory {
 
 	private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private static Instant instant = Instant.parse("2020-10-20T03:00:00Z");
+	private static UUID id = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
+	private static String password = passwordEncoder.encode("a3g&3Pd#");
 
 	public static User createUser() {
 		Set<Role> roles = Set.of(RoleFactory.createRole());
-		return new User(1L, roles, null, "Pedro", "Pedro Oliveira", Instant.now(), "86213939059", "355144724",
-				"kevinbrown@gmail.com", passwordEncoder.encode("a3g&3Pd#"), "57991200038", null, Instant.now(),
-				Instant.now(), Instant.now());
+		return new User(id, roles, null, "Pedro", "Pedro Oliveira", instant, "86213939059", "355144724",
+				"kevinbrown@gmail.com", password, "57991200038", null, instant, instant, instant);
 	}
 
 	public static UserDTO createUserDTO() {

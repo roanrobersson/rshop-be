@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,8 @@ public class UserRoleController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Set<Long>> findAll(@PathVariable Long userId) {
-		Set<Long> rolesIds = service.getRoles(userId).stream().map(Role::getId).collect(Collectors.toSet());
+	public ResponseEntity<Set<UUID>> findAll(@PathVariable UUID userId) {
+		Set<UUID> rolesIds = service.getRoles(userId).stream().map(Role::getId).collect(Collectors.toSet());
 		return ResponseEntity.ok().body(rolesIds);
 	}
 
@@ -51,7 +52,7 @@ public class UserRoleController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> grant(@PathVariable Long userId, @PathVariable Long roleId) {
+	public ResponseEntity<Void> grant(@PathVariable UUID userId, @PathVariable UUID roleId) {
 		service.grantRole(userId, roleId);
 		return ResponseEntity.noContent().build();
 	}
@@ -64,7 +65,7 @@ public class UserRoleController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> revoke(@PathVariable Long userId, @PathVariable Long roleId) {
+	public ResponseEntity<Void> revoke(@PathVariable UUID userId, @PathVariable UUID roleId) {
 		service.revokeRole(userId, roleId);
 		return ResponseEntity.noContent().build();
 	}

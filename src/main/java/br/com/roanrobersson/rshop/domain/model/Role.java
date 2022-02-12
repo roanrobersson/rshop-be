@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -42,9 +42,9 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	@EqualsAndHashCode.Include
-	private Long id;
+	private UUID id;
 
 	@ManyToMany
 	@JoinTable(name = "role_privilege", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id"))
@@ -60,8 +60,9 @@ public class Role implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Role(Long id, String name, Instant createdAt, Instant updatedAt) {
+	public Role(UUID id, Set<Privilege> privileges, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
+		this.privileges.addAll(privileges);
 		this.name = name;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;

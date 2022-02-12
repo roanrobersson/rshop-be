@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.mapper;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -34,13 +35,13 @@ public abstract class ProductMapper {
 
 	public abstract void update(Product product, @MappingTarget ProductInputDTO roleInputDTO);
 
-	protected Set<Long> categoriesToCategoriesIds(Set<Category> categories) {
+	protected Set<UUID> categoriesToCategoriesIds(Set<Category> categories) {
 		return categories.stream().map(x -> x.getId()).collect(Collectors.toSet());
 	}
 
-	protected Set<Category> categoriesIdsToCategories(Set<Long> categoriesIds) {
+	protected Set<Category> categoriesIdsToCategories(Set<UUID> categoriesIds) {
 		Set<Category> categories = new HashSet<>();
-		for (Long id : categoriesIds) {
+		for (UUID id : categoriesIds) {
 			Category category = categoryService.findById(id);
 			categories.add(category);
 		}

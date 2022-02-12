@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +39,8 @@ public class ProductControllerIT {
 	@Autowired
 	private TokenUtil tokenUtil;
 	
-	private Long existingId;
-	private Long nonExistingId;
+	private UUID existingId;
+	private UUID nonExistingId;
 	private Long countTotalProducts;
 	private String username;
 	private String password;
@@ -47,8 +49,8 @@ public class ProductControllerIT {
 	
 	@BeforeEach
 	void setUp() throws Exception {
-		existingId = 1L;
-		nonExistingId = 1000L;
+		existingId = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
 		countTotalProducts = 25L;
 		username = "administrador@gmail.com";
 		password = "12345678";

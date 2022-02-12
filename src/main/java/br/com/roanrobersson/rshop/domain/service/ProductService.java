@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +21,7 @@ import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 @Service
 public class ProductService {
 
-	private static final String MSG_PRODUCT_IN_USE = "Product with ID %d cannot be removed, because it is in use";
+	private static final String MSG_PRODUCT_IN_USE = "Product with ID %s cannot be removed, because it is in use";
 	
 	@Autowired
 	private ProductRepository repository;
@@ -29,7 +30,7 @@ public class ProductService {
 	private ProductMapper mapper;
 
 	@Transactional(readOnly = true)
-	public Page<Product> findAllPaged(Set<Long> categoriesIds, String name, PageRequest pageRequest) {
+	public Page<Product> findAllPaged(Set<UUID> categoriesIds, String name, PageRequest pageRequest) {
 		if (categoriesIds.size() == 0)
 			categoriesIds = null;
 		Page<Product> productPage = repository.search(categoriesIds, name, pageRequest);
@@ -38,7 +39,7 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public Product findById(Long productId) {
+	public Product findById(UUID productId) {
 		return repository.findByIdWithCategories(productId)
 				.orElseThrow(() -> new ProductNotFoundException(productId));
 	}
@@ -50,13 +51,13 @@ public class ProductService {
 	}
 
 	@Transactional
-	public Product update(Long productId, ProductInputDTO productInputDTO) {
+	public Product update(UUID productId, ProductInputDTO productInputDTO) {
 		Product product = findById(productId);
 		mapper.update(productInputDTO, product);
 		return repository.save(product);
 	}
 
-	public void delete(Long productId) {
+	public void delete(UUID productId) {
 		try {
 			repository.deleteById(productId);
 		} catch (EmptyResultDataAccessException e) {

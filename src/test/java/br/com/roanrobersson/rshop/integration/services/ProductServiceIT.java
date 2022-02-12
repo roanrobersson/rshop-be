@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.integration.services;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,18 +28,20 @@ public class ProductServiceIT {
 	@Autowired
 	private ProductRepository repository;
 
-	private long existingId;
-	private long nonExistingId;
+	private UUID existingId;
+	private UUID nonExistingId;
+	private UUID category3Id;
 	private long countTotalProducts;
 	private long countPCGamerProducts;
 	private long countCategoryThreeProducts;
 	private PageRequest pageRequest;
-	private Set<Long> emptySet;
+	private Set<UUID> emptySet;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		existingId = 1L;
-		nonExistingId = Long.MAX_VALUE;
+		existingId = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		category3Id = UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11");
 		countTotalProducts = 25L;
 		countPCGamerProducts = 21L;
 		countCategoryThreeProducts = 23L;
@@ -58,7 +61,7 @@ public class ProductServiceIT {
 	@Test
 	public void findAllPaged_ReturnOnlySelectedCategory_CategoryInformed() {
 
-		Page<Product> result = service.findAllPaged(Set.of(3L), "", pageRequest);
+		Page<Product> result = service.findAllPaged(Set.of(category3Id), "", pageRequest);
 
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(countCategoryThreeProducts, result.getTotalElements());

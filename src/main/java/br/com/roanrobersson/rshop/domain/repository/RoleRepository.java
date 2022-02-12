@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import br.com.roanrobersson.rshop.domain.model.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, UUID> {
 	
 	List<Role> findAll(Sort sort);
 	
@@ -25,7 +26,9 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 			+ "FROM Role obj " 
 			+ "LEFT JOIN FETCH obj.privileges " 
 			+ "WHERE obj.id = :id")
-	Optional<Role> findByIdWithPrivileges(Long id);
+	Optional<Role> findByIdWithPrivileges(UUID id);
 	
 	Optional<Role> findByName(String name);
+
+	void deleteById(UUID roleId);
 }

@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,18 +48,18 @@ public class CategoryServiceTests {
 	@Mock
 	private CategoryMapper mapper;
 
-	private long existingId;
-	private long nonExistingId;
-	private long dependentId;
+	private UUID existingId;
+	private UUID nonExistingId;
+	private UUID dependentId;
 	private Category category;
 	private PageImpl<Category> categories;
 	private CategoryInputDTO categoryInputDTO;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		existingId = 1L;
-		nonExistingId = Long.MAX_VALUE;
-		dependentId = 4L;
+		existingId = UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518");
+		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		dependentId = UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11");
 		categoryInputDTO = CategoryFactory.createCategoryInputDTO();
 		category = CategoryFactory.createCategory();
 		categories = new PageImpl<>(List.of(category));

@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -74,7 +75,7 @@ public class RoleController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<RoleDTO> findById(@PathVariable Long roleId) {
+	public ResponseEntity<RoleDTO> findById(@PathVariable UUID roleId) {
 		Role role = service.findById(roleId);
 		RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
 		return ResponseEntity.ok().body(roleResponseDTO);
@@ -109,7 +110,7 @@ public class RoleController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<RoleDTO> update(@PathVariable Long roleId, @Valid @RequestBody RoleInputDTO roleInputDTO) {
+	public ResponseEntity<RoleDTO> update(@PathVariable UUID roleId, @Valid @RequestBody RoleInputDTO roleInputDTO) {
 		try {
 			Role role = service.update(roleId, roleInputDTO);
 			RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
@@ -127,7 +128,7 @@ public class RoleController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> delete(@PathVariable Long roleId) {
+	public ResponseEntity<Void> delete(@PathVariable UUID roleId) {
 		service.delete(roleId);
 		return ResponseEntity.noContent().build();
 	}

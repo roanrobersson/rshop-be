@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.unit.repository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,7 @@ public class ProductRepositoryTests {
 	private long countPCGamerProducts;
 	private long countCategoryOneAndTwoProducts;
 	private PageRequest pageRequest;
-	private Set<Long> categories;
+	private Set<UUID> categories;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -34,7 +35,8 @@ public class ProductRepositoryTests {
 		countPCGamerProducts = 21L;
 		countCategoryOneAndTwoProducts = 3L;
 		pageRequest = PageRequest.of(0, 10);
-		categories = Set.of(1L, 2L);
+		categories = Set.of(UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518"),
+				UUID.fromString("431d856e-caf2-4367-823a-924ce46b2e02"));
 	}
 
 	@Test

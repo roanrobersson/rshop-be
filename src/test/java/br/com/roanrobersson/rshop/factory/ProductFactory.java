@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.factory;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 
 import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
@@ -12,10 +13,13 @@ import br.com.roanrobersson.rshop.domain.model.Product;
 
 public class ProductFactory {
 
+	private static Instant instant = Instant.parse("2020-10-20T03:00:00Z");
+	private static UUID id = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+	
 	public static Product createProduct() {
 		Set<Category> categories = Set.of(CategoryFactory.createCategory());
-		Product product = new Product(1L, categories, "Product name", "Description", BigDecimal.valueOf(800),
-				"https://img.com/img.png", Instant.now(), Instant.now());
+		Product product = new Product(id, categories, "Product name", "Description", BigDecimal.valueOf(800),
+				"https://img.com/img.png", instant, instant);
 		return product;
 	}
 

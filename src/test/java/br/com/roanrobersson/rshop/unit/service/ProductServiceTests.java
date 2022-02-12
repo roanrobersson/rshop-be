@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,18 +51,18 @@ public class ProductServiceTests {
 	@Mock
 	private ProductMapper mapper;
 
-	private long existingId;
-	private long nonExistingId;
-	private long dependentId;
+	private UUID existingId;
+	private UUID nonExistingId;
+	private UUID dependentId;
 	private Product product;
 	private PageImpl<Product> products;
 	private ProductInputDTO productInputDTO;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		existingId = 1L;
-		nonExistingId = Long.MAX_VALUE;
-		dependentId = 4L;
+		existingId = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		dependentId = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
 		product = ProductFactory.createProduct();
 		products = new PageImpl<>(List.of(product));
 		productInputDTO = new ProductInputDTO();
@@ -88,7 +89,9 @@ public class ProductServiceTests {
 
 	@Test
 	public void findAllPagedShouldReturnPage() {
-		Set<Long> categories = Set.of(1L, 2L ,3L);
+		Set<UUID> categories = Set.of(UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518"),
+				UUID.fromString("431d856e-caf2-4367-823a-924ce46b2e02"),
+				UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11"));
 		String name = "";
 		PageRequest pageRequest = PageRequest.of(0, 10);
 

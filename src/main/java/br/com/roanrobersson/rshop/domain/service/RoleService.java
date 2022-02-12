@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +20,7 @@ import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 @Service
 public class RoleService {
 
-	private static final String MSG_ROLE_IN_USE = "Role with ID %d cannot be removed, because it is in use";
+	private static final String MSG_ROLE_IN_USE = "Role with ID %s cannot be removed, because it is in use";
 	
 	@Autowired
 	private RoleRepository repository;
@@ -35,7 +36,7 @@ public class RoleService {
 	}
 
 	@Transactional(readOnly = true)
-	public Role findById(Long roleId) {
+	public Role findById(UUID roleId) {
 		return repository.findByIdWithPrivileges(roleId)
 				.orElseThrow(() -> new RoleNotFoundException(roleId));
 	}
@@ -48,13 +49,13 @@ public class RoleService {
 	}
 
 	@Transactional
-	public Role update(Long roleId, RoleInputDTO roleInputDTO) {
+	public Role update(UUID roleId, RoleInputDTO roleInputDTO) {
 		Role role = findById(roleId);
 		mapper.update(roleInputDTO, role);
 		return repository.save(role);
 	}
 
-	public void delete(Long roleId) {
+	public void delete(UUID roleId) {
 		try {
 			repository.deleteById(roleId);
 		} catch (EmptyResultDataAccessException e) {

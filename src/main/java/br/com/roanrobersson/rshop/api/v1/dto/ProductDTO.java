@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.api.v1.dto;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import br.com.roanrobersson.rshop.core.validation.ProductInputValid;
 import io.swagger.annotations.ApiModel;
@@ -24,12 +25,12 @@ import lombok.ToString;
 @ToString(of = { "id", "name", "categories" })
 public class ProductDTO {
 
-	@ApiModelProperty(example = "2")
-	private Long id;
+	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	private UUID id;
 
 	@Builder.Default
 	@ApiModelProperty(example = "[2, 4, 9]")
-	private Set<Long> categories = new HashSet<>();
+	private Set<UUID> categories = new HashSet<>();
 
 	@ApiModelProperty(example = "Detergent")
 	private String name;

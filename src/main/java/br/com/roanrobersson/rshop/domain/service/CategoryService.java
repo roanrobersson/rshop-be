@@ -1,5 +1,7 @@
 package br.com.roanrobersson.rshop.domain.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,7 +20,7 @@ import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 @Service
 public class CategoryService {
 
-	private static final String MSG_CATEGORY_IN_USE = "Category with ID %d cannot be removed, because it is in use";
+	private static final String MSG_CATEGORY_IN_USE = "Category with ID %s cannot be removed, because it is in use";
 
 	@Autowired
 	private CategoryRepository repository;
@@ -32,7 +34,7 @@ public class CategoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public Category findById(Long categoryId) {
+	public Category findById(UUID categoryId) {
 		return repository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
 	}
 
@@ -43,13 +45,13 @@ public class CategoryService {
 	}
 
 	@Transactional
-	public Category update(Long categoryId, CategoryInputDTO categoryInputDTO) {
+	public Category update(UUID categoryId, CategoryInputDTO categoryInputDTO) {
 		Category category = findById(categoryId);
 		mapper.update(categoryInputDTO, category);
 		return repository.save(category);
 	}
 
-	public void delete(Long categoryId) {
+	public void delete(UUID categoryId) {
 		try {
 			repository.deleteById(categoryId);
 		} catch (EmptyResultDataAccessException e) {

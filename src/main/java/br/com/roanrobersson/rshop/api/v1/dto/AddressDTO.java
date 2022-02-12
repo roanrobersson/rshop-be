@@ -1,5 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.dto;
 
+import java.util.UUID;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -18,8 +20,8 @@ import lombok.ToString;
 @ToString(of = { "id", "nick", "main" })
 public class AddressDTO {
 
-	@ApiModelProperty(example = "3")
-	private Long id;
+	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	private UUID id;
 
 	@ApiModelProperty(example = "Home")
 	private String nick;

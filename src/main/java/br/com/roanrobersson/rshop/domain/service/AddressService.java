@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 @Service
 public class AddressService {
 
-	private static final String MSG_ADDRESS_IN_USE = "Address with ID %d cannot be removed, because it is in use";
+	private static final String MSG_ADDRESS_IN_USE = "Address with ID %s cannot be removed, because it is in use";
 
 	@Autowired
 	private AddressRepository repository;
@@ -35,12 +36,12 @@ public class AddressService {
 	private ModelMapper mapper;
 
 	@Transactional(readOnly = true)
-	public List<Address> findAll(Long userId, Sort sort) {
+	public List<Address> findAll(UUID userId, Sort sort) {
 		return repository.findAllByUserId(userId, sort);
 	}
 
 	@Transactional(readOnly = true)
-	public Address findById(Long userId, Long addressId) {
+	public Address findById(UUID userId, UUID addressId) {
 		Address address = repository.findByUserIdAndId(userId, addressId)
 				.orElseThrow(() -> new AddressNotFoundException(addressId));
 		validateAddressOwner(userId, address);
@@ -48,14 +49,14 @@ public class AddressService {
 	}
 
 	@Transactional(readOnly = true)
-	public Address findMain(Long userId) {
+	public Address findMain(UUID userId) {
 		Optional<Address> optional = repository.findFirstByUserIdAndMain(userId, true);
 		return optional.orElseThrow(() -> new AddressNotFoundException(
-				String.format("User with the ID %d dont have a main address", userId)));
+				String.format("User with the ID %s dont have a main address", userId)));
 	}
 
 	@Transactional
-	public Address insert(Long userId, AddressInputDTO addressInputDTO) {
+	public Address insert(UUID userId, AddressInputDTO addressInputDTO) {
 		Address address = mapper.map(addressInputDTO, Address.class);
 		User user = userService.findById(userId);
 		address.setUser(user);
@@ -64,13 +65,13 @@ public class AddressService {
 	}
 
 	@Transactional
-	public Address update(Long userId, Long addressId, AddressInputDTO addressInputDTO) {
+	public Address update(UUID userId, UUID addressId, AddressInputDTO addressInputDTO) {
 		Address address = findById(userId, addressId);
 		mapper.map(addressInputDTO, address);
 		return repository.save(address);
 	}
 
-	public void delete(Long userId, Long addressId) {
+	public void delete(UUID userId, UUID addressId) {
 		try {
 			repository.deleteById(addressId);
 		} catch (EmptyResultDataAccessException e) {
@@ -81,7 +82,7 @@ public class AddressService {
 	}
 
 	@Transactional
-	public void setMain(Long userId, Long addressId) {
+	public void setMain(UUID userId, UUID addressId) {
 		Address address = findById(userId, addressId);
 		if (address.getMain())
 			return;
@@ -91,7 +92,7 @@ public class AddressService {
 	}
 
 	@Transactional
-	public void unsetMain(Long userId) {
+	public void unsetMain(UUID userId) {
 		Address address;
 		try {
 			address = findMain(userId);
@@ -102,9 +103,9 @@ public class AddressService {
 		repository.save(address);
 	}
 
-	private void validateAddressOwner(Long userId, Address address) {
-		if (address.getUser().getId() != userId) {
-			String message = String.format("Address with ID %d does not belong to user", userId);
+	private void validateAddressOwner(UUID userId, Address address) {
+		if (!address.getUser().getId().equals(userId)) {
+			String message = String.format("Address with ID %s does not belong to user", userId);
 			throw new ForbiddenException(message);
 		}
 	}

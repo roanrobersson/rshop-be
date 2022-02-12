@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,8 @@ import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 @Service
 public class UserService implements UserDetailsService {
 
-	private static final String MSG_USER_IN_USE = "Role with ID %d cannot be removed, because it is in use";
-	private static final String MSG_USER_WITH_EMAIL_NOT_FOUND = "User with email %d not found";
+	private static final String MSG_USER_IN_USE = "User with ID %s cannot be removed, because it is in use";
+	private static final String MSG_USER_WITH_EMAIL_NOT_FOUND = "User with email %s not found";
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -47,7 +48,7 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private UserMapper mapper;
 
-	private Long defaultUserRoleId = 1L;
+	private UUID defaultUserRoleId = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
 
 	@Transactional(readOnly = true)
 	public Page<User> findAllPaged(PageRequest pageRequest) {
@@ -57,7 +58,7 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional(readOnly = true)
-	public User findById(Long userId) {
+	public User findById(UUID userId) {
 		return repository.findByIdWithRolesAndPrivileges(userId).orElseThrow(() -> new UserNotFoundException(userId));
 	}
 
@@ -77,13 +78,13 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public User update(Long userId, UserUpdateDTO userUpdateDTO) {
+	public User update(UUID userId, UserUpdateDTO userUpdateDTO) {
 		User user = findById(userId);
 		mapper.update(userUpdateDTO, user);
 		return repository.save(user);
 	}
 
-	public void delete(Long userId) {
+	public void delete(UUID userId) {
 		try {
 			repository.deleteById(userId);
 		} catch (EmptyResultDataAccessException e) {
@@ -94,20 +95,20 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public void changePassword(Long userId, UserChangePasswordInputDTO userChangePasswordDTO) {
+	public void changePassword(UUID userId, UserChangePasswordInputDTO userChangePasswordDTO) {
 		User user = findById(userId);
 		user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
 		repository.save(user);
 	}
 
 	@Transactional
-	public Set<Role> getRoles(Long userId) {
+	public Set<Role> getRoles(UUID userId) {
 		User user = findById(userId);
 		return user.getRoles();
 	}
 
 	@Transactional
-	public void grantRole(Long userId, Long roleId) {
+	public void grantRole(UUID userId, UUID roleId) {
 		User user = findById(userId);
 		Role role = roleService.findById(roleId);
 		user.getRoles().add(role);
@@ -115,7 +116,7 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public void revokeRole(Long userId, Long roleId) {
+	public void revokeRole(UUID userId, UUID roleId) {
 		User user = findById(userId);
 		Role role = roleService.findById(roleId);
 		user.getRoles().remove(role);

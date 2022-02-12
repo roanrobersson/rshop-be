@@ -2,6 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -56,14 +57,14 @@ public class ProductController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Page<ProductDTO>> findAll(
-			@RequestParam(value = "categories", required = false) Long[] categories,
+			@RequestParam(value = "categories", required = false) UUID[] categories,
 			@RequestParam(value = "name", defaultValue = "") String name,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		if (categories == null)
-			categories = new Long[0];
+			categories = new UUID[0];
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<Product> products = service.findAllPaged(Set.of(categories), name.trim(), pageRequest);
 		Page<ProductDTO> productResponseDTOs = products.map(x -> mapper.toProductDTO(x));
@@ -77,7 +78,7 @@ public class ProductController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<ProductDTO> findById(@PathVariable Long productId) {
+	public ResponseEntity<ProductDTO> findById(@PathVariable UUID productId) {
 		Product product = service.findById(productId);
 		ProductDTO productResponseDTO = mapper.toProductDTO(product);
 		return ResponseEntity.ok().body(productResponseDTO);
@@ -112,7 +113,7 @@ public class ProductController {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<ProductDTO> update(@PathVariable Long productId,
+	public ResponseEntity<ProductDTO> update(@PathVariable UUID productId,
 			@Valid @RequestBody ProductInputDTO productInputDTO) {
 		try {
 			Product product = service.update(productId, productInputDTO);
@@ -131,7 +132,7 @@ public class ProductController {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Void> delete(@PathVariable Long productId) {
+	public ResponseEntity<Void> delete(@PathVariable UUID productId) {
 		service.delete(productId);
 		return ResponseEntity.noContent().build();
 	}

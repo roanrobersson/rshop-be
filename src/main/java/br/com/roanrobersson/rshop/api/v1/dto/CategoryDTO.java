@@ -1,5 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.dto;
 
+import java.util.UUID;
+
 import br.com.roanrobersson.rshop.core.validation.CategoryInputValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,8 +22,8 @@ import lombok.ToString;
 @ToString
 public class CategoryDTO {
 
-	@ApiModelProperty(example = "3")
-	private Long id;
+	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	private UUID id;
 
 	@ApiModelProperty(example = "Cleaning")
 	private String name;

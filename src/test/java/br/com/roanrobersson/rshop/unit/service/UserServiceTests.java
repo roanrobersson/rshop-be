@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -15,6 +14,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,9 +67,9 @@ public class UserServiceTests {
 	@Mock
 	private UserMapper mapper;
 
-	private long existingId;
-	private long nonExistingId;
-	private long dependentId;
+	private UUID existingId;
+	private UUID nonExistingId;
+	private UUID dependentId;
 	private String existingUserName;
 	private String nonExistingUserName;
 	private String validPassword;
@@ -82,9 +82,9 @@ public class UserServiceTests {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		existingId = 1L;
-		nonExistingId = Long.MAX_VALUE;
-		dependentId = 4L;
+		existingId = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
+		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		dependentId = UUID.fromString("8903af19-36e2-44d9-b649-c3319f33be20");
 		existingUserName = "alex@gmail.com";
 		nonExistingUserName = "a1b2c3d4e5f6@gmail.com";
 		validPassword = "123456";
@@ -106,9 +106,9 @@ public class UserServiceTests {
 		when(repository.findByEmailWithRolesAndPrivileges(existingUserName)).thenReturn(Optional.of(user));
 		
 		// insert
-		when(repository.save(any())).thenReturn(user);
+		when(repository.save(any(User.class))).thenReturn(user);
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
-		when(roleService.findById(anyLong())).thenReturn(role);
+		when(roleService.findById(any(UUID.class))).thenReturn(role);
 		when(mapper.toUser(userInsertDTO)).thenReturn(user);
 
 		// update
