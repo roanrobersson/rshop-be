@@ -4,8 +4,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -33,8 +31,6 @@ public class UserService implements UserDetailsService {
 
 	private static final String MSG_USER_IN_USE = "User with ID %s cannot be removed, because it is in use";
 	private static final String MSG_USER_WITH_EMAIL_NOT_FOUND = "User with email %s not found";
-
-	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -128,10 +124,8 @@ public class UserService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<User> optional = repository.findByEmailWithRolesAndPrivileges(email);
 		if (optional.isEmpty()) {
-			logger.error("User not found: " + email);
 			throw new UsernameNotFoundException("Username not found");
 		}
-		logger.info("User found: " + email);
 		return optional.get();
 	}
 }

@@ -23,7 +23,7 @@ public class UserFactory {
 	public static User createUser() {
 		Set<Role> roles = Set.of(RoleFactory.createRole());
 		return new User(id, roles, null, "Pedro", "Pedro Oliveira", instant, "86213939059", "355144724",
-				"kevinbrown@gmail.com", password, "57991200038", null, instant, instant, instant);
+				"kevinbrown@gmail.com", password, "57991200038", null, instant, instant, instant, instant);
 	}
 
 	public static UserDTO createUserDTO() {

@@ -61,4 +61,7 @@ public class UserDTO {
 
 	@ApiModelProperty(example = "2013-03-13 05:11:00")
 	private Instant verifiedAt;
+	
+	@ApiModelProperty(example = "2013-03-13 05:11:00")
+	private Instant lastLoginAt;
 }

@@ -93,9 +93,12 @@ public class User implements UserDetails {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant lastLoginAt;
+
 	public User(UUID id, Set<Role> roles, List<Address> addresses, String firstName, String name, Instant birthDate,
 			String cpf, String rg, String email, String password, String primaryTelephone, String secondaryTelephone,
-			Instant verifiedAt, Instant createdAt, Instant updatedAt) {
+			Instant verifiedAt, Instant createdAt, Instant updatedAt, Instant lastLoginAt) {
 		this.id = id;
 		this.roles.addAll(roles);
 		this.firstName = firstName;
@@ -110,7 +113,7 @@ public class User implements UserDetails {
 		this.verifiedAt = verifiedAt;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-
+		this.lastLoginAt = lastLoginAt;
 	}
 
 	@PrePersist
