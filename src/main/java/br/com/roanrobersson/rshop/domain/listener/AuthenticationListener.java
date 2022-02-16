@@ -20,7 +20,7 @@ public class AuthenticationListener {
 	private static Logger logger = LoggerFactory.getLogger(AuthenticationListener.class);
 
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepository repository;
 
 	@EventListener
 	public void authSuccessEventListener(AuthenticationSuccessEvent event) {
@@ -34,7 +34,7 @@ public class AuthenticationListener {
 		}
 		User user = (User) event.getAuthentication().getPrincipal();
 		user.setLastLoginAt(Instant.now());
-		userRepository.save(user);
+		repository.save(user);
 		logger.info(String.format("User %s has been authenticated", user.getUsername()));
 	}
 

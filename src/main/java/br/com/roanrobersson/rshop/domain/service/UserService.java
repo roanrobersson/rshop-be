@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -20,11 +21,14 @@ import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.domain.event.OnRegistrationCompleteEvent;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
+import br.com.roanrobersson.rshop.domain.model.VerificationToken;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
+import br.com.roanrobersson.rshop.domain.repository.VerificationTokenRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -37,10 +41,16 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
+	
+	@Autowired
+	private VerificationTokenRepository tokenRepository;
 
 	@Autowired
 	private RoleService roleService;
 
+	@Autowired
+	ApplicationEventPublisher eventPublisher;
+	
 	@Autowired
 	private UserMapper mapper;
 
@@ -67,10 +77,12 @@ public class UserService implements UserDetailsService {
 	@Transactional
 	public User insert(UserInsertDTO userInsertDTO) {
 		User user = mapper.toUser(userInsertDTO);
-		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
+		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));		
 		Role defaultRole = roleService.findById(defaultUserRoleId);
 		user.getRoles().add(defaultRole);
-		return repository.save(user);
+		repository.save(user);
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
+		return user;
 	}
 
 	@Transactional
@@ -127,5 +139,16 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException("Username not found");
 		}
 		return optional.get();
+	}
+	
+	@Transactional
+	public VerificationToken createVerificationToken(UUID userId, UUID tokenValue) {
+		User user = findById(userId);
+		Optional<VerificationToken> optional = tokenRepository.findByUserId(userId);
+		if (optional.isPresent()) {
+			tokenRepository.delete(optional.get());
+		}
+		VerificationToken token = new VerificationToken(user, tokenValue);
+		return tokenRepository.save(token);
 	}
 }

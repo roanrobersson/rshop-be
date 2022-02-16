@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -57,6 +58,9 @@ public class User implements UserDetails {
 	@Setter(value = AccessLevel.NONE)
 	private List<Address> addresses = new ArrayList<>();
 
+	@OneToOne(mappedBy = "user")
+	private VerificationToken verificationToken;
+	
 	@Column(nullable = false, length = 50)
 	private String firstName;
 
@@ -72,7 +76,7 @@ public class User implements UserDetails {
 	@Column(nullable = false, length = 14)
 	private String rg;
 
-	@Column(nullable = false, length = 50)
+	@Column(unique = true, nullable = false, length = 50)
 	private String email;
 
 	@Column(nullable = false, length = 255)
