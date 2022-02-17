@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.dto;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -41,8 +42,8 @@ public class UserDTO {
 
 	private String name;
 
-	@ApiModelProperty(example = "1993-07-14 07:00:00")
-	private Instant birthDate;
+	@ApiModelProperty(example = "1993-07-14")
+	private LocalDate birthDate;
 
 	@ApiModelProperty(example = "86213939059")
 	private String cpf;

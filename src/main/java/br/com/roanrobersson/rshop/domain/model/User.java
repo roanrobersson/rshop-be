@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.domain.model;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -67,8 +68,8 @@ public class User implements UserDetails {
 	@Column(nullable = false, length = 100)
 	private String name;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
-	private Instant birthDate;
+	@Column(nullable = false)
+	private LocalDate birthDate;
 
 	@Column(columnDefinition = "CHAR(11) NOT NULL")
 	private String cpf;
@@ -100,7 +101,7 @@ public class User implements UserDetails {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant lastLoginAt;
 
-	public User(UUID id, Set<Role> roles, List<Address> addresses, String firstName, String name, Instant birthDate,
+	public User(UUID id, Set<Role> roles, List<Address> addresses, String firstName, String name, LocalDate birthDate,
 			String cpf, String rg, String email, String password, String primaryTelephone, String secondaryTelephone,
 			Instant verifiedAt, Instant createdAt, Instant updatedAt, Instant lastLoginAt) {
 		this.id = id;

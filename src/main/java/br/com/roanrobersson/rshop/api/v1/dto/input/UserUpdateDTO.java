@@ -1,8 +1,9 @@
 package br.com.roanrobersson.rshop.api.v1.dto.input;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
@@ -34,9 +35,10 @@ public class UserUpdateDTO {
 	@ApiModelProperty(example = "Kevin Brown", required = true)
 	private String name;
 
+	@NotNull(message = "Required field")
 	@Past(message = "Must be in the past")
-	@ApiModelProperty(example = "1993-07-14 07:00:00", required = true)
-	private Instant birthDate;
+	@ApiModelProperty(example = "1993-07-14", required = true)
+	private LocalDate birthDate;
 
 	@NotBlank(message = "Required field")
 	@Size(min = 11, max = 11, message = "Must have 11 characters")

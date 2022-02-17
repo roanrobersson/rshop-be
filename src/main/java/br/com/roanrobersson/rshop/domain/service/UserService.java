@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
 	private RoleService roleService;
 
 	@Autowired
-	ApplicationEventPublisher eventPublisher;
+	private ApplicationEventPublisher eventPublisher;
 	
 	@Autowired
 	private UserMapper mapper;

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -63,6 +64,9 @@ public class UserServiceTests {
 
 	@Mock
 	private AuthService authService;
+	
+	@Mock
+	private ApplicationEventPublisher eventPublisher;
 
 	@Mock
 	private UserMapper mapper;
@@ -110,7 +114,7 @@ public class UserServiceTests {
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
 		when(roleService.findById(any(UUID.class))).thenReturn(role);
 		when(mapper.toUser(userInsertDTO)).thenReturn(user);
-
+		
 		// update
 		when(repository.getById(existingId)).thenReturn(user);
 		doThrow(UserNotFoundException.class).when(repository).getById(nonExistingId);
