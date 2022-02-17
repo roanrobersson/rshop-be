@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import br.com.roanrobersson.rshop.core.validation.Age;
 import br.com.roanrobersson.rshop.core.validation.UserInsertValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -39,6 +40,7 @@ public class UserInsertDTO {
 
 	@NotNull(message = "Required field")
 	@Past(message = "Must be in the past")
+	@Age(min = 18, message = "Must have at least 18 years old")
 	@ApiModelProperty(example = "1993-07-14", required = true)
 	private LocalDate birthDate;
 
