@@ -29,18 +29,14 @@ import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/v1/users")
-@Api(tags = "User")
-public class UserController {
+public class UserController implements UserControllerOpenApi {
 
 	@Autowired
 	private UserService service;
@@ -51,11 +47,6 @@ public class UserController {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.User.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a users page")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Page<UserDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesperpage", defaultValue = "5") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
@@ -69,11 +60,6 @@ public class UserController {
 	@GetMapping(value = "/{userId}", produces = "application/json")
 	@CheckSecurity.User.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a user by ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<UserDTO> findById(@PathVariable UUID userId) {
 		User user = service.findById(userId);
 		UserDTO userResponseDTO = new UserDTO();
@@ -83,10 +69,6 @@ public class UserController {
 
 	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Creates a new user")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO userInsertDTO) {
 		User user = service.insert(userInsertDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(user.getId()).toUri();
@@ -98,12 +80,6 @@ public class UserController {
 	@PatchMapping(value = "/{userId}", produces = "application/json")
 	@CheckSecurity.User.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Updates an existing user")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<UserDTO> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
 		User user = service.update(userId, userUpdateDTO);
 		UserDTO userResponseDTO = new UserDTO();
@@ -114,11 +90,6 @@ public class UserController {
 	@DeleteMapping(value = "/{userId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CheckSecurity.User.CanEdit
-	@ApiOperation(value = "Removes an existing user")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(@PathVariable UUID userId) {
 		service.delete(userId);
 		return ResponseEntity.noContent().build();
@@ -127,11 +98,6 @@ public class UserController {
 	@PutMapping(value = "/{userId}/password")
 	@CheckSecurity.User.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Changes a user's password")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Changed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> changePassword(@PathVariable UUID userId,
 			@Valid @RequestBody UserChangePasswordInputDTO userChangePasswordDTO) {
 		service.changePassword(userId, userChangePasswordDTO);

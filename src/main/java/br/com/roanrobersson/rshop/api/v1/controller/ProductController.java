@@ -27,20 +27,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.api.v1.openapi.controller.ProductControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/v1/products")
-@Api(tags = "Product")
-public class ProductController {
+public class ProductController implements ProductControllerOpenApi {
 
 	@Autowired
 	private ProductService service;
@@ -51,11 +47,6 @@ public class ProductController {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Product.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a products page by filters")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Page<ProductDTO>> findAll(
 			@RequestParam(value = "categories", required = false) UUID[] categories,
 			@RequestParam(value = "name", defaultValue = "") String name,
@@ -73,11 +64,6 @@ public class ProductController {
 
 	@GetMapping(value = "/{productId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a category by ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> findById(@PathVariable UUID productId) {
 		Product product = service.findById(productId);
 		ProductDTO productResponseDTO = mapper.toProductDTO(product);
@@ -87,11 +73,6 @@ public class ProductController {
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Creates a new product")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductInputDTO productInputDTO) {
 		try {
 			Product product = service.insert(productInputDTO);
@@ -107,12 +88,6 @@ public class ProductController {
 	@PutMapping(value = "/{productId}", produces = "application/json")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Updates an existing category")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> update(@PathVariable UUID productId,
 			@Valid @RequestBody ProductInputDTO productInputDTO) {
 		try {
@@ -127,11 +102,6 @@ public class ProductController {
 	@DeleteMapping(value = "/{productId}")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Removes an existing product")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(@PathVariable UUID productId) {
 		service.delete(productId);
 		return ResponseEntity.noContent().build();

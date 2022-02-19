@@ -37,7 +37,12 @@ public class ProductInputDTO {
 	private Set<UUID> categories = new HashSet<>();
 
 	@NotBlank(message = "Required field")
-	@Size(min = 3, max = 127, message = "Must be between 8 and 127 characters")
+	@Size(min = 8, max = 12, message = "Must be between 8 and 12 characters")
+	@ApiModelProperty(example = "KS944RUR")
+	private String sku;
+	
+	@NotBlank(message = "Required field")
+	@Size(min = 3, max = 127, message = "Must be between 3 and 127 characters")
 	@ApiModelProperty(example = "Detergent", required = true)
 	private String name;
 

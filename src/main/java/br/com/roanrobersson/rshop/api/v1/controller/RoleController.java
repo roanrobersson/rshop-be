@@ -28,20 +28,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
+import br.com.roanrobersson.rshop.api.v1.openapi.controller.RoleControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.PrivilegeNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/v1/roles")
-@Api(tags = "Role")
-public class RoleController {
+public class RoleController implements RoleControllerOpenApi {
 
 	@Autowired
 	RoleService service;
@@ -52,11 +48,6 @@ public class RoleController {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives the roles list")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<List<RoleDTO>> getRoles(
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
@@ -70,11 +61,6 @@ public class RoleController {
 	@GetMapping(value = "/{roleId}", produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a role by ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> findById(@PathVariable UUID roleId) {
 		Role role = service.findById(roleId);
 		RoleDTO roleResponseDTO = mapper.toRoleDTO(role);
@@ -84,11 +70,6 @@ public class RoleController {
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Role.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Creates a new role")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> insert(@Valid @RequestBody RoleInputDTO roleInputDTO) {
 		try {
 			Role role = service.insert(roleInputDTO);
@@ -104,12 +85,6 @@ public class RoleController {
 	@PutMapping(value = "/{roleId}", produces = "application/json")
 	@CheckSecurity.Role.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Updates an existing role")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<RoleDTO> update(@PathVariable UUID roleId, @Valid @RequestBody RoleInputDTO roleInputDTO) {
 		try {
 			Role role = service.update(roleId, roleInputDTO);
@@ -123,11 +98,6 @@ public class RoleController {
 	@DeleteMapping(value = "/{roleId}")
 	@CheckSecurity.Role.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Removes an existing role")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(@PathVariable UUID roleId) {
 		service.delete(roleId);
 		return ResponseEntity.noContent().build();

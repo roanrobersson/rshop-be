@@ -28,18 +28,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.dto.AddressDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
+import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserAddressControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.service.AddressService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/v1/users/{userId}/addresses")
-@Api(tags = "Address")
-public class AddressController {
+public class UserAddressController implements UserAddressControllerOpenApi {
 
 	@Autowired
 	private AddressService service;
@@ -50,11 +46,6 @@ public class AddressController {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a addresses page by User ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<List<AddressDTO>> findAllByUserId(@PathVariable UUID userId,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderby", defaultValue = "nick") String orderBy) {
@@ -68,11 +59,6 @@ public class AddressController {
 	@GetMapping(value = "/{addressId}", produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a address by ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> findById(@PathVariable UUID userId, @PathVariable UUID addressId) {
 		Address address = service.findById(userId, addressId);
 		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
@@ -82,26 +68,15 @@ public class AddressController {
 	@GetMapping(value = "/main", produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives the main address")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> findMain(@PathVariable UUID userId) {
 		Address address = service.findMain(userId);
 		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
 		return ResponseEntity.ok().body(addressResponseDTO);
 	}
-	
+
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Creates a new address")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> insert(@PathVariable UUID userId,
 			@Valid @RequestBody AddressInputDTO addressInputDTO) {
 		Address address = service.insert(userId, addressInputDTO);
@@ -114,12 +89,6 @@ public class AddressController {
 	@PutMapping(value = "/{addressId}", produces = "application/json")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Updates an existing address")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> update(@PathVariable UUID userId, @PathVariable UUID addressId,
 			@Valid @RequestBody AddressInputDTO addressInputDTO) {
 		Address address = service.update(userId, addressId, addressInputDTO);
@@ -130,11 +99,6 @@ public class AddressController {
 	@DeleteMapping(value = "/{addressId}")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Removes an existing address")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(@PathVariable UUID userId, @PathVariable UUID addressId) {
 		service.delete(userId, addressId);
 		return ResponseEntity.noContent().build();
@@ -143,11 +107,6 @@ public class AddressController {
 	@PutMapping(value = "/{addressId}/main")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CheckSecurity.Address.CanEdit
-	@ApiOperation(value = "Sets an address as default")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Setted with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> setMain(@PathVariable UUID userId, @PathVariable UUID addressId) {
 		service.setMain(userId, addressId);
 		return ResponseEntity.noContent().build();
@@ -156,11 +115,6 @@ public class AddressController {
 	@DeleteMapping(value = "/main")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Unsets the default address")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Unsetted with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> unsetMain(@PathVariable UUID userId) {
 		service.unsetMain(userId);
 		return ResponseEntity.noContent().build();

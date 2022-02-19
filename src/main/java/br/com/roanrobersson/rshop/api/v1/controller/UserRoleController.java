@@ -15,18 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserRoleControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/v1/users/{userId}/roles")
-@Api(tags = "User Role")
-public class UserRoleController {
+public class UserRoleController implements UserRoleControllerOpenApi {
 
 	@Autowired
 	UserService service;
@@ -34,11 +30,6 @@ public class UserRoleController {
 	@GetMapping
 	@CheckSecurity.UserRole.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives the user roles list")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Set<UUID>> findAll(@PathVariable UUID userId) {
 		Set<UUID> rolesIds = service.getRoles(userId).stream().map(Role::getId).collect(Collectors.toSet());
 		return ResponseEntity.ok().body(rolesIds);
@@ -47,11 +38,6 @@ public class UserRoleController {
 	@PutMapping(value = "/{roleId}")
 	@CheckSecurity.UserRole.CanGrantAndRevoke
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Grants a role to a user")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Granted with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> grant(@PathVariable UUID userId, @PathVariable UUID roleId) {
 		service.grantRole(userId, roleId);
 		return ResponseEntity.noContent().build();
@@ -60,11 +46,6 @@ public class UserRoleController {
 	@DeleteMapping(value = "/{roleId}")
 	@CheckSecurity.UserRole.CanGrantAndRevoke
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Revokes a role of a user")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Revoked with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> revoke(@PathVariable UUID userId, @PathVariable UUID roleId) {
 		service.revokeRole(userId, roleId);
 		return ResponseEntity.noContent().build();

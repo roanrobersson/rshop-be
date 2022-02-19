@@ -26,18 +26,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.dto.CategoryDTO;
 import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
+import br.com.roanrobersson.rshop.api.v1.openapi.controller.CategoryControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/v1/categories")
-@Api(tags = "Category")
-public class CategoryController {
+public class CategoryController implements CategoryControllerOpenApi {
 
 	@Autowired
 	private CategoryService service;
@@ -48,11 +44,6 @@ public class CategoryController {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrive a categories page")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
 	public ResponseEntity<Page<CategoryDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
@@ -66,11 +57,6 @@ public class CategoryController {
 	@GetMapping(value = "/{categoryId}", produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Retrives a category by ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
 	public ResponseEntity<CategoryDTO> findById(@PathVariable UUID categoryId) {
 		Category category = service.findById(categoryId);
 		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
@@ -80,11 +66,6 @@ public class CategoryController {
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Category.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "Creates a new category")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error")})
 	public ResponseEntity<CategoryDTO> insert(@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
 		Category category = service.insert(categoryInputDTO);
 		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
@@ -96,12 +77,6 @@ public class CategoryController {
 	@PutMapping(value = "/{categoryId}", produces = "application/json")
 	@CheckSecurity.Category.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "Updates an existing category")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error")})
 	public ResponseEntity<CategoryDTO> update(@PathVariable UUID categoryId,
 			@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
 		Category category = service.update(categoryId, categoryInputDTO);
@@ -112,11 +87,6 @@ public class CategoryController {
 	@DeleteMapping(value = "/{categoryId}")
 	@CheckSecurity.Category.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation(value = "Remove an existing category")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
 	public ResponseEntity<Void> delete(@PathVariable UUID categoryId) {
 		service.delete(categoryId);
 		return ResponseEntity.noContent().build();

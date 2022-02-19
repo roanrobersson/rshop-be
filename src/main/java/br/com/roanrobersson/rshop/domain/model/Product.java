@@ -44,6 +44,9 @@ public class Product implements Serializable {
 	@Setter(value = AccessLevel.NONE)
 	Set<Category> categories = new HashSet<>();
 
+	@Column(unique = true, nullable = false, length = 12)
+	private String sku;
+	
 	@Column(unique = true, nullable = false, length = 127)
 	private String name;
 

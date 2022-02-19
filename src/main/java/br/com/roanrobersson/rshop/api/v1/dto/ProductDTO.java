@@ -32,6 +32,9 @@ public class ProductDTO {
 	@ApiModelProperty(example = "[2, 4, 9]")
 	private Set<UUID> categories = new HashSet<>();
 
+	@ApiModelProperty(example = "KS944RUR")
+	private String sku;
+
 	@ApiModelProperty(example = "Detergent")
 	private String name;
 
