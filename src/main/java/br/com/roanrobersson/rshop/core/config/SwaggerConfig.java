@@ -27,10 +27,11 @@ public class SwaggerConfig {
 				.paths(PathSelectors.any())
 				.build()		
 				.useDefaultResponseMessages(false)
-				.tags(new Tag("Category", ""), 
+				.tags(new Tag("Category", ""),
 						new Tag("File", ""),
-						new Tag("Product", ""), 
-						new Tag("Role", ""), 
+						new Tag("Product", ""),
+						new Tag("Role", ""),
+						new Tag("Privilege", ""),
 						new Tag("User Role", ""),
 						new Tag("UserAddress", ""),
 						new Tag("User", ""));
