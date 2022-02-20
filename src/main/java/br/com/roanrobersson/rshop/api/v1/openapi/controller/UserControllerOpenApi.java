@@ -35,7 +35,7 @@ public interface UserControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<UserDTO> findById(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId);
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
 	@ApiOperation(value = "Creates a new user")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
@@ -50,7 +50,7 @@ public interface UserControllerOpenApi {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<UserDTO> update(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			UserUpdateDTO userUpdateDTO);
 
 	@ApiOperation(value = "Removes an existing user")
@@ -59,7 +59,7 @@ public interface UserControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId);
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
 	@ApiOperation(value = "Changes a user's password")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "Changed with success"),
@@ -67,6 +67,6 @@ public interface UserControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> changePassword(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			UserChangePasswordInputDTO userChangePasswordDTO);
 }

@@ -22,7 +22,7 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<List<AddressDTO>> findAllByUserId(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			@ApiParam(value = "Sort direction", example = "DESC", required = false) String direction,
 			@ApiParam(value = "Address property to orderby", example = "uf", required = false) String orderBy);
 
@@ -32,8 +32,8 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> findById(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
-			@ApiParam(value = "ID of user address", example = "5b79649cf311465fb2d907355b56d08a") UUID addressId);
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@ApiParam(value = "ID of user address", example = "6353293a-d2b6-400f-997d-d6935032a52f") UUID addressId);
 
 	@ApiOperation("Retrives the main address")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
@@ -41,7 +41,7 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> findMain(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId);
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
 	@ApiOperation("Creates a new address")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
@@ -50,7 +50,7 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> insert(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			AddressInputDTO addressInputDTO);
 
 	@ApiOperation(value = "Updates an existing address")
@@ -60,8 +60,8 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<AddressDTO> update(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
-			@ApiParam(value = "ID of user address", example = "5b79649cf311465fb2d907355b56d08a") UUID addressId,
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@ApiParam(value = "ID of user address", example = "6353293a-d2b6-400f-997d-d6935032a52f") UUID addressId,
 			AddressInputDTO addressInputDTO);
 
 	@ApiOperation("Removes an existing address")
@@ -70,8 +70,8 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
-			@ApiParam(value = "ID of user address", example = "5b79649cf311465fb2d907355b56d08a") UUID addressId);
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@ApiParam(value = "ID of user address", example = "6353293a-d2b6-400f-997d-d6935032a52f") UUID addressId);
 
 	@ApiOperation("Sets an address as default")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "Setted with success"),
@@ -79,8 +79,8 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> setMain(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId,
-			@ApiParam(value = "ID of user address", example = "5b79649cf311465fb2d907355b56d08a") UUID addressId);
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@ApiParam(value = "ID of user address", example = "6353293a-d2b6-400f-997d-d6935032a52f") UUID addressId);
 
 	@ApiOperation("Unsets the default address")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "Unsetted with success"),
@@ -88,5 +88,5 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> unsetMain(
-			@ApiParam(value = "ID of a user", example = "5b79649cf311465fb2d907355b56d08a") UUID userId);
+			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 }

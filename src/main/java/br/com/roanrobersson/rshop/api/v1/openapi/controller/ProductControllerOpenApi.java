@@ -22,7 +22,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Page<ProductDTO>> findAll(
-			@ApiParam(value = "Category array", example = "[5b79649cf311465fb2d907355b56d08a, 32de2852e42f4b1497bec60f2e9098f4]") UUID[] categories,
+			@ApiParam(value = "Category array", example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]") UUID[] categories,
 			@ApiParam(value = "Product's name", example = "uf", required = false) String name,
 			@ApiParam(value = "Page number", example = "3", required = false) Integer page,
 			@ApiParam(value = "Register per page", example = "15", required = false) Integer linesPerPage,
@@ -35,7 +35,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> findById(
-			@ApiParam(value = "ID of a product", example = "5b79649cf311465fb2d907355b56d08a") UUID productId);
+			@ApiParam(value = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId);
 
 	@ApiOperation(value = "Creates a new product")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
@@ -51,7 +51,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<ProductDTO> update(
-			@ApiParam(value = "ID of a product", example = "5b79649cf311465fb2d907355b56d08a") UUID productId,
+			@ApiParam(value = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId,
 			ProductInputDTO productInputDTO);
 
 	@ApiOperation(value = "Removes an existing product")
@@ -60,5 +60,5 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(
-			@ApiParam(value = "ID of a product", example = "5b79649cf311465fb2d907355b56d08a") UUID productId);
+			@ApiParam(value = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId);
 }

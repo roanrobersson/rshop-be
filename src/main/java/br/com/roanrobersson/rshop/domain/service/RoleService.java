@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 
@@ -21,10 +23,13 @@ import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 public class RoleService {
 
 	private static final String MSG_ROLE_IN_USE = "Role with ID %s cannot be removed, because it is in use";
-	
+
 	@Autowired
 	private RoleRepository repository;
 
+	@Autowired
+	private PrivilegeService privilegeService;
+	
 	@Autowired
 	private RoleMapper mapper;
 
@@ -37,8 +42,7 @@ public class RoleService {
 
 	@Transactional(readOnly = true)
 	public Role findById(UUID roleId) {
-		return repository.findByIdWithPrivileges(roleId)
-				.orElseThrow(() -> new RoleNotFoundException(roleId));
+		return repository.findByIdWithPrivileges(roleId).orElseThrow(() -> new RoleNotFoundException(roleId));
 	}
 
 	@Transactional
@@ -64,5 +68,26 @@ public class RoleService {
 		} catch (DataIntegrityViolationException e) {
 			throw new EntityInUseException(String.format(MSG_ROLE_IN_USE, roleId));
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public Set<Privilege> getPrivileges(UUID roleId) {
+		return findById(roleId).getPrivileges();
+	}
+	
+	@Transactional
+	public void linkPrivilege(UUID roleId, UUID privilegeId) {
+		Role role = findById(roleId);
+		Privilege privilege = privilegeService.findById(privilegeId);
+		role.getPrivileges().add(privilege);
+		repository.save(role);
+	}
+	
+	@Transactional
+	public void unlinkPrivilege(UUID roleId, UUID privilegeId) {
+		Role role = findById(roleId);
+		Privilege privilege = privilegeService.findById(privilegeId);
+		role.getPrivileges().remove(privilege);
+		repository.save(role);
 	}
 }

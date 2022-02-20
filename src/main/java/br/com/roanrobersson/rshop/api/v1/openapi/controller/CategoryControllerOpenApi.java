@@ -33,7 +33,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<CategoryDTO> findById(
-			@ApiParam(value = "ID of a category", example = "5b79649cf311465fb2d907355b56d08a") UUID categoryId);
+			@ApiParam(value = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId);
 
 	@ApiOperation("Creates a new category")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
@@ -49,7 +49,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<CategoryDTO> update(
-			@ApiParam(value = "ID of a category", example = "5b79649cf311465fb2d907355b56d08a") UUID categoryId,
+			@ApiParam(value = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId,
 			CategoryInputDTO categoryInputDTO);
 
 	@ApiOperation("Remove an existing category")
@@ -58,5 +58,5 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
 	public ResponseEntity<Void> delete(
-			@ApiParam(value = "ID of a category", example = "5b79649cf311465fb2d907355b56d08a") UUID categoryId);
+			@ApiParam(value = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId);
 }

@@ -32,6 +32,7 @@ public class SwaggerConfig {
 						new Tag("Product", ""),
 						new Tag("Role", ""),
 						new Tag("Privilege", ""),
+						new Tag("Role Privilege", ""),
 						new Tag("User Role", ""),
 						new Tag("UserAddress", ""),
 						new Tag("User", ""));
