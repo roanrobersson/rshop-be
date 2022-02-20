@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -23,6 +24,7 @@ import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 public class ProductService {
 
 	private static final String MSG_PRODUCT_IN_USE = "Product with ID %s cannot be removed, because it is in use";
+	private static final String MSG_PRODUCT_WITHOUT_CATEGORY = "Category cannot be unlinked, because the product shoud have at least one category";
 
 	@Autowired
 	private ProductRepository repository;
@@ -86,6 +88,9 @@ public class ProductService {
 	@Transactional
 	public void unlinkCategory(UUID productId, UUID categoryId) {
 		Product product = findById(productId);
+		if (product.getCategories().size() == 1) {
+			throw new BusinessException(MSG_PRODUCT_WITHOUT_CATEGORY);
+		}
 		Category category = categoryService.findById(categoryId);
 		product.getCategories().remove(category);
 		repository.save(product);
