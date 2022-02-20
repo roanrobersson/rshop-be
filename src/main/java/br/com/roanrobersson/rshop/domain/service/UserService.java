@@ -92,7 +92,6 @@ public class UserService implements UserDetailsService {
 		return repository.save(user);
 	}
 
-	@Transactional
 	public void delete(UUID userId) {
 		try {
 			repository.deleteById(userId);

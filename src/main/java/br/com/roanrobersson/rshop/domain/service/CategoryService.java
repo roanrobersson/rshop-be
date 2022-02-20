@@ -51,7 +51,6 @@ public class CategoryService {
 		return repository.save(category);
 	}
 
-	@Transactional
 	public void delete(UUID categoryId) {
 		try {
 			repository.deleteById(categoryId);

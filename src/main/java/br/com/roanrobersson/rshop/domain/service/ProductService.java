@@ -60,7 +60,6 @@ public class ProductService {
 		return repository.save(product);
 	}
 
-	@Transactional
 	public void delete(UUID productId) {
 		try {
 			repository.deleteById(productId);

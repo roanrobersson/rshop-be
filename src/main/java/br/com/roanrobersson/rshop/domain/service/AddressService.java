@@ -71,7 +71,6 @@ public class AddressService {
 		return repository.save(address);
 	}
 
-	@Transactional
 	public void delete(UUID userId, UUID addressId) {
 		try {
 			repository.deleteById(addressId);

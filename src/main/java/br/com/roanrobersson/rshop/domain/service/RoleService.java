@@ -59,7 +59,6 @@ public class RoleService {
 		return repository.save(role);
 	}
 
-	@Transactional
 	public void delete(UUID roleId) {
 		try {
 			repository.deleteById(roleId);
