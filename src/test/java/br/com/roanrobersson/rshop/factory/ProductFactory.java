@@ -18,7 +18,7 @@ public class ProductFactory {
 	
 	public static Product createProduct() {
 		Set<Category> categories = Set.of(CategoryFactory.createCategory());
-		Product product = new Product(id, categories, "Product name", "Description", BigDecimal.valueOf(800),
+		Product product = new Product(id, "XBSO0200", categories, "Product name", "Description", BigDecimal.valueOf(800),
 				"https://img.com/img.png", instant, instant);
 		return product;
 	}

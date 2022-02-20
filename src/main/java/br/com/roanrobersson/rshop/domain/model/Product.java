@@ -65,9 +65,10 @@ public class Product implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Product(UUID id, Set<Category> categories, String name, String description, BigDecimal price, String imgUrl,
+	public Product(UUID id, String sku, Set<Category> categories, String name, String description, BigDecimal price, String imgUrl,
 			Instant createdAt, Instant updatedAt) {
 		this.id = id;
+		this.sku = sku;
 		this.categories.addAll(categories);
 		this.name = name;
 		this.description = description;
