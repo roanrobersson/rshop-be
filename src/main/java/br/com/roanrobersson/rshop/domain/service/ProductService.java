@@ -15,6 +15,7 @@ import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
+import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 
@@ -22,9 +23,12 @@ import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 public class ProductService {
 
 	private static final String MSG_PRODUCT_IN_USE = "Product with ID %s cannot be removed, because it is in use";
-	
+
 	@Autowired
 	private ProductRepository repository;
+
+	@Autowired
+	private CategoryService categoryService;
 
 	@Autowired
 	private ProductMapper mapper;
@@ -40,8 +44,7 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Product findById(UUID productId) {
-		return repository.findByIdWithCategories(productId)
-				.orElseThrow(() -> new ProductNotFoundException(productId));
+		return repository.findByIdWithCategories(productId).orElseThrow(() -> new ProductNotFoundException(productId));
 	}
 
 	@Transactional
@@ -66,5 +69,26 @@ public class ProductService {
 		} catch (DataIntegrityViolationException e) {
 			throw new EntityInUseException(String.format(MSG_PRODUCT_IN_USE, productId));
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public Set<Category> getCategories(UUID productId) {
+		return findById(productId).getCategories();
+	}
+
+	@Transactional
+	public void linkCategory(UUID productId, UUID categoryId) {
+		Product product = findById(productId);
+		Category category = categoryService.findById(categoryId);
+		product.getCategories().add(category);
+		repository.save(product);
+	}
+
+	@Transactional
+	public void unlinkCategory(UUID productId, UUID categoryId) {
+		Product product = findById(productId);
+		Category category = categoryService.findById(categoryId);
+		product.getCategories().remove(category);
+		repository.save(product);
 	}
 }

@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Api(tags = "UserAddress")
+@Api(tags = "User Address")
 public interface UserAddressControllerOpenApi {
 
 	@ApiOperation("Retrives a addresses page by User ID")

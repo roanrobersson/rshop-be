@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
-	
+
 	@Autowired
 	private VerificationTokenRepository tokenRepository;
 
@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private ApplicationEventPublisher eventPublisher;
-	
+
 	@Autowired
 	private UserMapper mapper;
 
@@ -77,11 +77,11 @@ public class UserService implements UserDetailsService {
 	@Transactional
 	public User insert(UserInsertDTO userInsertDTO) {
 		User user = mapper.toUser(userInsertDTO);
-		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));		
+		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
 		Role defaultRole = roleService.findById(defaultUserRoleId);
 		user.getRoles().add(defaultRole);
 		repository.save(user);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
+		eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 		return user;
 	}
 
@@ -140,7 +140,7 @@ public class UserService implements UserDetailsService {
 		}
 		return optional.get();
 	}
-	
+
 	@Transactional
 	public VerificationToken createVerificationToken(UUID userId, UUID tokenValue) {
 		User user = findById(userId);

@@ -29,7 +29,7 @@ public class RoleService {
 
 	@Autowired
 	private PrivilegeService privilegeService;
-	
+
 	@Autowired
 	private RoleMapper mapper;
 
@@ -74,7 +74,7 @@ public class RoleService {
 	public Set<Privilege> getPrivileges(UUID roleId) {
 		return findById(roleId).getPrivileges();
 	}
-	
+
 	@Transactional
 	public void linkPrivilege(UUID roleId, UUID privilegeId) {
 		Role role = findById(roleId);
@@ -82,7 +82,7 @@ public class RoleService {
 		role.getPrivileges().add(privilege);
 		repository.save(role);
 	}
-	
+
 	@Transactional
 	public void unlinkPrivilege(UUID roleId, UUID privilegeId) {
 		Role role = findById(roleId);
