@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 
-public class RoleInputValidator implements ConstraintValidator<RoleInputValid, RoleInputDTO> {
+public class RoleInputValidator implements ConstraintValidator<RoleInputValid, RoleInput> {
 
 	private static final String MSG_ROLE_ALREADY_EXISTS = "Role is already exists";
 
@@ -32,7 +32,7 @@ public class RoleInputValidator implements ConstraintValidator<RoleInputValid, R
 	}
 
 	@Override
-	public boolean isValid(RoleInputDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(RoleInput dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

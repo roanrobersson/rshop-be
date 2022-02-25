@@ -30,8 +30,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
@@ -56,7 +56,7 @@ public class ProductServiceTests {
 	private UUID dependentId;
 	private Product product;
 	private PageImpl<Product> products;
-	private ProductInputDTO productInputDTO;
+	private ProductInput productInput;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -65,7 +65,7 @@ public class ProductServiceTests {
 		dependentId = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
 		product = ProductFactory.createProduct();
 		products = new PageImpl<>(List.of(product));
-		productInputDTO = new ProductInputDTO();
+		productInput = new ProductInput();
 
 		// findAllPaged
 		when(repository.search(anySet(), anyString(), any(PageRequest.class))).thenReturn(products);
@@ -103,7 +103,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void findByIdShouldReturnProductDTOWhenIdExist() {
+	public void findByIdShouldReturnProductModelWhenIdExist() {
 
 		Product result = service.findById(existingId);
 
@@ -119,17 +119,17 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void insertShouldReturnProductDTO() {
+	public void insertShouldReturnProductModel() {
 
-		Product result = service.insert(productInputDTO);
+		Product result = service.insert(productInput);
 
 		assertNotNull(result);
 	}
 
 	@Test
-	public void updateShouldReturnProductDTOWhenIdExist() {
+	public void updateShouldReturnProductModelWhenIdExist() {
 
-		Product result = service.update(existingId, productInputDTO);
+		Product result = service.update(existingId, productInput);
 
 		assertNotNull(result);
 	}
@@ -138,7 +138,7 @@ public class ProductServiceTests {
 	public void updateShouldThrowProductNotFoundExceptionWhenIdDoesNotExist() {
 
 		assertThrows(ProductNotFoundException.class, () -> {
-			service.update(nonExistingId, productInputDTO);
+			service.update(nonExistingId, productInput);
 		});
 	}
 

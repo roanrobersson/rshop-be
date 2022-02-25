@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.api.v1.dto;
+package br.com.roanrobersson.rshop.api.v1.model;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileDTO {
+public class FileModel {
 
 	private MultipartFile file;
 

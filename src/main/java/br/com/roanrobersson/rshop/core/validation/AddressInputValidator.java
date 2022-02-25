@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 
-public class AddressInputValidator implements ConstraintValidator<AddressInputValid, AddressInputDTO> {
+public class AddressInputValidator implements ConstraintValidator<AddressInputValid, AddressInput> {
 
 	private static final String MSG_ADDRESS_ALREADY_EXISTS = "Address is already exists";
 
@@ -33,7 +33,7 @@ public class AddressInputValidator implements ConstraintValidator<AddressInputVa
 	}
 
 	@Override
-	public boolean isValid(AddressInputDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(AddressInput dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

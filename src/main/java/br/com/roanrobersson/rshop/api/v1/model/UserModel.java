@@ -1,12 +1,10 @@
-package br.com.roanrobersson.rshop.api.v1.dto;
+package br.com.roanrobersson.rshop.api.v1.model;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,9 +22,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ApiModel(value = "User")
 @ToString(of = { "id", "firstName" })
-public class UserDTO {
+public class UserModel {
 
-	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	@ApiModelProperty(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
 
 	@Builder.Default
@@ -37,9 +35,10 @@ public class UserDTO {
 	@ApiModelProperty(example = "[4, 5, 6, 9, 13, 34]")
 	private Set<UUID> privileges = new HashSet<>();
 
-	@Size(min = 2, max = 50, message = "Must be between 2 and 50 characters")
+	@ApiModelProperty(example = "Kevin", required = true)
 	private String firstName;
 
+	@ApiModelProperty(example = "Kevin Brown", required = true)
 	private String name;
 
 	@ApiModelProperty(example = "1993-07-14")
@@ -62,7 +61,7 @@ public class UserDTO {
 
 	@ApiModelProperty(example = "2013-03-13 05:11:00")
 	private Instant verifiedAt;
-	
+
 	@ApiModelProperty(example = "2013-03-13 05:11:00")
 	private Instant lastLoginAt;
 }

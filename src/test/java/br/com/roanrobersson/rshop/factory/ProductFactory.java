@@ -5,9 +5,9 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.model.Product;
 
@@ -23,11 +23,11 @@ public class ProductFactory {
 		return product;
 	}
 
-	public static ProductInputDTO createProductInputDTO() {
-		return ProductMapper.INSTANCE.toProductInputDTO(createProduct());
+	public static ProductInput createProductInput() {
+		return ProductMapper.INSTANCE.toProductInput(createProduct());
 	}
 	
-	public static ProductDTO createProductDTO() {
-		return ProductMapper.INSTANCE.toProductDTO(createProduct());
+	public static ProductModel createProductModel() {
+		return ProductMapper.INSTANCE.toProductModel(createProduct());
 	}
 }

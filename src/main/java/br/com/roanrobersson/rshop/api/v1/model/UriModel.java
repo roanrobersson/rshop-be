@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.api.v1.dto;
+package br.com.roanrobersson.rshop.api.v1.model;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ApiModel(value = "Uri")
 @ToString
-public class UriDTO {
+public class UriModel {
 
 	private String uri;
 }

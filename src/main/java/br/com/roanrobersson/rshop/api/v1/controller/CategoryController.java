@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.CategoryModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.CategoryControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -44,44 +44,44 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<CategoryDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
+	public ResponseEntity<Page<CategoryModel>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<Category> categories = service.findAllPaged(pageRequest);
-		Page<CategoryDTO> categoryResponseDTOs = categories.map(x -> mapper.map(x, CategoryDTO.class));
-		return ResponseEntity.ok().body(categoryResponseDTOs);
+		Page<CategoryModel> categoryModels = categories.map(x -> mapper.map(x, CategoryModel.class));
+		return ResponseEntity.ok().body(categoryModels);
 	}
 
 	@GetMapping(value = "/{categoryId}", produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CategoryDTO> findById(@PathVariable UUID categoryId) {
+	public ResponseEntity<CategoryModel> findById(@PathVariable UUID categoryId) {
 		Category category = service.findById(categoryId);
-		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
-		return ResponseEntity.ok().body(categoryResponseDTO);
+		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
+		return ResponseEntity.ok().body(categoryModel);
 	}
 
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Category.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<CategoryDTO> insert(@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
-		Category category = service.insert(categoryInputDTO);
-		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
+	public ResponseEntity<CategoryModel> insert(@Valid @RequestBody CategoryInput categoryInput) {
+		Category category = service.insert(categoryInput);
+		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(categoryResponseDTO.getId()).toUri();
-		return ResponseEntity.created(uri).body(categoryResponseDTO);
+				.buildAndExpand(categoryModel.getId()).toUri();
+		return ResponseEntity.created(uri).body(categoryModel);
 	}
 
 	@PutMapping(value = "/{categoryId}", produces = "application/json")
 	@CheckSecurity.Category.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CategoryDTO> update(@PathVariable UUID categoryId,
-			@Valid @RequestBody CategoryInputDTO categoryInputDTO) {
-		Category category = service.update(categoryId, categoryInputDTO);
-		CategoryDTO categoryResponseDTO = mapper.map(category, CategoryDTO.class);
-		return ResponseEntity.ok().body(categoryResponseDTO);
+	public ResponseEntity<CategoryModel> update(@PathVariable UUID categoryId,
+			@Valid @RequestBody CategoryInput categoryInput) {
+		Category category = service.update(categoryId, categoryInput);
+		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
+		return ResponseEntity.ok().body(categoryModel);
 	}
 
 	@DeleteMapping(value = "/{categoryId}")

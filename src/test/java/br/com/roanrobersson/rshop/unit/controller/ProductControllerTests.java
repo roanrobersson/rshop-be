@@ -38,8 +38,8 @@ import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
@@ -69,8 +69,8 @@ public class ProductControllerTests {
 	private UUID nonExistingId;
 	private UUID dependentId;
 	private Product product;
-	private ProductInputDTO productInputDTO;
-	private ProductDTO productDTO;
+	private ProductInput productInput;
+	private ProductModel productModel;
 	private PageImpl<Product> page;
 	private String username;
 	private String password;
@@ -81,8 +81,8 @@ public class ProductControllerTests {
 		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
 		dependentId = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
 		product = ProductFactory.createProduct();
-		productInputDTO = ProductFactory.createProductInputDTO();
-		productDTO = ProductFactory.createProductDTO();
+		productInput = ProductFactory.createProductInput();
+		productModel = ProductFactory.createProductModel();
 		page = new PageImpl<>(List.of(product));
 		username = "administrador@gmail.com";
 		password = "12345678";
@@ -95,11 +95,11 @@ public class ProductControllerTests {
 		when(service.findById(nonExistingId)).thenThrow(ProductNotFoundException.class);
 
 		// insert
-		when(service.insert(any(ProductInputDTO.class))).thenReturn(product);
+		when(service.insert(any(ProductInput.class))).thenReturn(product);
 		
 		// update
-		when(service.update(eq(existingId), any(ProductInputDTO.class))).thenReturn(product);
-		when(service.update(eq(nonExistingId), any(ProductInputDTO.class))).thenThrow(ProductNotFoundException.class);
+		when(service.update(eq(existingId), any(ProductInput.class))).thenReturn(product);
+		when(service.update(eq(nonExistingId), any(ProductInput.class))).thenThrow(ProductNotFoundException.class);
 
 		// delete
 		doNothing().when(service).delete(existingId);
@@ -120,7 +120,7 @@ public class ProductControllerTests {
 
 	@Test
 	public void findById_ReturnProduct_IdExist() throws Exception {
-		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
+		String expectedJsonBody = objectMapper.writeValueAsString(productModel); 
 
 		ResultActions result =
 			mockMvc.perform(get("/v1/products/{id}", existingId)
@@ -141,10 +141,10 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void insert_ReturnProductDTO_ValidProductInputDTO() throws Exception {
+	public void insert_ReturnProductModel_ValidProductInput() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
-		String inputJsonBody = objectMapper.writeValueAsString(productInputDTO);
-		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
+		String inputJsonBody = objectMapper.writeValueAsString(productInput);
+		String expectedJsonBody = objectMapper.writeValueAsString(productModel); 
 	
 		ResultActions result =
 				mockMvc.perform(post("/v1/products")
@@ -160,9 +160,9 @@ public class ProductControllerTests {
 	@Test
 	public void insert_ReturnBadRequest_NoPositivePrice() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
-		ProductInputDTO invalidProductInputDTO = ProductFactory.createProductInputDTO();
-		invalidProductInputDTO.setPrice(BigDecimal.valueOf(0));
-		String jsonBody = objectMapper.writeValueAsString(invalidProductInputDTO);
+		ProductInput invalidProductInput = ProductFactory.createProductInput();
+		invalidProductInput.setPrice(BigDecimal.valueOf(0));
+		String jsonBody = objectMapper.writeValueAsString(invalidProductInput);
 
 		ResultActions result =
 				mockMvc.perform(post("/v1/products")
@@ -175,10 +175,10 @@ public class ProductControllerTests {
 	}
 	
 	@Test
-	public void update_ReturnProductDTO_IdExists() throws Exception {
+	public void update_ReturnProductModel_IdExists() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
-		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
-		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
+		String jsonBody = objectMapper.writeValueAsString(productInput);
+		String expectedJsonBody = objectMapper.writeValueAsString(productModel); 
 	
 		ResultActions result =
 				mockMvc.perform(put("/v1/products/{id}", existingId)
@@ -194,7 +194,7 @@ public class ProductControllerTests {
 	@Test
 	public void update_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = obtainAccessToken(username, password);
-		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
+		String jsonBody = objectMapper.writeValueAsString(productInput);
 
 		ResultActions result =
 				mockMvc.perform(put("/v1/products/{id}", nonExistingId)

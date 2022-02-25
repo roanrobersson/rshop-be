@@ -1,13 +1,14 @@
-package br.com.roanrobersson.rshop.api.v1.dto.input;
+package br.com.roanrobersson.rshop.api.v1.model.input;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
-import br.com.roanrobersson.rshop.core.validation.Age;
+import br.com.roanrobersson.rshop.core.validation.AgeValid;
 import br.com.roanrobersson.rshop.core.validation.UserInsertValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,7 +27,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ApiModel(value = "UserInsert")
 @ToString(of = { "firstName" })
-public class UserInsertDTO {
+public class UserInsert {
 
 	@NotBlank(message = "Required field")
 	@Size(min = 2, max = 50, message = "Must be between 2 and 50 characters")
@@ -40,7 +41,7 @@ public class UserInsertDTO {
 
 	@NotNull(message = "Required field")
 	@Past(message = "Must be in the past")
-	@Age(min = 18, message = "Must have at least 18 years old")
+	@AgeValid(min = 18, message = "Must have at least 18 years old")
 	@ApiModelProperty(example = "1993-07-14", required = true)
 	private LocalDate birthDate;
 
@@ -54,6 +55,7 @@ public class UserInsertDTO {
 	@ApiModelProperty(example = "355144724", required = true)
 	private String rg;
 
+	@Email
 	@NotBlank(message = "Required field")
 	@Size(min = 3, max = 50, message = "Must be between 3 and 50 characters")
 	@ApiModelProperty(example = "kevinbrown@gmail.com", required = true)

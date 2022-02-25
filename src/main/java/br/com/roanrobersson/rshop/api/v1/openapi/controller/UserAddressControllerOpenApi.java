@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 
-import br.com.roanrobersson.rshop.api.v1.dto.AddressDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.AddressModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,7 +21,7 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<List<AddressDTO>> findAllByUserId(
+	public ResponseEntity<List<AddressModel>> findAllByUserId(
 			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			@ApiParam(value = "Sort direction", example = "DESC", required = false) String direction,
 			@ApiParam(value = "Address property to orderby", example = "uf", required = false) String orderBy);
@@ -31,7 +31,7 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> findById(
+	public ResponseEntity<AddressModel> findById(
 			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			@ApiParam(value = "ID of user address", example = "6353293a-d2b6-400f-997d-d6935032a52f") UUID addressId);
 
@@ -40,7 +40,7 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> findMain(
+	public ResponseEntity<AddressModel> findMain(
 			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
 	@ApiOperation("Creates a new address")
@@ -49,9 +49,9 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> insert(
+	public ResponseEntity<AddressModel> insert(
 			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
-			AddressInputDTO addressInputDTO);
+			AddressInput addressInputDTO);
 
 	@ApiOperation(value = "Updates an existing address")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
@@ -59,10 +59,10 @@ public interface UserAddressControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<AddressDTO> update(
+	public ResponseEntity<AddressModel> update(
 			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			@ApiParam(value = "ID of user address", example = "6353293a-d2b6-400f-997d-d6935032a52f") UUID addressId,
-			AddressInputDTO addressInputDTO);
+			AddressInput addressInputDTO);
 
 	@ApiOperation("Removes an existing address")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),

@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.api.v1.dto.input;
+package br.com.roanrobersson.rshop.api.v1.model.input;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -21,7 +21,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ApiModel(value = "AddressInput")
 @ToString(of = { "nick" })
-public class AddressInputDTO {
+public class AddressInput {
 
 	@NotBlank(message = "Required field")
 	@Size(min = 1, max = 20, message = "Must be between 1 and 20 characters")

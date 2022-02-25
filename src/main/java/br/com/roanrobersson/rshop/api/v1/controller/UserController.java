@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.dto.UserDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.api.v1.model.UserModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.User;
@@ -47,44 +47,44 @@ public class UserController implements UserControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.User.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<UserDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
+	public ResponseEntity<Page<UserModel>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesperpage", defaultValue = "5") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderby", defaultValue = "email") String orderBy) {
 		PageRequest request = PageRequest.of(page, linesPerPage, Direction.fromString(direction), orderBy);
 		Page<User> userPage = service.findAllPaged(request);
-		Page<UserDTO> userResponseDTOs = userPage.map(x -> mapper.toUserDTO(x));
-		return ResponseEntity.ok(userResponseDTOs);
+		Page<UserModel> userModels = userPage.map(x -> mapper.toUserModel(x));
+		return ResponseEntity.ok(userModels);
 	}
 
 	@GetMapping(value = "/{userId}", produces = "application/json")
 	@CheckSecurity.User.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<UserDTO> findById(@PathVariable UUID userId) {
+	public ResponseEntity<UserModel> findById(@PathVariable UUID userId) {
 		User user = service.findById(userId);
-		UserDTO userResponseDTO = new UserDTO();
-		mapper.update(user, userResponseDTO);
-		return ResponseEntity.ok(userResponseDTO);
+		UserModel userModel = new UserModel();
+		mapper.update(user, userModel);
+		return ResponseEntity.ok(userModel);
 	}
 
 	@PostMapping(produces = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO userInsertDTO) {
-		User user = service.insert(userInsertDTO);
+	public ResponseEntity<UserModel> insert(@Valid @RequestBody UserInsert userInsert) {
+		User user = service.insert(userInsert);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(user.getId()).toUri();
-		UserDTO userResponseDTO = new UserDTO();
-		mapper.update(user, userResponseDTO);
-		return ResponseEntity.created(uri).body(userResponseDTO);
+		UserModel userModel = new UserModel();
+		mapper.update(user, userModel);
+		return ResponseEntity.created(uri).body(userModel);
 	}
 
 	@PatchMapping(value = "/{userId}", produces = "application/json")
 	@CheckSecurity.User.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<UserDTO> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
-		User user = service.update(userId, userUpdateDTO);
-		UserDTO userResponseDTO = new UserDTO();
-		mapper.update(user, userResponseDTO);
-		return ResponseEntity.ok(userResponseDTO);
+	public ResponseEntity<UserModel> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdate userUpdate) {
+		User user = service.update(userId, userUpdate);
+		UserModel userModel = new UserModel();
+		mapper.update(user, userModel);
+		return ResponseEntity.ok(userModel);
 	}
 
 	@DeleteMapping(value = "/{userId}")
@@ -99,8 +99,8 @@ public class UserController implements UserControllerOpenApi {
 	@CheckSecurity.User.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> changePassword(@PathVariable UUID userId,
-			@Valid @RequestBody UserChangePasswordInputDTO userChangePasswordDTO) {
-		service.changePassword(userId, userChangePasswordDTO);
+			@Valid @RequestBody UserChangePasswordInput userChangePasswordInput) {
+		service.changePassword(userId, userChangePasswordInput);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.roanrobersson.rshop.api.v1.dto.PrivilegeDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.PrivilegeMapper;
+import br.com.roanrobersson.rshop.api.v1.model.PrivilegeModel;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.PrivilegeControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
@@ -35,13 +35,13 @@ public class PrivilegeController implements PrivilegeControllerOpenApi{
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<List<PrivilegeDTO>> getPrivileges(
+	public ResponseEntity<List<PrivilegeModel>> getPrivileges(
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
 		List<Privilege> privileges = service.findAll(sort);
-		List<PrivilegeDTO> privilegeResponseDTOs = privileges.stream()
-				.map(privilege -> mapper.toPrivilegeDTO(privilege)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(privilegeResponseDTOs);
+		List<PrivilegeModel> privilegeModels = privileges.stream()
+				.map(privilege -> mapper.toPrivilegeModel(privilege)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(privilegeModels);
 	}
 }

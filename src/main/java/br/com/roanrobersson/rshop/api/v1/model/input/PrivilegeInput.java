@@ -1,7 +1,6 @@
-package br.com.roanrobersson.rshop.api.v1.dto;
+package br.com.roanrobersson.rshop.api.v1.model.input;
 
-import java.util.UUID;
-
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -18,18 +17,17 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "Privilege")
-@ToString(of = { "id", "name" })
-public class PrivilegeDTO {
+@ApiModel(value = "PrivilegeInput")
+@ToString
+public class PrivilegeInput {
 
-	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
-	private UUID id;
-
+	@NotBlank(message = "Required field")
 	@Size(min = 3, max = 30, message = "Must be between 3 and 30 characters")
-	@ApiModelProperty(example = "EDIT_CATEGORIES")
+	@ApiModelProperty(example = "EDIT_CATEGORIES", required = true)
 	private String name;
 
+	@NotBlank(message = "Required field")
 	@Size(min = 10, max = 100, message = "Must be between 10 and 100 characters")
-	@ApiModelProperty(example = "Allow edit categories")
+	@ApiModelProperty(example = "Allow edit categories", required = true)
 	private String description;
 }

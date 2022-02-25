@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.api.v1.dto;
+package br.com.roanrobersson.rshop.api.v1.model;
 
 import java.util.UUID;
 
@@ -18,9 +18,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ApiModel(value = "Address")
 @ToString(of = { "id", "nick", "main" })
-public class AddressDTO {
+public class AddressModel {
 
-	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	@ApiModelProperty(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
 
 	@ApiModelProperty(example = "Home")

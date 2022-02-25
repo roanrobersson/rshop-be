@@ -11,8 +11,9 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.RoleModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
+import br.com.roanrobersson.rshop.api.v1.model.input.id.PrivilegeIdInput;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
@@ -25,23 +26,28 @@ public abstract class RoleMapper {
 	@Autowired
 	private PrivilegeService privilegeService;
 
-	public abstract RoleDTO toRoleDTO(Role role);
+	public abstract RoleModel toRoleModel(Role role);
 
-	public abstract RoleInputDTO toRoleInputDTO(Role role);
+	public abstract RoleInput toRoleInput(Role role);
 
-	public abstract Role toRole(RoleInputDTO roleInputDTO);
+	public abstract Role toRole(RoleInput roleInput);
 
-	public abstract void update(RoleInputDTO roleInputDTO, @MappingTarget Role role);
+	public abstract void update(RoleInput roleInput, @MappingTarget Role role);
 
-	public abstract void update(Role role, @MappingTarget RoleInputDTO roleInputDTO);
+	public abstract void update(Role role, @MappingTarget RoleInput roleInput);
+
+	protected String uuidToString(UUID uuid) {
+		return uuid.toString();
+	}
 
 	protected Set<UUID> privilegesToPrivilegesIds(Set<Privilege> privileges) {
 		return privileges.stream().map(x -> x.getId()).collect(Collectors.toSet());
 	}
 
-	protected Set<Privilege> privilegesIdsToPrivileges(Set<UUID> privilegesIds) {
+	protected Set<Privilege> privilegesIdsToPrivileges(Set<PrivilegeIdInput> privilegesIds) {
 		Set<Privilege> privileges = new HashSet<>();
-		for (UUID id : privilegesIds) {
+		for (PrivilegeIdInput input : privilegesIds) {
+			UUID id = UUID.fromString(input.getId());
 			Privilege privilege = privilegeService.findById(id);
 			privileges.add(privilege);
 		}

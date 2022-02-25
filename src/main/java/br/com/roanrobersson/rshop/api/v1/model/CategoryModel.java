@@ -1,7 +1,6 @@
-package br.com.roanrobersson.rshop.api.v1.dto.input;
+package br.com.roanrobersson.rshop.api.v1.model;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import java.util.UUID;
 
 import br.com.roanrobersson.rshop.core.validation.CategoryInputValid;
 import io.swagger.annotations.ApiModel;
@@ -19,12 +18,13 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "CategoryInput")
+@ApiModel(value = "Category")
 @ToString
-public class CategoryInputDTO {
+public class CategoryModel {
 
-	@NotBlank(message = "Campo obrigatório")
-	@Size(min = 3, max = 127, message = "Must be between 8 and 127 characters")
-	@ApiModelProperty(example = "Cleaning", required = true)
+	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	private UUID id;
+
+	@ApiModelProperty(example = "Cleaning")
 	private String name;
 }

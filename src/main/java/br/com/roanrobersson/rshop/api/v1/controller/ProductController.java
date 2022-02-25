@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.ProductControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
@@ -47,7 +47,7 @@ public class ProductController implements ProductControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Product.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<ProductDTO>> findAll(
+	public ResponseEntity<Page<ProductModel>> findAll(
 			@RequestParam(value = "categories", required = false) UUID[] categories,
 			@RequestParam(value = "name", defaultValue = "") String name,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -58,28 +58,28 @@ public class ProductController implements ProductControllerOpenApi {
 			categories = new UUID[0];
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		Page<Product> products = service.findAllPaged(Set.of(categories), name.trim(), pageRequest);
-		Page<ProductDTO> productResponseDTOs = products.map(x -> mapper.toProductDTO(x));
-		return ResponseEntity.ok().body(productResponseDTOs);
+		Page<ProductModel> productModels = products.map(x -> mapper.toProductModel(x));
+		return ResponseEntity.ok().body(productModels);
 	}
 
 	@GetMapping(value = "/{productId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ProductDTO> findById(@PathVariable UUID productId) {
+	public ResponseEntity<ProductModel> findById(@PathVariable UUID productId) {
 		Product product = service.findById(productId);
-		ProductDTO productResponseDTO = mapper.toProductDTO(product);
-		return ResponseEntity.ok().body(productResponseDTO);
+		ProductModel productModel = mapper.toProductModel(product);
+		return ResponseEntity.ok().body(productModel);
 	}
 
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductInputDTO productInputDTO) {
+	public ResponseEntity<ProductModel> insert(@Valid @RequestBody ProductInput productInput) {
 		try {
-			Product product = service.insert(productInputDTO);
-			ProductDTO productResponseDTO = mapper.toProductDTO(product);
+			Product product = service.insert(productInput);
+			ProductModel productModel = mapper.toProductModel(product);
 			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(productResponseDTO.getId()).toUri();
-			return ResponseEntity.created(uri).body(productResponseDTO);
+					.buildAndExpand(productModel.getId()).toUri();
+			return ResponseEntity.created(uri).body(productModel);
 		} catch (CategoryNotFoundException e) {
 			throw new BusinessException(e.getMessage(), e);
 		}
@@ -88,12 +88,12 @@ public class ProductController implements ProductControllerOpenApi {
 	@PutMapping(value = "/{productId}", produces = "application/json")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ProductDTO> update(@PathVariable UUID productId,
-			@Valid @RequestBody ProductInputDTO productInputDTO) {
+	public ResponseEntity<ProductModel> update(@PathVariable UUID productId,
+			@Valid @RequestBody ProductInput productInput) {
 		try {
-			Product product = service.update(productId, productInputDTO);
-			ProductDTO productResponseDTO = mapper.toProductDTO(product);
-			return ResponseEntity.ok().body(productResponseDTO);
+			Product product = service.update(productId, productInput);
+			ProductModel productModel = mapper.toProductModel(product);
+			return ResponseEntity.ok().body(productModel);
 		} catch (CategoryNotFoundException e) {
 			throw new BusinessException(e.getMessage(), e);
 		}

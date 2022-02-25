@@ -10,8 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -39,15 +39,15 @@ public class CategoryService {
 	}
 
 	@Transactional
-	public Category insert(CategoryInputDTO categoryInputDTO) {
-		Category category = mapper.toCategory(categoryInputDTO);
+	public Category insert(CategoryInput categoryInput) {
+		Category category = mapper.toCategory(categoryInput);
 		return repository.save(category);
 	}
 
 	@Transactional
-	public Category update(UUID categoryId, CategoryInputDTO categoryInputDTO) {
+	public Category update(UUID categoryId, CategoryInput categoryInput) {
 		Category category = findById(categoryId);
-		mapper.update(categoryInputDTO, category);
+		mapper.update(categoryInput, category);
 		return repository.save(category);
 	}
 

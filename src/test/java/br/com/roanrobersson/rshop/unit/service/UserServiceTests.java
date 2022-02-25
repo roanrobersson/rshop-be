@@ -32,10 +32,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
@@ -78,10 +78,10 @@ public class UserServiceTests {
 	private String nonExistingUserName;
 	private String validPassword;
 	private User user;
-	private UserInsertDTO userInsertDTO;
-	private UserUpdateDTO userUpdateDTO;
+	private UserInsert userInsert;
+	private UserUpdate userUpdate;
 	private PageImpl<User> page;
-	private UserChangePasswordInputDTO changePasswordDTO;
+	private UserChangePasswordInput changePasswordInput;
 	private Role role;
 
 	@BeforeEach
@@ -93,10 +93,10 @@ public class UserServiceTests {
 		nonExistingUserName = "a1b2c3d4e5f6@gmail.com";
 		validPassword = "123456";
 		user = UserFactory.createUser();
-		userInsertDTO = UserFactory.createUserInsertDTO();
-		userUpdateDTO = UserFactory.createUserUpdateDTO();
+		userInsert = UserFactory.createUserInsert();
+		userUpdate = UserFactory.createUserUpdate();
 		page = new PageImpl<>(List.of(user));
-		changePasswordDTO = new UserChangePasswordInputDTO(validPassword);
+		changePasswordInput = new UserChangePasswordInput(validPassword);
 		role = RoleFactory.createRole();
 
 		// findAllPaged
@@ -113,7 +113,7 @@ public class UserServiceTests {
 		when(repository.save(any(User.class))).thenReturn(user);
 		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
 		when(roleService.findById(any(UUID.class))).thenReturn(role);
-		when(mapper.toUser(userInsertDTO)).thenReturn(user);
+		when(mapper.toUser(userInsert)).thenReturn(user);
 		
 		// update
 		when(repository.getById(existingId)).thenReturn(user);
@@ -141,7 +141,7 @@ public class UserServiceTests {
 	}
 
 	@Test
-	public void findByIdShouldReturnUserDTOWhenIdExist() {
+	public void findByIdShouldReturnUserModelWhenIdExist() {
 
 		User result = service.findById(existingId);
 
@@ -157,17 +157,17 @@ public class UserServiceTests {
 	}
 
 	@Test
-	public void insertShouldReturnUserDTO() {
+	public void insertShouldReturnUserModel() {
 
-		User result = service.insert(userInsertDTO);
+		User result = service.insert(userInsert);
 
 		assertNotNull(result);
 	}
 
 	@Test
-	public void updateShouldReturnUserDTOWhenIdExist() {
+	public void updateShouldReturnUserModelWhenIdExist() {
 
-		User result = service.update(existingId, userUpdateDTO);
+		User result = service.update(existingId, userUpdate);
 
 		assertNotNull(result);
 	}
@@ -176,7 +176,7 @@ public class UserServiceTests {
 	public void updateShouldThrowUserNotFoundExceptionWhenIdDoesNotExist() {
 
 		assertThrows(UserNotFoundException.class, () -> {
-			service.update(nonExistingId, userUpdateDTO);
+			service.update(nonExistingId, userUpdate);
 		});
 	}
 
@@ -214,7 +214,7 @@ public class UserServiceTests {
 	public void changePasswordShouldDoNothingWhenIdExists() {
 
 		assertDoesNotThrow(() -> {
-			service.changePassword(existingId, changePasswordDTO);
+			service.changePassword(existingId, changePasswordInput);
 		});
 
 		verify(repository, times(1)).save(user);
@@ -224,7 +224,7 @@ public class UserServiceTests {
 	public void changePasswordShouldThrowUserNotFoundExceptionWhenIdDoesNotExist() {
 
 		assertThrows(UserNotFoundException.class, () -> {
-			service.changePassword(nonExistingId, changePasswordDTO);
+			service.changePassword(nonExistingId, changePasswordInput);
 		});
 
 		verify(repository, times(1)).findByIdWithRolesAndPrivileges(nonExistingId);

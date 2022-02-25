@@ -7,10 +7,10 @@ import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import br.com.roanrobersson.rshop.api.v1.dto.UserDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.api.v1.model.UserModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
 
@@ -28,15 +28,15 @@ public class UserFactory {
 				"kevinbrown@gmail.com", password, "57991200038", null, instant, instant, instant, instant);
 	}
 
-	public static UserDTO createUserDTO() {
-		return UserMapper.INSTANCE.toUserDTO(createUser());
+	public static UserModel createUserModel() {
+		return UserMapper.INSTANCE.toUserModel(createUser());
 	}
 
-	public static UserInsertDTO createUserInsertDTO() {
-		return UserMapper.INSTANCE.toUserInsertDTO(createUser());
+	public static UserInsert createUserInsert() {
+		return UserMapper.INSTANCE.toUserInsert(createUser());
 	}
 
-	public static UserUpdateDTO createUserUpdateDTO() {
-		return UserMapper.INSTANCE.toUserUpdateDTO(createUser());
+	public static UserUpdate createUserUpdate() {
+		return UserMapper.INSTANCE.toUserUpdate(createUser());
 	}
 }

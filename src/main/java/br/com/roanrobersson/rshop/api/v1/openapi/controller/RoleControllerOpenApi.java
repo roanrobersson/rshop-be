@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 
-import br.com.roanrobersson.rshop.api.v1.dto.RoleDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.RoleModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,7 +21,7 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<List<RoleDTO>> getRoles(
+	public ResponseEntity<List<RoleModel>> getRoles(
 			@ApiParam(value = "Sort direction", example = "DESC", required = false) String direction,
 			@ApiParam(value = "Property to orderby", example = "name", required = false) String orderBy);
 
@@ -30,7 +30,7 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<RoleDTO> findById(
+	public ResponseEntity<RoleModel> findById(
 			@ApiParam(value = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId);
 
 	@ApiOperation(value = "Creates a new role")
@@ -38,7 +38,7 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<RoleDTO> insert(RoleInputDTO roleInputDTO);
+	public ResponseEntity<RoleModel> insert(RoleInput roleInputDTO);
 
 	@ApiOperation(value = "Updates an existing role")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
@@ -46,9 +46,9 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<RoleDTO> update(
+	public ResponseEntity<RoleModel> update(
 			@ApiParam(value = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId,
-			RoleInputDTO roleInputDTO);
+			RoleInput roleInputDTO);
 
 	@ApiOperation(value = "Removes an existing role")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),

@@ -27,8 +27,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -44,7 +44,7 @@ public class CategoryServiceTests {
 
 	@Mock
 	private CategoryRepository repository;
-	
+
 	@Mock
 	private CategoryMapper mapper;
 
@@ -53,14 +53,14 @@ public class CategoryServiceTests {
 	private UUID dependentId;
 	private Category category;
 	private PageImpl<Category> categories;
-	private CategoryInputDTO categoryInputDTO;
+	private CategoryInput categoryInput;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		existingId = UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518");
 		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
 		dependentId = UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11");
-		categoryInputDTO = CategoryFactory.createCategoryInputDTO();
+		categoryInput = CategoryFactory.createCategoryInput();
 		category = CategoryFactory.createCategory();
 		categories = new PageImpl<>(List.of(category));
 
@@ -96,7 +96,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void findById_ReturnCategoryDTO_IdExist() {
+	public void findById_ReturnCategoryModel_IdExist() {
 
 		Category result = service.findById(existingId);
 
@@ -112,17 +112,17 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void insert_ReturnCategoryDTO() {
+	public void insert_ReturnCategoryModel() {
 
-		Category result = service.insert(categoryInputDTO);
+		Category result = service.insert(categoryInput);
 
 		assertNotNull(result);
 	}
 
 	@Test
-	public void update_ReturnCategoryDTO_IdExist() {
+	public void update_ReturnCategoryModel_IdExist() {
 
-		Category result = service.update(existingId, categoryInputDTO);
+		Category result = service.update(existingId, categoryInput);
 
 		assertNotNull(result);
 	}
@@ -131,7 +131,7 @@ public class CategoryServiceTests {
 	public void update_ThrowCategoryNotFoundException_IdDoesNotExist() {
 
 		assertThrows(CategoryNotFoundException.class, () -> {
-			service.update(nonExistingId, categoryInputDTO);
+			service.update(nonExistingId, categoryInput);
 		});
 	}
 

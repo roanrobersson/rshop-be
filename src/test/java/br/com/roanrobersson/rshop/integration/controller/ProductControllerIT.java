@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.integration.controllers;
+package br.com.roanrobersson.rshop.integration.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.api.v1.dto.ProductDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.factory.ProductFactory;
 import br.com.roanrobersson.rshop.factory.TokenUtil;
 
@@ -44,8 +44,8 @@ public class ProductControllerIT {
 	private Long countTotalProducts;
 	private String username;
 	private String password;
-	private ProductInputDTO productInputDTO;
-	private ProductDTO productDTO;
+	private ProductInput productInput;
+	private ProductModel productModel;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -54,8 +54,8 @@ public class ProductControllerIT {
 		countTotalProducts = 25L;
 		username = "administrador@gmail.com";
 		password = "12345678";
-		productInputDTO = ProductFactory.createProductInputDTO();
-		productDTO = ProductFactory.createProductDTO();
+		productInput = ProductFactory.createProductInput();
+		productModel = ProductFactory.createProductModel();
 	}
 	
 	@Test
@@ -75,10 +75,10 @@ public class ProductControllerIT {
 	
 	
 	@Test
-	public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+	public void updateShouldReturnProductModelWhenIdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
-		String inputJsonBody = objectMapper.writeValueAsString(productInputDTO);
-		String expectedJsonBody = objectMapper.writeValueAsString(productDTO); 
+		String inputJsonBody = objectMapper.writeValueAsString(productInput);
+		String expectedJsonBody = objectMapper.writeValueAsString(productModel); 
 		
 		ResultActions result = 
 				mockMvc.perform(put("/v1/products/{id}", existingId)
@@ -94,7 +94,7 @@ public class ProductControllerIT {
 	@Test
 	public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
-		String jsonBody = objectMapper.writeValueAsString(productInputDTO);
+		String jsonBody = objectMapper.writeValueAsString(productInput);
 		
 		ResultActions result = 
 				mockMvc.perform(put("/v1/products/{id}", nonExistingId)

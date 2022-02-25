@@ -3,8 +3,8 @@ package br.com.roanrobersson.rshop.factory;
 import java.time.Instant;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.domain.model.Category;
 
 public class CategoryFactory {
@@ -16,7 +16,7 @@ public class CategoryFactory {
 		return new Category(id, "Test category", instant, instant);
 	}
 	
-	public static CategoryInputDTO createCategoryInputDTO() {
-		return CategoryMapper.INSTANCE.toCategoryInputDTO(createCategory());
+	public static CategoryInput createCategoryInput() {
+		return CategoryMapper.INSTANCE.toCategoryInput(createCategory());
 	}
 }

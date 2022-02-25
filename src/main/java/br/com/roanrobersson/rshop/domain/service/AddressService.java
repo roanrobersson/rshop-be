@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import br.com.roanrobersson.rshop.domain.exception.AddressNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
@@ -56,8 +56,8 @@ public class AddressService {
 	}
 
 	@Transactional
-	public Address insert(UUID userId, AddressInputDTO addressInputDTO) {
-		Address address = mapper.map(addressInputDTO, Address.class);
+	public Address insert(UUID userId, AddressInput addressInput) {
+		Address address = mapper.map(addressInput, Address.class);
 		User user = userService.findById(userId);
 		address.setUser(user);
 		address.setMain(false);
@@ -65,9 +65,9 @@ public class AddressService {
 	}
 
 	@Transactional
-	public Address update(UUID userId, UUID addressId, AddressInputDTO addressInputDTO) {
+	public Address update(UUID userId, UUID addressId, AddressInput addressInput) {
 		Address address = findById(userId, addressId);
-		mapper.map(addressInputDTO, address);
+		mapper.map(addressInput, address);
 		return repository.save(address);
 	}
 

@@ -4,8 +4,8 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 
@@ -19,7 +19,7 @@ public class RoleFactory {
 		return new Role(id, privileges, "ROLE_TEST", instant, instant);
 	}
 
-	public static RoleInputDTO createRoleInputDTO() {
-		return RoleMapper.INSTANCE.toRoleInputDTO(createRole());
+	public static RoleInput createRoleInput() {
+		return RoleMapper.INSTANCE.toRoleInput(createRole());
 	}
 }

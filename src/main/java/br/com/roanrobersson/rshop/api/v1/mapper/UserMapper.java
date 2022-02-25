@@ -13,9 +13,9 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.roanrobersson.rshop.api.v1.dto.UserDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
+import br.com.roanrobersson.rshop.api.v1.model.UserModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
@@ -30,29 +30,29 @@ public abstract class UserMapper {
 
 	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesIds")
 	@Mapping(source = "roles", target = "privileges", qualifiedByName = "rolesToPrivilegesIds")
-	public abstract UserDTO toUserDTO(User user);
+	public abstract UserModel toUserModel(User user);
 
-	public abstract UserInsertDTO toUserInsertDTO(User user);
+	public abstract UserInsert toUserInsert(User user);
 
-	public abstract UserUpdateDTO toUserUpdateDTO(User user);
+	public abstract UserUpdate toUserUpdate(User user);
 
 	@Mapping(target = "password", ignore = true)
-	public abstract User toUser(UserInsertDTO userInsertDTO);
+	public abstract User toUser(UserInsert userInsert);
 
-	public abstract User toUser(UserUpdateDTO userUpdateDTO);
+	public abstract User toUser(UserUpdate userUpdate);
 
 	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesIds")
 	@Mapping(source = "roles", target = "privileges", qualifiedByName = "rolesToPrivilegesIds")
-	public abstract void update(User user, @MappingTarget UserDTO userDTO);
+	public abstract void update(User user, @MappingTarget UserModel userModel);
 
 	@Mapping(target = "password", ignore = true)
-	public abstract void update(UserInsertDTO userInsertDTO, @MappingTarget User user);
+	public abstract void update(UserInsert userInsert, @MappingTarget User user);
 
-	public abstract void update(User user, @MappingTarget UserInsertDTO userInsertDTO);
+	public abstract void update(User user, @MappingTarget UserInsert userInsert);
 
-	public abstract void update(UserUpdateDTO userUpdateDTO, @MappingTarget User user);
+	public abstract void update(UserUpdate userUpdate, @MappingTarget User user);
 
-	public abstract void update(User user, @MappingTarget UserUpdateDTO userUpdateDTO);
+	public abstract void update(User user, @MappingTarget UserUpdate userUpdate);
 
 	@Named("rolesToRolesIds")
 	protected Set<UUID> rolesToRolesIds(Set<Role> roles) {

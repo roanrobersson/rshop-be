@@ -1,16 +1,17 @@
-package br.com.roanrobersson.rshop.api.v1.dto.input;
+package br.com.roanrobersson.rshop.api.v1.model.input;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
+import br.com.roanrobersson.rshop.api.v1.model.input.id.CategoryIdInput;
 import br.com.roanrobersson.rshop.core.validation.ProductInputValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,18 +30,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @ApiModel(value = "ProductInput")
 @ToString(of = { "name", "categories" })
-public class ProductInputDTO {
+public class ProductInput {
 
+	@Valid
 	@NotEmpty(message = "Must have a set of categories")
 	@Builder.Default
-	@ApiModelProperty(example = "[821e3c677f2246af978cb6269cb15387, d16c83fe3a2e42b697b4503b203647f6]", required = true)
-	private Set<UUID> categories = new HashSet<>();
+	@ApiModelProperty(example = "[753dad79-2a1f-4f5c-bbd1-317a53587518, 5227c10f-c81a-4885-b460-dbfee6dcc019]")
+	private Set<CategoryIdInput> categories = new HashSet<>();
 
 	@NotBlank(message = "Required field")
 	@Size(min = 8, max = 12, message = "Must be between 8 and 12 characters")
 	@ApiModelProperty(example = "KS944RUR")
 	private String sku;
-	
+
 	@NotBlank(message = "Required field")
 	@Size(min = 3, max = 127, message = "Must be between 3 and 127 characters")
 	@ApiModelProperty(example = "Detergent", required = true)

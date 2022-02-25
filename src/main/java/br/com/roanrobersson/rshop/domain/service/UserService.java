@@ -17,10 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserChangePasswordInputDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserUpdateDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.event.OnRegistrationCompleteEvent;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
@@ -75,9 +75,9 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public User insert(UserInsertDTO userInsertDTO) {
-		User user = mapper.toUser(userInsertDTO);
-		user.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
+	public User insert(UserInsert userInsert) {
+		User user = mapper.toUser(userInsert);
+		user.setPassword(passwordEncoder.encode(userInsert.getPassword()));
 		Role defaultRole = roleService.findById(defaultUserRoleId);
 		user.getRoles().add(defaultRole);
 		repository.save(user);
@@ -86,9 +86,9 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public User update(UUID userId, UserUpdateDTO userUpdateDTO) {
+	public User update(UUID userId, UserUpdate userUpdate) {
 		User user = findById(userId);
-		mapper.update(userUpdateDTO, user);
+		mapper.update(userUpdate, user);
 		return repository.save(user);
 	}
 
@@ -103,9 +103,9 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public void changePassword(UUID userId, UserChangePasswordInputDTO userChangePasswordDTO) {
+	public void changePassword(UUID userId, UserChangePasswordInput userChangePasswordInput) {
 		User user = findById(userId);
-		user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
+		user.setPassword(passwordEncoder.encode(userChangePasswordInput.getNewPassword()));
 		repository.save(user);
 	}
 

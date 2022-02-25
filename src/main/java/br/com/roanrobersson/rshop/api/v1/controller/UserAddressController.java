@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.dto.AddressDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.AddressInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.AddressModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserAddressControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.Address;
@@ -46,54 +46,54 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<List<AddressDTO>> findAllByUserId(@PathVariable UUID userId,
+	public ResponseEntity<List<AddressModel>> findAllByUserId(@PathVariable UUID userId,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderby", defaultValue = "nick") String orderBy) {
 		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
 		List<Address> addresses = service.findAll(userId, sort);
-		List<AddressDTO> addressDTOs = addresses.stream().map(x -> mapper.map(x, AddressDTO.class))
+		List<AddressModel> addressModels = addresses.stream().map(x -> mapper.map(x, AddressModel.class))
 				.collect(Collectors.toList());
-		return ResponseEntity.ok(addressDTOs);
+		return ResponseEntity.ok(addressModels);
 	}
 
 	@GetMapping(value = "/{addressId}", produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<AddressDTO> findById(@PathVariable UUID userId, @PathVariable UUID addressId) {
+	public ResponseEntity<AddressModel> findById(@PathVariable UUID userId, @PathVariable UUID addressId) {
 		Address address = service.findById(userId, addressId);
-		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
-		return ResponseEntity.ok().body(addressResponseDTO);
+		AddressModel addressModel = mapper.map(address, AddressModel.class);
+		return ResponseEntity.ok().body(addressModel);
 	}
 
 	@GetMapping(value = "/main", produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<AddressDTO> findMain(@PathVariable UUID userId) {
+	public ResponseEntity<AddressModel> findMain(@PathVariable UUID userId) {
 		Address address = service.findMain(userId);
-		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
-		return ResponseEntity.ok().body(addressResponseDTO);
+		AddressModel addressModel = mapper.map(address, AddressModel.class);
+		return ResponseEntity.ok().body(addressModel);
 	}
 
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<AddressDTO> insert(@PathVariable UUID userId,
-			@Valid @RequestBody AddressInputDTO addressInputDTO) {
-		Address address = service.insert(userId, addressInputDTO);
-		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
+	public ResponseEntity<AddressModel> insert(@PathVariable UUID userId,
+			@Valid @RequestBody AddressInput addressInput) {
+		Address address = service.insert(userId, addressInput);
+		AddressModel addressModel = mapper.map(address, AddressModel.class);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}")
-				.buildAndExpand(addressResponseDTO.getId()).toUri();
-		return ResponseEntity.created(uri).body(addressResponseDTO);
+				.buildAndExpand(addressModel.getId()).toUri();
+		return ResponseEntity.created(uri).body(addressModel);
 	}
 
 	@PutMapping(value = "/{addressId}", produces = "application/json")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<AddressDTO> update(@PathVariable UUID userId, @PathVariable UUID addressId,
-			@Valid @RequestBody AddressInputDTO addressInputDTO) {
-		Address address = service.update(userId, addressId, addressInputDTO);
-		AddressDTO addressResponseDTO = mapper.map(address, AddressDTO.class);
-		return ResponseEntity.ok().body(addressResponseDTO);
+	public ResponseEntity<AddressModel> update(@PathVariable UUID userId, @PathVariable UUID addressId,
+			@Valid @RequestBody AddressInput addressInput) {
+		Address address = service.update(userId, addressId, addressInput);
+		AddressModel addressModel = mapper.map(address, AddressModel.class);
+		return ResponseEntity.ok().body(addressModel);
 	}
 
 	@DeleteMapping(value = "/{addressId}")

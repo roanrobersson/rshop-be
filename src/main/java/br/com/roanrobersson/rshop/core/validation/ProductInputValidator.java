@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 
-public class ProductInputValidator implements ConstraintValidator<ProductInputValid, ProductInputDTO> {
+public class ProductInputValidator implements ConstraintValidator<ProductInputValid, ProductInput> {
 
 	private static final String MSG_PRODUCT_ALREADY_EXISTS = "Product already exists";
 
@@ -32,7 +32,7 @@ public class ProductInputValidator implements ConstraintValidator<ProductInputVa
 	}
 
 	@Override
-	public boolean isValid(ProductInputDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(ProductInput dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

@@ -11,8 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.ProductInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
@@ -50,15 +50,15 @@ public class ProductService {
 	}
 
 	@Transactional
-	public Product insert(ProductInputDTO productInputDTO) {
-		Product product = mapper.toProduct(productInputDTO);
+	public Product insert(ProductInput productInput) {
+		Product product = mapper.toProduct(productInput);
 		return repository.save(product);
 	}
 
 	@Transactional
-	public Product update(UUID productId, ProductInputDTO productInputDTO) {
+	public Product update(UUID productId, ProductInput productInput) {
 		Product product = findById(productId);
-		mapper.update(productInputDTO, product);
+		mapper.update(productInput, product);
 		return repository.save(product);
 	}
 

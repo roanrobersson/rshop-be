@@ -10,11 +10,11 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.input.UserInsertDTO;
+import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 
-public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
+public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsert> {
 
 	private static final String MSG_EMAIL_IN_USE = "Email is already in use";
 
@@ -26,7 +26,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 	}
 
 	@Override
-	public boolean isValid(UserInsertDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(UserInsert dto, ConstraintValidatorContext context) {
 
 		List<FieldMessage> list = new ArrayList<>();
 

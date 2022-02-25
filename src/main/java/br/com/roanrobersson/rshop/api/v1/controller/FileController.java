@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.roanrobersson.rshop.api.v1.dto.UriDTO;
+import br.com.roanrobersson.rshop.api.v1.model.UriModel;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.FileControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.service.FileService;
@@ -27,9 +27,9 @@ public class FileController implements FileControllerOpenApi {
 	@PostMapping
 	@CheckSecurity.File.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<UriDTO> insert(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity<UriModel> insert(@RequestParam("file") MultipartFile file) {
 		URL url = service.insert(file);
-		UriDTO uriDto = new UriDTO(url.toString());
+		UriModel uriDto = new UriModel(url.toString());
 		return ResponseEntity.ok().body(uriDto);
 	}
 }

@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.integration.services;
+package br.com.roanrobersson.rshop.integration.service;
 
 import java.util.Set;
 import java.util.UUID;

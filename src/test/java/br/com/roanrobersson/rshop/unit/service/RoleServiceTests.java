@@ -27,8 +27,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
@@ -59,7 +59,7 @@ public class RoleServiceTests {
 	private UUID dependentId;
 	private Role role;
 	private List<Role> roles;
-	private RoleInputDTO roleInputDTO;
+	private RoleInput roleInput;
 	private Privilege privilege;
 
 	@BeforeEach
@@ -69,7 +69,7 @@ public class RoleServiceTests {
 		dependentId = UUID.fromString("5e0b121c-9f12-4fd3-a7e6-179b5007149a");
 		role = RoleFactory.createRole();
 		roles = List.of(role);
-		roleInputDTO = RoleFactory.createRoleInputDTO();
+		roleInput = RoleFactory.createRoleInput();
 		privilege = PrivilegeFactory.createPrivilege();
 
 		// findAllPaged
@@ -107,7 +107,7 @@ public class RoleServiceTests {
 	}
 
 	@Test
-	public void findById_ReturnRoleDTO_IdExist() {
+	public void findById_ReturnRoleModel_IdExist() {
 
 		Role result = service.findById(existingId);
 
@@ -123,17 +123,17 @@ public class RoleServiceTests {
 	}
 
 	@Test
-	public void insert_ReturnRoleDTO() {
+	public void insert_ReturnRoleModel() {
 
-		Role result = service.insert(roleInputDTO);
+		Role result = service.insert(roleInput);
 
 		assertNotNull(result);
 	}
 
 	@Test
-	public void update_ReturnRoleDTO_IdExist() {
+	public void update_ReturnRoleModel_IdExist() {
 
-		Role result = service.update(existingId, roleInputDTO);
+		Role result = service.update(existingId, roleInput);
 
 		assertNotNull(result);
 	}
@@ -142,7 +142,7 @@ public class RoleServiceTests {
 	public void update_ThrowRoleNotFoundException_IdDoesNotExist() {
 
 		assertThrows(RoleNotFoundException.class, () -> {
-			service.update(nonExistingId, roleInputDTO);
+			service.update(nonExistingId, roleInput);
 		});
 	}
 

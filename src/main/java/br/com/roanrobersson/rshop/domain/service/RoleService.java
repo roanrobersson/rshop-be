@@ -11,8 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.dto.input.RoleInputDTO;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
+import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
@@ -46,16 +46,16 @@ public class RoleService {
 	}
 
 	@Transactional
-	public Role insert(RoleInputDTO roleInputDTO) {
-		Role role = mapper.toRole(roleInputDTO);
+	public Role insert(RoleInput roleInput) {
+		Role role = mapper.toRole(roleInput);
 		role = repository.save(role);
 		return role;
 	}
 
 	@Transactional
-	public Role update(UUID roleId, RoleInputDTO roleInputDTO) {
+	public Role update(UUID roleId, RoleInput roleInput) {
 		Role role = findById(roleId);
-		mapper.update(roleInputDTO, role);
+		mapper.update(roleInput, role);
 		return repository.save(role);
 	}
 

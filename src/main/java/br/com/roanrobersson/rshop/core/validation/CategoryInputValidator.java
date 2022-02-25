@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 
-public class CategoryInputValidator implements ConstraintValidator<CategoryInputValid, CategoryInputDTO> {
+public class CategoryInputValidator implements ConstraintValidator<CategoryInputValid, CategoryInput> {
 
 	private static final String MSG_CATEGORY_ALREADY_EXISTS = "Category already exists";
 
@@ -32,7 +32,7 @@ public class CategoryInputValidator implements ConstraintValidator<CategoryInput
 	}
 
 	@Override
-	public boolean isValid(CategoryInputDTO dto, ConstraintValidatorContext context) {
+	public boolean isValid(CategoryInput dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);

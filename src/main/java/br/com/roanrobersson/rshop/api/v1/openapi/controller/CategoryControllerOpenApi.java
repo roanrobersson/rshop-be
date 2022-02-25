@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import br.com.roanrobersson.rshop.api.v1.dto.CategoryDTO;
-import br.com.roanrobersson.rshop.api.v1.dto.input.CategoryInputDTO;
+import br.com.roanrobersson.rshop.api.v1.model.CategoryModel;
+import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,7 +21,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<Page<CategoryDTO>> findAll(
+	public ResponseEntity<Page<CategoryModel>> findAll(
 			@ApiParam(value = "Page number", example = "3", required = false) Integer page,
 			@ApiParam(value = "Registers per page", example = "15", required = false) Integer linesPerPage,
 			@ApiParam(value = "Sort direction", example = "DESC", required = false) String direction,
@@ -32,7 +32,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<CategoryDTO> findById(
+	public ResponseEntity<CategoryModel> findById(
 			@ApiParam(value = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId);
 
 	@ApiOperation("Creates a new category")
@@ -40,7 +40,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(code = 401, message = "Unauthorized access"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<CategoryDTO> insert(CategoryInputDTO categoryInputDTO);
+	public ResponseEntity<CategoryModel> insert(CategoryInput categoryInputDTO);
 
 	@ApiOperation("Updates an existing category")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
@@ -48,9 +48,9 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(code = 404, message = "Resource not found"),
 			@ApiResponse(code = 422, message = "Unprocessable entity"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	public ResponseEntity<CategoryDTO> update(
+	public ResponseEntity<CategoryModel> update(
 			@ApiParam(value = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId,
-			CategoryInputDTO categoryInputDTO);
+			CategoryInput categoryInputDTO);
 
 	@ApiOperation("Remove an existing category")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
