@@ -21,13 +21,13 @@ import lombok.ToString;
 @ToString
 public class PrivilegeInput {
 
-	@NotBlank(message = "Required field")
-	@Size(min = 3, max = 30, message = "Must be between 3 and 30 characters")
+	@NotBlank
+	@Size(min = 3, max = 30)
 	@ApiModelProperty(example = "EDIT_CATEGORIES", required = true)
 	private String name;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 10, max = 100, message = "Must be between 10 and 100 characters")
+	@NotBlank
+	@Size(min = 10, max = 100)
 	@ApiModelProperty(example = "Allow edit categories", required = true)
 	private String description;
 }

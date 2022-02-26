@@ -30,13 +30,13 @@ import lombok.ToString;
 public class RoleInput {
 
 	@Valid
-	@NotEmpty(message = "Must have a set of privileges")
+	@NotEmpty
 	@Builder.Default
 	@ApiModelProperty(example = "[5e0b121c-9f12-4fd3-a7e6-179b5007149a, 5e0b121c-9f12-4fd3-a7e6-179b5007149a]", required = true)
 	private Set<PrivilegeIdInput> privileges = new HashSet<>();
 
-	@NotBlank(message = "Required field")
-	@Size(min = 3, max = 30, message = "Must be between 3 and 30 characters")
+	@NotBlank
+	@Size(min = 3, max = 30)
 	@ApiModelProperty(example = "ADMIN", required = true)
 	private String name;
 }

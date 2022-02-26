@@ -29,49 +29,49 @@ import lombok.ToString;
 @ToString(of = { "firstName" })
 public class UserInsert {
 
-	@NotBlank(message = "Required field")
-	@Size(min = 2, max = 50, message = "Must be between 2 and 50 characters")
+	@NotBlank
+	@Size(min = 2, max = 50)
 	@ApiModelProperty(example = "Kevin", required = true)
 	private String firstName;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 5, max = 100, message = "Must be between 5 and 100 characters")
+	@NotBlank
+	@Size(min = 5, max = 100)
 	@ApiModelProperty(example = "Kevin Brown", required = true)
 	private String name;
 
-	@NotNull(message = "Required field")
-	@Past(message = "Must be in the past")
-	@AgeValid(min = 18, message = "Must have at least 18 years old")
+	@NotNull
+	@Past
+	@AgeValid(min = 18)
 	@ApiModelProperty(example = "1993-07-14", required = true)
 	private LocalDate birthDate;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 11, max = 11, message = "Must have 11 characters")
+	@NotBlank
+	@Size(min = 11, max = 11)
 	@ApiModelProperty(example = "86213939059", required = true)
 	private String cpf;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 5, max = 14, message = "Must be between 1 and 14 characters")
+	@NotBlank
+	@Size(min = 5, max = 14)
 	@ApiModelProperty(example = "355144724", required = true)
 	private String rg;
 
 	@Email
-	@NotBlank(message = "Required field")
-	@Size(min = 3, max = 50, message = "Must be between 3 and 50 characters")
+	@NotBlank
+	@Size(min = 3, max = 50)
 	@ApiModelProperty(example = "kevinbrown@gmail.com", required = true)
 	private String email;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 8, max = 50, message = "Must be between 8 and 50 characters")
+	@NotBlank
+	@Size(min = 8, max = 50)
 	@ApiModelProperty(example = "a3g&3Pd#", required = true)
 	private String password;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 10, max = 11, message = "Must be between 10 and 11 characters")
+	@NotBlank
+	@Size(min = 10, max = 11)
 	@ApiModelProperty(example = "57991200038", required = true)
 	private String primaryTelephone;
 
-	@Size(min = 10, max = 11, message = "Must be between 10 and 11 characters")
+	@Size(min = 10, max = 11)
 	@ApiModelProperty(example = "54991200038", required = false)
 	private String secondaryTelephone;
 }

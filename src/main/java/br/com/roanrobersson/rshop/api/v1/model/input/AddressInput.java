@@ -23,57 +23,57 @@ import lombok.ToString;
 @ToString(of = { "nick" })
 public class AddressInput {
 
-	@NotBlank(message = "Required field")
-	@Size(min = 1, max = 20, message = "Must be between 1 and 20 characters")
+	@NotBlank
+	@Size(min = 1, max = 20)
 	@ApiModelProperty(example = "Home", required = true)
 	private String nick;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 10, max = 11, message = "Must be between 10 and 11 characters")
+	@NotBlank
+	@Size(min = 10, max = 11)
 	@ApiModelProperty(example = "54998204476", required = true)
 	private String telephone;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 1, max = 75, message = "Must be between 1 and 75 characters")
+	@NotBlank
+	@Size(min = 1, max = 75)
 	@ApiModelProperty(example = "342 Lake St.", required = true)
 	private String address;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 1, max = 6, message = "Must be between 1 and 6 characters")
+	@NotBlank
+	@Size(min = 1, max = 6)
 	@ApiModelProperty(example = "11228", required = true)
 	private String number;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 1, max = 30, message = "Must be between 1 and 30 characters")
+	@NotBlank
+	@Size(min = 1, max = 30)
 	@ApiModelProperty(example = "Arbor Hill", required = true)
 	private String neighborhood;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 1, max = 75, message = "Must be between 1 and 75 characters")
+	@NotBlank
+	@Size(min = 1, max = 75)
 	@ApiModelProperty(example = "Albany", required = true)
 	private String city;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 1, max = 75, message = "Must be between 1 and 75 characters")
+	@NotBlank
+	@Size(min = 1, max = 75)
 	@ApiModelProperty(example = "New York", required = true)
 	private String state;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 2, max = 2, message = "Must have 2 characters")
+	@NotBlank
+	@Size(min = 2, max = 2)
 	@ApiModelProperty(example = "NY", required = true)
 	private String uf;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 8, max = 8, message = "Must have 8 characters")
+	@NotBlank
+	@Size(min = 8, max = 8)
 	@ApiModelProperty(example = "45879635", required = true)
 	private String postalCode;
 
-	@Size(min = 1, max = 75, message = "Must be between 1 and = 75 characters")
+	@Size(min = 1, max = 75)
 	@ApiModelProperty(example = "Floor 16", required = false)
 	private String complement;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 1, max = 75, message = "Must be between 1 and 75 characters")
+	@NotBlank
+	@Size(min = 1, max = 75)
 	@ApiModelProperty(example = "McDonald's", required = true)
 	private String referencePoint;
 }

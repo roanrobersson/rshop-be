@@ -21,8 +21,8 @@ import lombok.ToString;
 @ToString
 public class UserChangePasswordInput {
 
-	@NotEmpty(message = "Required field")
-	@Size(min = 8, max = 50, message = "Must be between 8 and 60 characters")
+	@NotEmpty
+	@Size(min = 8, max = 50)
 	@ApiModelProperty(example = "a3g&3Pd#", required = true)
 	private String newPassword;
 }

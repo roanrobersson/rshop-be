@@ -23,8 +23,8 @@ import lombok.ToString;
 @ToString
 public class CategoryInput {
 
-	@NotBlank(message = "Campo obrigatório")
-	@Size(min = 3, max = 127, message = "Must be between 8 and 127 characters")
+	@NotBlank
+	@Size(min = 3, max = 127)
 	@ApiModelProperty(example = "Cleaning", required = true)
 	private String name;
 }

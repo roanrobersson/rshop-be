@@ -33,32 +33,32 @@ import lombok.ToString;
 public class ProductInput {
 
 	@Valid
-	@NotEmpty(message = "Must have a set of categories")
+	@NotEmpty
 	@Builder.Default
 	@ApiModelProperty(example = "[753dad79-2a1f-4f5c-bbd1-317a53587518, 5227c10f-c81a-4885-b460-dbfee6dcc019]")
 	private Set<CategoryIdInput> categories = new HashSet<>();
 
-	@NotBlank(message = "Required field")
-	@Size(min = 8, max = 12, message = "Must be between 8 and 12 characters")
+	@NotBlank
+	@Size(min = 8, max = 12)
 	@ApiModelProperty(example = "KS944RUR")
 	private String sku;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 3, max = 127, message = "Must be between 3 and 127 characters")
+	@NotBlank
+	@Size(min = 3, max = 127)
 	@ApiModelProperty(example = "Detergent", required = true)
 	private String name;
 
-	@NotBlank(message = "Required field")
-	@Size(min = 5, max = 60, message = "Must be between 5 and 60 characters")
+	@NotBlank
+	@Size(min = 5, max = 60)
 	@ApiModelProperty(example = "Great for washing dishes", required = true)
 	private String description;
 
-	@Positive(message = "Must be positive")
-	@Digits(integer = 6, fraction = 2, message = "Must follow the format: 999999,99")
+	@Positive
+	@Digits(integer = 6, fraction = 2)
 	@ApiModelProperty(example = "5.99", required = true)
 	private BigDecimal price;
 
-	@NotBlank(message = "Required field")
+	@NotBlank
 	@ApiModelProperty(example = "http://www.ficticiousimagehost.com/image.png", required = true)
 	private String imgUrl;
 }
