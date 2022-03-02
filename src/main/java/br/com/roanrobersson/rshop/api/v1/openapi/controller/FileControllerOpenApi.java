@@ -4,19 +4,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.roanrobersson.rshop.api.v1.model.UriModel;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = "File")
+@Tag(name = "File")
 public interface FileControllerOpenApi {
 
-	@ApiOperation(value = "Uploads a new file")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Uploaded with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 415, message = "Unsupported media type"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error")})
+	@Operation(summary = "Uploads a new file")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Uploaded with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "415", description = "Unsupported media type"),
+			@ApiResponse(responseCode = "422", description = "Unprocessable entity"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<UriModel> insert(MultipartFile file);
 }

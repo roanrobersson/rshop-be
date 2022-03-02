@@ -6,8 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,48 +19,48 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "User")
+@Schema(title = "User")
 @ToString(of = { "id", "firstName" })
 public class UserModel {
 
-	@ApiModelProperty(example = "821e3c67-7f22-46af-978c-b6269cb15387")
+	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
 
 	@Builder.Default
-	@ApiModelProperty(example = "[2, 4, 6]")
+	@Schema(example = "[2, 4, 6]")
 	private Set<UUID> roles = new HashSet<>();
 
 	@Builder.Default
-	@ApiModelProperty(example = "[4, 5, 6, 9, 13, 34]")
+	@Schema(example = "[4, 5, 6, 9, 13, 34]")
 	private Set<UUID> privileges = new HashSet<>();
 
-	@ApiModelProperty(example = "Kevin", required = true)
+	@Schema(example = "Kevin", required = true)
 	private String firstName;
 
-	@ApiModelProperty(example = "Kevin Brown", required = true)
+	@Schema(example = "Kevin Brown", required = true)
 	private String name;
 
-	@ApiModelProperty(example = "1993-07-14")
+	@Schema(example = "1993-07-14")
 	private LocalDate birthDate;
 
-	@ApiModelProperty(example = "86213939059")
+	@Schema(example = "86213939059")
 	private String cpf;
 
-	@ApiModelProperty(example = "355144724")
+	@Schema(example = "355144724")
 	private String rg;
 
-	@ApiModelProperty(example = "kevinbrown@gmail.com")
+	@Schema(example = "kevinbrown@gmail.com")
 	private String email;
 
-	@ApiModelProperty(example = "57991200038")
+	@Schema(example = "57991200038")
 	private String primaryTelephone;
 
-	@ApiModelProperty(example = "54991200038")
+	@Schema(example = "54991200038")
 	private String secondaryTelephone;
 
-	@ApiModelProperty(example = "2013-03-13 05:11:00")
+	@Schema(example = "2013-03-13 05:11:00")
 	private Instant verifiedAt;
 
-	@ApiModelProperty(example = "2013-03-13 05:11:00")
+	@Schema(example = "2013-03-13 05:11:00")
 	private Instant lastLoginAt;
 }

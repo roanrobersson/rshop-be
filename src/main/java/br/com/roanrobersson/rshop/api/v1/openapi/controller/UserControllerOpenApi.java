@@ -9,64 +9,64 @@ import br.com.roanrobersson.rshop.api.v1.model.UserModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = "User")
+@Tag(name = "User")
 public interface UserControllerOpenApi {
 
-	@ApiOperation(value = "Retrives a users page")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Retrives a users page")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrived with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Page<UserModel>> findAll(
-			@ApiParam(value = "Page number", example = "3", required = false) Integer page,
-			@ApiParam(value = "Register per page", example = "15", required = false) Integer linesPerPage,
-			@ApiParam(value = "Sort direction", example = "DESC", required = false) String direction,
-			@ApiParam(value = "Property to orderby", example = "uf", required = false) String orderBy);
+			@Parameter(description = "Page number", example = "3", required = false) Integer page,
+			@Parameter(description = "Register per page", example = "15", required = false) Integer linesPerPage,
+			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
+			@Parameter(description = "Property to orderby", example = "uf", required = false) String orderBy);
 
-	@ApiOperation(value = "Retrives a user by ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Retrives a user by ID")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrived with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<UserModel> findById(
-			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
-	@ApiOperation(value = "Creates a new user")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Creates a new user")
+	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Created with success"),
+			@ApiResponse(responseCode = "422", description = "Unprocessable entity"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<UserModel> insert(UserInsert userInsertDTO);
 
-	@ApiOperation(value = "Updates an existing user")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Updates an existing user")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Updated with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "422", description = "Unprocessable entity"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<UserModel> update(
-			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			UserUpdate userUpdateDTO);
 
-	@ApiOperation(value = "Removes an existing user")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Removes an existing user")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Removed with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Void> delete(
-			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
-	@ApiOperation(value = "Changes a user's password")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Changed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Changes a user's password")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Changed with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Void> changePassword(
-			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			UserChangePasswordInput userChangePasswordDTO);
 }

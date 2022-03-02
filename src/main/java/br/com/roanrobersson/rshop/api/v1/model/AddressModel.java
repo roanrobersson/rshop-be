@@ -2,8 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.model;
 
 import java.util.UUID;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,46 +15,46 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "Address")
+@Schema(title = "Address")
 @ToString(of = { "id", "nick", "main" })
 public class AddressModel {
 
-	@ApiModelProperty(example = "821e3c67-7f22-46af-978c-b6269cb15387")
+	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
 
-	@ApiModelProperty(example = "Home")
+	@Schema(example = "Home")
 	private String nick;
 
-	@ApiModelProperty(example = "54998204476")
+	@Schema(example = "54998204476")
 	private String telephone;
 
-	@ApiModelProperty(example = "342 Lake St.")
+	@Schema(example = "342 Lake St.")
 	private String address;
 
-	@ApiModelProperty(example = "11228")
+	@Schema(example = "11228")
 	private String number;
 
-	@ApiModelProperty(example = "Arbor Hill")
+	@Schema(example = "Arbor Hill")
 	private String neighborhood;
 
-	@ApiModelProperty(example = "Albany")
+	@Schema(example = "Albany")
 	private String city;
 
-	@ApiModelProperty(example = "New York")
+	@Schema(example = "New York")
 	private String state;
 
-	@ApiModelProperty(example = "NY")
+	@Schema(example = "NY")
 	private String uf;
 
-	@ApiModelProperty(example = "45879635")
+	@Schema(example = "45879635")
 	private String postalCode;
 
-	@ApiModelProperty(example = "Floor 16")
+	@Schema(example = "Floor 16")
 	private String complement;
 
-	@ApiModelProperty(example = "McDonald's")
+	@Schema(example = "McDonald's")
 	private String referencePoint;
 
-	@ApiModelProperty(example = "true")
+	@Schema(example = "true")
 	private Boolean main;
 }

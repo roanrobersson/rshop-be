@@ -7,53 +7,53 @@ import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.v1.model.RoleModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = "Role")
+@Tag(name = "Role")
 public interface RoleControllerOpenApi {
 
-	@ApiOperation(value = "Retrives the roles list")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Retrives the roles list")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrived with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<List<RoleModel>> getRoles(
-			@ApiParam(value = "Sort direction", example = "DESC", required = false) String direction,
-			@ApiParam(value = "Property to orderby", example = "name", required = false) String orderBy);
+			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
+			@Parameter(description = "Property to orderby", example = "name", required = false) String orderBy);
 
-	@ApiOperation(value = "Retrives a role by ID")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Retrives a role by ID")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrived with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<RoleModel> findById(
-			@ApiParam(value = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId);
+			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId);
 
-	@ApiOperation(value = "Creates a new role")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Creates a new role")
+	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Created with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "422", description = "Unprocessable entity"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<RoleModel> insert(RoleInput roleInputDTO);
 
-	@ApiOperation(value = "Updates an existing role")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Updated with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 422, message = "Unprocessable entity"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Updates an existing role")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Updated with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "422", description = "Unprocessable entity"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<RoleModel> update(
-			@ApiParam(value = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId,
+			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId,
 			RoleInput roleInputDTO);
 
-	@ApiOperation(value = "Removes an existing role")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Removed with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Removes an existing role")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Removed with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Void> delete(UUID roleId);
 }

@@ -4,8 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.domain.validation.CategoryInputValid;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,12 +18,12 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "CategoryInput")
+@Schema(title = "CategoryInput")
 @ToString
 public class CategoryInput {
 
 	@NotBlank
 	@Size(min = 3, max = 127)
-	@ApiModelProperty(example = "Cleaning", required = true)
+	@Schema(example = "Cleaning", required = true)
 	private String name;
 }

@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,29 +18,29 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "Product")
+@Schema(title = "Product")
 @ToString(of = { "id", "name", "categories" })
 public class ProductModel {
 
-	@ApiModelProperty(example = "821e3c67-7f22-46af-978c-b6269cb15387")
+	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
 
 	@Builder.Default
-	@ApiModelProperty(example = "[2, 4, 9]")
+	@Schema(example = "[2, 4, 9]")
 	private Set<UUID> categories = new HashSet<>();
 
-	@ApiModelProperty(example = "KS944RUR")
+	@Schema(example = "KS944RUR")
 	private String sku;
 
-	@ApiModelProperty(example = "Detergent")
+	@Schema(example = "Detergent")
 	private String name;
 
-	@ApiModelProperty(example = "Great for washing dishes")
+	@Schema(example = "Great for washing dishes")
 	private String description;
 
-	@ApiModelProperty(example = "5.99")
+	@Schema(example = "5.99")
 	private BigDecimal price;
 
-	@ApiModelProperty(example = "http://www.ficticiousimagehost.com/image.png")
+	@Schema(example = "http://www.ficticiousimagehost.com/image.png")
 	private String imgUrl;
 }

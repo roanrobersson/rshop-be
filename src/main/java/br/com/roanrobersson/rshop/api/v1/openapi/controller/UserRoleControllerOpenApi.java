@@ -5,38 +5,38 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = "User Role")
+@Tag(name = "User Role")
 public interface UserRoleControllerOpenApi {
 
-	@ApiOperation(value = "Retrives the user roles list")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Retrives the user roles list")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrived with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Set<UUID>> findAll(
-			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
-	@ApiOperation(value = "Grants a role to a user")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Granted with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Grants a role to a user")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Granted with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Void> grant(
-			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
-			@ApiParam(value = "ID of a role", example = "18aace1e-f36a-4d71-b4d1-124387d9b63a") UUID roleId);
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@Parameter(description = "ID of a role", example = "18aace1e-f36a-4d71-b4d1-124387d9b63a") UUID roleId);
 
-	@ApiOperation(value = "Revokes a role of a user")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "Revoked with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Revokes a role of a user")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Revoked with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Void> revoke(
-			@ApiParam(value = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
-			@ApiParam(value = "ID of a user role", example = "18aace1e-f36a-4d71-b4d1-124387d9b63a") UUID roleId);
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@Parameter(description = "ID of a user role", example = "18aace1e-f36a-4d71-b4d1-124387d9b63a") UUID roleId);
 }

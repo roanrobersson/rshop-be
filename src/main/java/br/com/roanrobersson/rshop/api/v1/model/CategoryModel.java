@@ -2,8 +2,7 @@ package br.com.roanrobersson.rshop.api.v1.model;
 
 import java.util.UUID;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,13 +15,13 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "Category")
+@Schema(title = "Category")
 @ToString
 public class CategoryModel {
 
-	@ApiModelProperty(example = "821e3c677f2246af978cb6269cb15387")
+	@Schema(example = "821e3c677f2246af978cb6269cb15387")
 	private UUID id;
 
-	@ApiModelProperty(example = "Cleaning")
+	@Schema(example = "Cleaning")
 	private String name;
 }

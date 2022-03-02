@@ -57,7 +57,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@GetMapping(value = "/{categoryId}", produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CategoryModel> findById(@PathVariable UUID categoryId) {
+	public ResponseEntity<CategoryModel> findById(@PathVariable("categoryId") UUID categoryId) {
 		Category category = service.findById(categoryId);
 		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
 		return ResponseEntity.ok().body(categoryModel);
@@ -69,8 +69,8 @@ public class CategoryController implements CategoryControllerOpenApi {
 	public ResponseEntity<CategoryModel> insert(@Valid @RequestBody CategoryInput categoryInput) {
 		Category category = service.insert(categoryInput);
 		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(categoryModel.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoryModel.getId())
+				.toUri();
 		return ResponseEntity.created(uri).body(categoryModel);
 	}
 

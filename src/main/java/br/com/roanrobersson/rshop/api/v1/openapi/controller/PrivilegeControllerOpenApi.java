@@ -5,21 +5,21 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.v1.model.PrivilegeModel;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Api(tags = "Privilege")
+@Tag(name = "Privilege")
 public interface PrivilegeControllerOpenApi {
 
-	@ApiOperation(value = "Retrives the privileges list")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrived with success"),
-			@ApiResponse(code = 401, message = "Unauthorized access"),
-			@ApiResponse(code = 404, message = "Resource not found"),
-			@ApiResponse(code = 500, message = "Internal server error") })
+	@Operation(summary = "Retrives the privileges list")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrived with success"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access"),
+			@ApiResponse(responseCode = "404", description = "Resource not found"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<List<PrivilegeModel>> getPrivileges(
-			@ApiParam(value = "Sort direction", example = "DESC", required = false) String direction,
-			@ApiParam(value = "Property to orderby", example = "name", required = false) String orderBy);
+			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
+			@Parameter(description = "Property to orderby", example = "name", required = false) String orderBy);
 }
