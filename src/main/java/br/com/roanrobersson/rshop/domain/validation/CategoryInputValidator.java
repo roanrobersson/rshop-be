@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.core.validation;
+package br.com.roanrobersson.rshop.domain.validation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,47 +13,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
-import br.com.roanrobersson.rshop.domain.model.Product;
-import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
+import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
+import br.com.roanrobersson.rshop.domain.model.Category;
+import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 
-public class ProductInputValidator implements ConstraintValidator<ProductInputValid, ProductInput> {
+public class CategoryInputValidator implements ConstraintValidator<CategoryInputValid, CategoryInput> {
 
-	private static final String MSG_PRODUCT_ALREADY_EXISTS = "Product already exists";
+	private static final String MSG_CATEGORY_ALREADY_EXISTS = "Category already exists";
 
 	@Autowired
 	private HttpServletRequest request;
 
 	@Autowired
-	private ProductRepository repository;
+	private CategoryRepository repository;
 
 	@Override
-	public void initialize(ProductInputValid ann) {
+	public void initialize(CategoryInputValid ann) {
 	}
 
 	@Override
-	public boolean isValid(ProductInput dto, ConstraintValidatorContext context) {
+	public boolean isValid(CategoryInput dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-		boolean isUpdateRequest = uriVars.containsKey("productId");
+		boolean isUpdateRequest = uriVars.containsKey("categoryId");
 
 		List<FieldMessage> list = new ArrayList<>();
 
-		Optional<Product> optional = repository.findByName(dto.getName());
+		Optional<Category> optional = repository.findByName(dto.getName());
 
 		if (optional.isEmpty())
 			return true;
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("name", MSG_PRODUCT_ALREADY_EXISTS));
+			list.add(new FieldMessage("name", MSG_CATEGORY_ALREADY_EXISTS));
 		}
 
 		// Update
 		if (isUpdateRequest) {
-			if (uriVars.get("productId") != optional.get().getId().toString()) {
-				list.add(new FieldMessage("name", MSG_PRODUCT_ALREADY_EXISTS));
+			if (uriVars.get("categoryId") != optional.get().getId().toString()) {
+				list.add(new FieldMessage("name", MSG_CATEGORY_ALREADY_EXISTS));
 			}
 		}
 
@@ -62,6 +62,7 @@ public class ProductInputValidator implements ConstraintValidator<ProductInputVa
 			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
 					.addConstraintViolation();
 		}
+
 		return list.isEmpty();
 	}
 }

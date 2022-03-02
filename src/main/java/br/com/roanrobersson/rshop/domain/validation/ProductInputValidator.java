@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.core.validation;
+package br.com.roanrobersson.rshop.domain.validation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,47 +13,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
-import br.com.roanrobersson.rshop.domain.model.Role;
-import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
+import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.model.Product;
+import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 
-public class RoleInputValidator implements ConstraintValidator<RoleInputValid, RoleInput> {
+public class ProductInputValidator implements ConstraintValidator<ProductInputValid, ProductInput> {
 
-	private static final String MSG_ROLE_ALREADY_EXISTS = "Role is already exists";
+	private static final String MSG_PRODUCT_ALREADY_EXISTS = "Product already exists";
 
 	@Autowired
 	private HttpServletRequest request;
 
 	@Autowired
-	private RoleRepository repository;
+	private ProductRepository repository;
 
 	@Override
-	public void initialize(RoleInputValid ann) {
+	public void initialize(ProductInputValid ann) {
 	}
 
 	@Override
-	public boolean isValid(RoleInput dto, ConstraintValidatorContext context) {
+	public boolean isValid(ProductInput dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-		boolean isUpdateRequest = uriVars.containsKey("roleId");
+		boolean isUpdateRequest = uriVars.containsKey("productId");
 
 		List<FieldMessage> list = new ArrayList<>();
 
-		Optional<Role> optional = repository.findByName(dto.getName());
+		Optional<Product> optional = repository.findByName(dto.getName());
 
 		if (optional.isEmpty())
 			return true;
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("name", MSG_ROLE_ALREADY_EXISTS));
+			list.add(new FieldMessage("name", MSG_PRODUCT_ALREADY_EXISTS));
 		}
 
 		// Update
 		if (isUpdateRequest) {
-			if (uriVars.get("roleId") != optional.get().getId().toString()) {
-				list.add(new FieldMessage("name", MSG_ROLE_ALREADY_EXISTS));
+			if (uriVars.get("productId") != optional.get().getId().toString()) {
+				list.add(new FieldMessage("name", MSG_PRODUCT_ALREADY_EXISTS));
 			}
 		}
 

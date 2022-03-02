@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
+import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -37,8 +38,9 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Page<Product> findAllPaged(Set<UUID> categoriesIds, String name, PageRequest pageRequest) {
-		if (categoriesIds.size() == 0)
+		if (categoriesIds.size() == 0) {
 			categoriesIds = null;
+		}
 		Page<Product> productPage = repository.search(categoriesIds, name, pageRequest);
 		repository.findWithCategories(productPage.toList());
 		return productPage;
@@ -51,15 +53,24 @@ public class ProductService {
 
 	@Transactional
 	public Product insert(ProductInput productInput) {
-		Product product = mapper.toProduct(productInput);
-		return repository.save(product);
+		try {
+			Product product = mapper.toProduct(productInput);
+			repository.save(product);
+			return product;
+		} catch (CategoryNotFoundException e) {
+			throw new BusinessException(e.getMessage(), e);
+		}
 	}
 
 	@Transactional
 	public Product update(UUID productId, ProductInput productInput) {
-		Product product = findById(productId);
-		mapper.update(productInput, product);
-		return repository.save(product);
+		try {
+			Product product = findById(productId);
+			mapper.update(productInput, product);
+			return repository.save(product);
+		} catch (CategoryNotFoundException e) {
+			throw new BusinessException(e.getMessage(), e);
+		}
 	}
 
 	public void delete(UUID productId) {

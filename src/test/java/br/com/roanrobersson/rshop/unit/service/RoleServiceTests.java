@@ -50,7 +50,7 @@ public class RoleServiceTests {
 
 	@Mock
 	private PrivilegeService privilegeService;
-	
+
 	@Mock
 	private RoleMapper mapper;
 
@@ -90,9 +90,12 @@ public class RoleServiceTests {
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-		
+
 		// PrivilegeService
 		when(privilegeService.findById(any(UUID.class))).thenReturn(privilege);
+
+		// Mapper
+		when(mapper.toRole(any(RoleInput.class))).thenReturn(role);
 	}
 
 	@Test

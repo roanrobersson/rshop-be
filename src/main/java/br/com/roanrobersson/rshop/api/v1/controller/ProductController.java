@@ -29,8 +29,6 @@ import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.ProductControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
-import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 
@@ -74,15 +72,11 @@ public class ProductController implements ProductControllerOpenApi {
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<ProductModel> insert(@Valid @RequestBody ProductInput productInput) {
-		try {
-			Product product = service.insert(productInput);
-			ProductModel productModel = mapper.toProductModel(product);
-			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(productModel.getId()).toUri();
-			return ResponseEntity.created(uri).body(productModel);
-		} catch (CategoryNotFoundException e) {
-			throw new BusinessException(e.getMessage(), e);
-		}
+		Product product = service.insert(productInput);
+		ProductModel productModel = mapper.toProductModel(product);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(productModel.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(productModel);
 	}
 
 	@PutMapping(value = "/{productId}", produces = "application/json")
@@ -90,13 +84,9 @@ public class ProductController implements ProductControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<ProductModel> update(@PathVariable UUID productId,
 			@Valid @RequestBody ProductInput productInput) {
-		try {
-			Product product = service.update(productId, productInput);
-			ProductModel productModel = mapper.toProductModel(product);
-			return ResponseEntity.ok().body(productModel);
-		} catch (CategoryNotFoundException e) {
-			throw new BusinessException(e.getMessage(), e);
-		}
+		Product product = service.update(productId, productInput);
+		ProductModel productModel = mapper.toProductModel(product);
+		return ResponseEntity.ok().body(productModel);
 	}
 
 	@DeleteMapping(value = "/{productId}")

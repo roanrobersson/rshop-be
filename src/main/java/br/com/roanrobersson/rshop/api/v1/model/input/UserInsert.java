@@ -9,7 +9,6 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.core.validation.AgeValid;
-import br.com.roanrobersson.rshop.core.validation.UserInsertValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@UserInsertValid
 @Getter
 @Setter
 @Builder

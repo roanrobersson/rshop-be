@@ -36,6 +36,7 @@ import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
+import br.com.roanrobersson.rshop.domain.service.CategoryService;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 import br.com.roanrobersson.rshop.factory.ProductFactory;
 
@@ -47,6 +48,9 @@ public class ProductServiceTests {
 
 	@Mock
 	private ProductRepository repository;
+
+	@Mock
+	private CategoryService categoryService;
 
 	@Mock
 	private ProductMapper mapper;
@@ -65,7 +69,7 @@ public class ProductServiceTests {
 		dependentId = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
 		product = ProductFactory.createProduct();
 		products = new PageImpl<>(List.of(product));
-		productInput = new ProductInput();
+		productInput = ProductFactory.createProductInput();
 
 		// findAllPaged
 		when(repository.search(anySet(), anyString(), any(PageRequest.class))).thenReturn(products);
@@ -85,6 +89,9 @@ public class ProductServiceTests {
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
+
+		// Mapper
+		when(mapper.toProduct(any(ProductInput.class))).thenReturn(product);
 	}
 
 	@Test

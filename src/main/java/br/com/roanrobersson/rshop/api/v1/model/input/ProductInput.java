@@ -12,7 +12,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.id.CategoryIdInput;
-import br.com.roanrobersson.rshop.core.validation.ProductInputValid;
+import br.com.roanrobersson.rshop.domain.validation.ProductInputValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

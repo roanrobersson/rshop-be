@@ -3,7 +3,7 @@ package br.com.roanrobersson.rshop.api.v1.model.input;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import br.com.roanrobersson.rshop.core.validation.AddressInputValid;
+import br.com.roanrobersson.rshop.domain.validation.AddressInputValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.core.validation;
+package br.com.roanrobersson.rshop.domain.validation;
 
 import java.util.ArrayList;
 import java.util.List;

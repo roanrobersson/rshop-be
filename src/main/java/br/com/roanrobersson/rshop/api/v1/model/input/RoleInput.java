@@ -9,7 +9,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.id.PrivilegeIdInput;
-import br.com.roanrobersson.rshop.core.validation.RoleInputValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@RoleInputValid
 @Getter
 @Setter
 @Builder

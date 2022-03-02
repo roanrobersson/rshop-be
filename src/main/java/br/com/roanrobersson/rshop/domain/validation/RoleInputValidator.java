@@ -1,10 +1,9 @@
-package br.com.roanrobersson.rshop.core.validation;
+package br.com.roanrobersson.rshop.domain.validation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintValidator;
@@ -14,48 +13,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.roanrobersson.rshop.api.exception.FieldMessage;
-import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
-import br.com.roanrobersson.rshop.domain.model.Address;
-import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
+import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.model.Role;
+import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 
-public class AddressInputValidator implements ConstraintValidator<AddressInputValid, AddressInput> {
+public class RoleInputValidator implements ConstraintValidator<RoleInputValid, RoleInput> {
 
-	private static final String MSG_ADDRESS_ALREADY_EXISTS = "Address is already exists";
+	private static final String MSG_ROLE_ALREADY_EXISTS = "Role is already exists";
 
 	@Autowired
 	private HttpServletRequest request;
 
 	@Autowired
-	private AddressRepository repository;
+	private RoleRepository repository;
 
 	@Override
-	public void initialize(AddressInputValid ann) {
+	public void initialize(RoleInputValid ann) {
 	}
 
 	@Override
-	public boolean isValid(AddressInput dto, ConstraintValidatorContext context) {
+	public boolean isValid(RoleInput dto, ConstraintValidatorContext context) {
 
 		@SuppressWarnings("unchecked")
 		var uriVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-		boolean isUpdateRequest = uriVars.containsKey("addressId");
+		boolean isUpdateRequest = uriVars.containsKey("roleId");
 
 		List<FieldMessage> list = new ArrayList<>();
 
-		UUID userId = UUID.fromString(uriVars.get("userId"));
-		Optional<Address> optional = repository.findByUserIdAndNick(userId, dto.getNick());
+		Optional<Role> optional = repository.findByName(dto.getName());
 
 		if (optional.isEmpty())
 			return true;
 
 		// Insert
 		if (!isUpdateRequest) {
-			list.add(new FieldMessage("nick", MSG_ADDRESS_ALREADY_EXISTS));
+			list.add(new FieldMessage("name", MSG_ROLE_ALREADY_EXISTS));
 		}
 
 		// Update
 		if (isUpdateRequest) {
-			if (uriVars.get("addressId") != optional.get().getId().toString()) {
-				list.add(new FieldMessage("nick", MSG_ADDRESS_ALREADY_EXISTS));
+			if (uriVars.get("roleId") != optional.get().getId().toString()) {
+				list.add(new FieldMessage("name", MSG_ROLE_ALREADY_EXISTS));
 			}
 		}
 
@@ -64,7 +62,6 @@ public class AddressInputValidator implements ConstraintValidator<AddressInputVa
 			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
 					.addConstraintViolation();
 		}
-
 		return list.isEmpty();
 	}
 }

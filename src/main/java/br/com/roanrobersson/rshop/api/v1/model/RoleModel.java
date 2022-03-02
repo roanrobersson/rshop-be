@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.core.validation.RoleInputValid;
+import br.com.roanrobersson.rshop.domain.validation.RoleInputValid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

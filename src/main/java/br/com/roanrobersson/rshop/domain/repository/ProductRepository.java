@@ -34,8 +34,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 			+ "LEFT JOIN FETCH obj.categories " 
 			+ "WHERE obj.id = :id")
 	Optional<Product> findByIdWithCategories(UUID id);
-	
-	Optional<Product> findByName(String name);
 
+	Optional<Product> findByName(String name);
+	
 	void deleteById(UUID productId);
 }

@@ -22,13 +22,10 @@ public class AgeValidator implements ConstraintValidator<AgeValid, LocalDate> {
 		if (birthDate == null) {
 			return true;
 		}
-
 		int age = Period.between(birthDate, LocalDate.now()).getYears();
-
 		if (age < minAge || age > maxAge) {
 			return false;
 		}
-
 		return true;
 	}
 }
