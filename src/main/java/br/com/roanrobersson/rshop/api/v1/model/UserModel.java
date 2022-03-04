@@ -27,11 +27,12 @@ public class UserModel {
 	private UUID id;
 
 	@Builder.Default
-	@Schema(example = "[2, 4, 6]")
+	@Schema(example = "[18aace1e-f36a-4d71-b4d1-124387d9b63a, eb1ffb79-5dfb-4b13-b615-eae094a06207]")
 	private Set<UUID> roles = new HashSet<>();
 
 	@Builder.Default
-	@Schema(example = "[4, 5, 6, 9, 13, 34]")
+	@Schema(example = "[b7705487-51a1-4092-8b62-91dccd76a41a, 91f550d9-548f-4d09-ac9c-1a95219033f7, "
+			+ "ab7fab73-0464-4f7c-bc18-069ff63a3dc9, bafcfedf-8f1c-4f16-b474-351e347b13de")
 	private Set<UUID> privileges = new HashSet<>();
 
 	@Schema(example = "Kevin", required = true)

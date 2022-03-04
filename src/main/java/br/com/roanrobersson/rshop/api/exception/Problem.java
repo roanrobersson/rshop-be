@@ -25,7 +25,7 @@ public class Problem {
 	@Schema(example = "https://rshop.com.br/invalid-data")
 	private String type;
 
-	@Schema(example = "Dados inválidos")
+	@Schema(example = "Invalid data")
 	private String title;
 
 	@Schema(example = "One or more fields are invalid. Please fill in correctly and try again.")

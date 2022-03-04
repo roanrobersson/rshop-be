@@ -26,7 +26,7 @@ public class ProductModel {
 	private UUID id;
 
 	@Builder.Default
-	@Schema(example = "[2, 4, 9]")
+	@Schema(example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]")
 	private Set<UUID> categories = new HashSet<>();
 
 	@Schema(example = "KS944RUR")

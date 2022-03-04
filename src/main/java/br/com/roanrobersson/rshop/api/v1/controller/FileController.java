@@ -27,8 +27,8 @@ public class FileController implements FileControllerOpenApi {
 	@PostMapping
 	@CheckSecurity.File.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<UriModel> insert(@RequestParam("file") MultipartFile file) {
-		URL url = service.insert(file);
+	public ResponseEntity<UriModel> insertImage(@RequestParam("file") MultipartFile file) {
+		URL url = service.insertImage(file);
 		UriModel uriDto = new UriModel(url.toString());
 		return ResponseEntity.ok().body(uriDto);
 	}

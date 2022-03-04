@@ -29,7 +29,7 @@ public class RoleInput {
 	@Valid
 	@NotEmpty
 	@Builder.Default
-	@Schema(example = "[5e0b121c-9f12-4fd3-a7e6-179b5007149a, 5e0b121c-9f12-4fd3-a7e6-179b5007149a]", required = true)
+	@Schema(example = "[\"91f550d9-548f-4d09-ac9c-1a95219033f7\", \"b7705487-51a1-4092-8b62-91dccd76a41a\"]", required = true)
 	private Set<PrivilegeIdInput> privileges = new HashSet<>();
 
 	@NotBlank

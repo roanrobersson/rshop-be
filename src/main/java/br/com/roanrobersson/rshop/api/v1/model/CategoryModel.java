@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 public class CategoryModel {
 
-	@Schema(example = "821e3c677f2246af978cb6269cb15387")
+	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
 
 	@Schema(example = "Cleaning")

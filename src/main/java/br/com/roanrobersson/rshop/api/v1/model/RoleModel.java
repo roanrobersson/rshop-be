@@ -27,7 +27,8 @@ public class RoleModel {
 	private UUID id;
 
 	@Builder.Default
-	@Schema(example = "[2, 3, 4]")
+	@Schema(example = "[b7705487-51a1-4092-8b62-91dccd76a41a, 91f550d9-548f-4d09-ac9c-1a95219033f7"
+			+ "ab7fab73-0464-4f7c-bc18-069ff63a3dc9, bafcfedf-8f1c-4f16-b474-351e347b13de]")
 	private Set<UUID> privileges = new HashSet<>();
 
 	@Schema(example = "ADMIN")
