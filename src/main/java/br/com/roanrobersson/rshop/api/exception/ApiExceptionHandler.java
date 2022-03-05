@@ -9,6 +9,7 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -45,6 +47,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Autowired
 	private MessageSource messageSource;
 
+	@Autowired 
+	private Environment env;
+	
 	@Override
 	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -236,6 +241,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.BUSINESS_ERROR;
 		String detail = ex.getMessage();
+
+		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(detail).build();
+
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<?> handleBusiness(MaxUploadSizeExceededException ex, WebRequest request) {
+
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ProblemType problemType = ProblemType.INVALID_DATA;
+
+		String detail = String.format("Maximum upload size of %s exceeded", 
+				env.getProperty("spring.servlet.multipart.max-file-size"));
 
 		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(detail).build();
 

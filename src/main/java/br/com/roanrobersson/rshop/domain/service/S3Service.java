@@ -3,11 +3,8 @@ package br.com.roanrobersson.rshop.domain.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.UUID;
 
-import org.apache.commons.io.FilenameUtils;
-import org.joda.time.Instant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,8 +16,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 @Service
 public class S3Service {
 
-	private static Logger LOG = LoggerFactory.getLogger(S3Service.class);
-
 	@Autowired
 	private AmazonS3 s3client;
 
@@ -29,25 +24,23 @@ public class S3Service {
 
 	public URL uploadFile(MultipartFile file) {
 		try {
-			String originalName = file.getOriginalFilename();
-			String extension = FilenameUtils.getExtension(originalName);
-			String fileName = Instant.now().toDate().getTime() + "." + extension;
-
+			//String originalName = file.getOriginalFilename();
+			//String extension = FilenameUtils.getExtension(originalName);
+			String fileName = UUID.randomUUID().toString().replace("-", "");
 			InputStream is = file.getInputStream();
 			String contentType = file.getContentType();
-			System.out.println(contentType);
-			return uploadFile(is, fileName, contentType);
+			Long contentLength = file.getSize();
+			return uploadFile(is, fileName, contentType, contentLength);
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
 
-	private URL uploadFile(InputStream is, String fileName, String contentType) {
+	private URL uploadFile(InputStream is, String fileName, String contentType, Long contentLength) {
 		ObjectMetadata meta = new ObjectMetadata();
 		meta.setContentType(contentType);
-		LOG.info("Upload start");
+		meta.setContentLength(contentLength);
 		s3client.putObject(bucketName, fileName, is, meta);
-		LOG.info("Upload finish");
 		return s3client.getUrl(bucketName, fileName);
 	}
 }

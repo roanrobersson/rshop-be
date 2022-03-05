@@ -17,5 +17,6 @@ import lombok.ToString;
 @ToString
 public class UriModel {
 
+	@Schema(example = "http://www.ficticiousimagehost.com/image.png")
 	private String uri;
 }
