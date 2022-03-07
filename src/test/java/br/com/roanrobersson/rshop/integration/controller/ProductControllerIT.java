@@ -59,7 +59,7 @@ public class ProductControllerIT {
 	}
 	
 	@Test
-	public void findAllShouldReturnSortedPageWhenSortByName() throws Exception {
+	public void findAll_ReturnSortedPage_SortByName() throws Exception {
 		
 		ResultActions result = 
 				mockMvc.perform(get("/v1/products?page=0&size=12&sort=name,asc")
@@ -75,7 +75,7 @@ public class ProductControllerIT {
 	
 	
 	@Test
-	public void updateShouldReturnProductModelWhenIdExists() throws Exception {
+	public void update_ReturnProductModel_IdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
 		String inputJsonBody = objectMapper.writeValueAsString(productInput);
 		String expectedJsonBody = objectMapper.writeValueAsString(productModel); 
@@ -92,7 +92,7 @@ public class ProductControllerIT {
 	}
 	
 	@Test
-	public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+	public void update_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
 		String jsonBody = objectMapper.writeValueAsString(productInput);
 		

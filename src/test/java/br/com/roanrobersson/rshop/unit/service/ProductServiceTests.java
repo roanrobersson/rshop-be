@@ -32,6 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
@@ -58,6 +59,8 @@ public class ProductServiceTests {
 	private UUID existingId;
 	private UUID nonExistingId;
 	private UUID dependentId;
+	private String existingName;
+	private String nonExistingName;
 	private Product product;
 	private PageImpl<Product> products;
 	private ProductInput productInput;
@@ -67,6 +70,8 @@ public class ProductServiceTests {
 		existingId = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
 		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
 		dependentId = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
+		existingName = "Xbox One";
+		nonExistingName = "Non existing name";
 		product = ProductFactory.createProduct();
 		products = new PageImpl<>(List.of(product));
 		productInput = ProductFactory.createProductInput();
@@ -77,6 +82,10 @@ public class ProductServiceTests {
 		// findById
 		when(repository.findByIdWithCategories(existingId)).thenReturn(Optional.of(product));
 		when(repository.findByIdWithCategories(nonExistingId)).thenReturn(Optional.empty());
+
+		// findByName
+		when(repository.findByName(existingName)).thenReturn(Optional.of(product));
+		when(repository.findByName(nonExistingName)).thenReturn(Optional.empty());
 
 		// insert
 		when(repository.save(any())).thenReturn(product);
@@ -90,12 +99,12 @@ public class ProductServiceTests {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
 
-		// Mapper
+		// mapper
 		when(mapper.toProduct(any(ProductInput.class))).thenReturn(product);
 	}
 
 	@Test
-	public void findAllPagedShouldReturnPage() {
+	public void findAllPaged_ReturnPage() {
 		Set<UUID> categories = Set.of(UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518"),
 				UUID.fromString("431d856e-caf2-4367-823a-924ce46b2e02"),
 				UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11"));
@@ -110,47 +119,70 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void findByIdShouldReturnProductModelWhenIdExist() {
+	public void findById_ReturnProductModel_IdExist() {
 
 		Product result = service.findById(existingId);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findByIdWithCategories(existingId);
 	}
 
 	@Test
-	public void findByIdShouldShouldThrowProductNotFoundExceptionWhenIdDoesNotExist() {
+	public void findById_ThrowProductNotFoundException_IdDoesNotExist() {
 
 		assertThrows(ProductNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
+
+		verify(repository, times(1)).findByIdWithCategories(nonExistingId);
 	}
 
 	@Test
-	public void insertShouldReturnProductModel() {
+	public void insert_ReturnProductModel_InputValid() {
+		productInput.setName(nonExistingName);
 
 		Product result = service.insert(productInput);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findByName(nonExistingName);
 	}
 
 	@Test
-	public void updateShouldReturnProductModelWhenIdExist() {
+	public void insert_ThrowsBusinessException_NameAlreadyInUse() {
+		productInput.setName(existingName);
+
+		assertThrows(BusinessException.class, () -> {
+			service.insert(productInput);
+		});
+
+		verify(repository, times(1)).findByName(existingName);
+	}
+
+	@Test
+	public void update_ReturnProductModel_IdExist() {
+		productInput.setName(nonExistingName);
 
 		Product result = service.update(existingId, productInput);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findByName(nonExistingName);
+		verify(repository, times(1)).findByIdWithCategories(existingId);
 	}
 
 	@Test
-	public void updateShouldThrowProductNotFoundExceptionWhenIdDoesNotExist() {
+	public void update_ThrowProductNotFoundException_IdDoesNotExist() {
+		productInput.setName(nonExistingName);
 
 		assertThrows(ProductNotFoundException.class, () -> {
 			service.update(nonExistingId, productInput);
 		});
+
+		verify(repository, times(1)).findByName(nonExistingName);
+		verify(repository, times(1)).findByIdWithCategories(nonExistingId);
 	}
 
 	@Test
-	public void deleteShouldDoNothingWhenIdExists() {
+	public void delete_DoNothing_IdExists() {
 
 		assertDoesNotThrow(() -> {
 			service.delete(existingId);
@@ -160,7 +192,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void deleteShouldThrowProductNotFoundExceptionWhenIdDoesNotExist() {
+	public void delete_ThrowProductNotFoundException_IdDoesNotExist() {
 
 		assertThrows(ProductNotFoundException.class, () -> {
 			service.delete(nonExistingId);
@@ -170,7 +202,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void deleteShouldThrowDatabaseExceptionWhenDependentId() {
+	public void delete_ThrowDatabaseException_DependentId() {
 
 		assertThrows(DatabaseException.class, () -> {
 			service.delete(dependentId);

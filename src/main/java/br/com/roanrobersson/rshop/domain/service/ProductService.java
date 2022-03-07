@@ -1,5 +1,6 @@
 package br.com.roanrobersson.rshop.domain.service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,6 +27,8 @@ public class ProductService {
 
 	private static final String MSG_PRODUCT_IN_USE = "Product with ID %s cannot be removed, because it is in use";
 	private static final String MSG_PRODUCT_WITHOUT_CATEGORY = "Category cannot be unlinked, because the product shoud have at least one category";
+	private static final String MSG_PRODUCT_NAME_ALREADY_EXISTS = "There is already a product registered with that name %s";
+	private static final String MSG_PRODUCT_SKU_ALREADY_EXISTS = "There is already a product registered with that SKU %s";
 
 	@Autowired
 	private ProductRepository repository;
@@ -53,6 +56,7 @@ public class ProductService {
 
 	@Transactional
 	public Product insert(ProductInput productInput) {
+		validateUniqueInsert(productInput);
 		try {
 			Product product = mapper.toProduct(productInput);
 			repository.save(product);
@@ -64,6 +68,7 @@ public class ProductService {
 
 	@Transactional
 	public Product update(UUID productId, ProductInput productInput) {
+		validateUniqueUpdate(productId, productInput);
 		try {
 			Product product = findById(productId);
 			mapper.update(productInput, product);
@@ -105,5 +110,27 @@ public class ProductService {
 		Category category = categoryService.findById(categoryId);
 		product.getCategories().remove(category);
 		repository.save(product);
+	}
+
+	public void validateUniqueInsert(ProductInput productInput) {
+		Optional<Product> optional = repository.findByName(productInput.getName());
+		if (optional.isPresent()) {
+			throw new BusinessException(String.format(MSG_PRODUCT_NAME_ALREADY_EXISTS, productInput.getName()));
+		}
+		optional = repository.findBySku(productInput.getSku());
+		if (optional.isPresent()) {
+			throw new BusinessException(String.format(MSG_PRODUCT_SKU_ALREADY_EXISTS, productInput.getSku()));
+		}
+	}
+
+	public void validateUniqueUpdate(UUID productId, ProductInput productInput) {
+		Optional<Product> optional = repository.findByName(productInput.getName());
+		if (optional.isPresent() && !optional.get().getId().equals(productId)) {
+			throw new BusinessException(String.format(MSG_PRODUCT_NAME_ALREADY_EXISTS, productInput.getName()));
+		}
+		optional = repository.findBySku(productInput.getSku());
+		if (optional.isPresent() && !optional.get().getId().equals(productId)) {
+			throw new BusinessException(String.format(MSG_PRODUCT_SKU_ALREADY_EXISTS, productInput.getSku()));
+		}
 	}
 }

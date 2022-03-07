@@ -15,7 +15,7 @@ import br.com.roanrobersson.rshop.domain.model.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
-	
+
 	@Query("SELECT DISTINCT obj " 
 			+ "FROM Product obj " 
 			+ "INNER JOIN obj.categories cats "
@@ -36,6 +36,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 	Optional<Product> findByIdWithCategories(UUID id);
 
 	Optional<Product> findByName(String name);
-	
+
+	Optional<Product> findBySku(String sku);
+
 	void deleteById(UUID productId);
 }

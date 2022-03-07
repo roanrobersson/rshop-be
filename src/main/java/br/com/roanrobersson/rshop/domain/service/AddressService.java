@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import br.com.roanrobersson.rshop.domain.exception.AddressNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.ForbiddenException;
@@ -25,6 +26,9 @@ import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 public class AddressService {
 
 	private static final String MSG_ADDRESS_IN_USE = "Address with ID %s cannot be removed, because it is in use";
+	private static final String MSG_NO_MAIN_ADDRESS = "User with the ID %s dont have a main address";
+	private static final String MSG_ADDRESS_NOT_BELONG = "Address with ID %s does not belong to user";
+	private static final String MSG_ADDRESS_ALREADY_EXISTS = "There is already a address registered with that nick %s";
 
 	@Autowired
 	private AddressRepository repository;
@@ -52,11 +56,12 @@ public class AddressService {
 	public Address findMain(UUID userId) {
 		Optional<Address> optional = repository.findFirstByUserIdAndMain(userId, true);
 		return optional.orElseThrow(() -> new AddressNotFoundException(
-				String.format("User with the ID %s dont have a main address", userId)));
+				String.format(MSG_NO_MAIN_ADDRESS, userId)));
 	}
 
 	@Transactional
 	public Address insert(UUID userId, AddressInput addressInput) {
+		validateUniqueInsert(userId, addressInput);
 		Address address = mapper.map(addressInput, Address.class);
 		User user = userService.findById(userId);
 		address.setUser(user);
@@ -66,6 +71,7 @@ public class AddressService {
 
 	@Transactional
 	public Address update(UUID userId, UUID addressId, AddressInput addressInput) {
+		validateUniqueUpdate(userId, addressId, addressInput);
 		Address address = findById(userId, addressId);
 		mapper.map(addressInput, address);
 		return repository.save(address);
@@ -105,8 +111,22 @@ public class AddressService {
 
 	private void validateAddressOwner(UUID userId, Address address) {
 		if (!address.getUser().getId().equals(userId)) {
-			String message = String.format("Address with ID %s does not belong to user", userId);
+			String message = String.format(MSG_ADDRESS_NOT_BELONG, userId);
 			throw new ForbiddenException(message);
+		}
+	}
+	
+	public void validateUniqueInsert(UUID userId, AddressInput addressInput) {
+		Optional<Address> optional = repository.findByUserIdAndNick(userId, addressInput.getNick());
+		if (optional.isPresent()) {
+			throw new BusinessException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
+		}
+	}
+	
+	public void validateUniqueUpdate(UUID userId, UUID addressId, AddressInput addressInput) {
+		Optional<Address> optional = repository.findByUserIdAndNick(userId, addressInput.getNick());
+		if (optional.isPresent() && !optional.get().getId().equals(addressId)) {
+			throw new BusinessException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
 		}
 	}
 }

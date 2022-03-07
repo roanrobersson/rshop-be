@@ -98,7 +98,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPagedShouldReturnPageWhenPage0Size10() {
+	public void findAllPaged_ReturnPage_Page0Size10() {
 
 		PageRequest pageRequest = PageRequest.of(0, 10);
 
@@ -111,7 +111,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPagedShouldReturnEmptyPageWhenPageDoesNotExist() {
+	public void findAllPaged_ReturnEmptyPage_PageDoesNotExist() {
 
 		PageRequest pageRequest = PageRequest.of(50, 10);
 
@@ -121,7 +121,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPagedShouldReturnSortedPageWhenSortByName() {
+	public void findAllPaged_ReturnSortedPage_SortByName() {
 
 		PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("name"));
 

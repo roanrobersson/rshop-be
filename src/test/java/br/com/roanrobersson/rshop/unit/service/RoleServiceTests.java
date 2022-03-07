@@ -29,6 +29,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
@@ -57,6 +58,8 @@ public class RoleServiceTests {
 	private UUID existingId;
 	private UUID nonExistingId;
 	private UUID dependentId;
+	private String existingName;
+	private String nonExistingName;
 	private Role role;
 	private List<Role> roles;
 	private RoleInput roleInput;
@@ -67,6 +70,8 @@ public class RoleServiceTests {
 		existingId = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
 		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
 		dependentId = UUID.fromString("5e0b121c-9f12-4fd3-a7e6-179b5007149a");
+		existingName = "ROLE_ADMIN";
+		nonExistingName = "ROLE_INEXISTENT";
 		role = RoleFactory.createRole();
 		roles = List.of(role);
 		roleInput = RoleFactory.createRoleInput();
@@ -78,6 +83,10 @@ public class RoleServiceTests {
 		// findByIdWithPrivileges
 		when(repository.findByIdWithPrivileges(existingId)).thenReturn(Optional.of(role));
 		when(repository.findByIdWithPrivileges(nonExistingId)).thenReturn(Optional.empty());
+
+		// findByName
+		when(repository.findByName(existingName)).thenReturn(Optional.of(role));
+		when(repository.findByName(nonExistingName)).thenReturn(Optional.empty());
 
 		// insert
 		when(repository.save(any())).thenReturn(role);
@@ -94,7 +103,7 @@ public class RoleServiceTests {
 		// PrivilegeService
 		when(privilegeService.findById(any(UUID.class))).thenReturn(privilege);
 
-		// Mapper
+		// mapper
 		when(mapper.toRole(any(RoleInput.class))).thenReturn(role);
 	}
 
@@ -115,6 +124,7 @@ public class RoleServiceTests {
 		Role result = service.findById(existingId);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findByIdWithPrivileges(existingId);
 	}
 
 	@Test
@@ -123,30 +133,54 @@ public class RoleServiceTests {
 		assertThrows(RoleNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
+
+		verify(repository, times(1)).findByIdWithPrivileges(nonExistingId);
 	}
 
 	@Test
-	public void insert_ReturnRoleModel() {
+	public void insert_ReturnRoleModel_InputValid() {
+		roleInput.setName(nonExistingName);
 
 		Role result = service.insert(roleInput);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findByName(nonExistingName);
+		verify(repository, times(1)).save(role);
+	}
+
+	@Test
+	public void insert_ThrowsBusinessException_NameAlreadyInUse() {
+		roleInput.setName(existingName);
+
+		assertThrows(BusinessException.class, () -> {
+			service.insert(roleInput);
+		});
+
+		verify(repository, times(1)).findByName(existingName);
 	}
 
 	@Test
 	public void update_ReturnRoleModel_IdExist() {
+		roleInput.setName(nonExistingName);
 
 		Role result = service.update(existingId, roleInput);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findByName(nonExistingName);
+		verify(repository, times(1)).findByIdWithPrivileges(existingId);
+		verify(repository, times(1)).save(role);
 	}
 
 	@Test
 	public void update_ThrowRoleNotFoundException_IdDoesNotExist() {
+		roleInput.setName(nonExistingName);
 
 		assertThrows(RoleNotFoundException.class, () -> {
 			service.update(nonExistingId, roleInput);
 		});
+
+		verify(repository, times(1)).findByName(nonExistingName);
+		verify(repository, times(1)).findByIdWithPrivileges(nonExistingId);
 	}
 
 	@Test

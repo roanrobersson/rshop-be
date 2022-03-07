@@ -22,6 +22,7 @@ import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.event.OnRegistrationCompleteEvent;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
@@ -35,6 +36,7 @@ public class UserService implements UserDetailsService {
 
 	private static final String MSG_USER_IN_USE = "User with ID %s cannot be removed, because it is in use";
 	private static final String MSG_USER_WITH_EMAIL_NOT_FOUND = "User with email %s not found";
+	private static final String MSG_USER_ALREADY_EXISTS = "There is already a user registered with that email %s";
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -76,6 +78,7 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public User insert(UserInsert userInsert) {
+		validateUniqueInsert(userInsert);
 		User user = mapper.toUser(userInsert);
 		user.setPassword(passwordEncoder.encode(userInsert.getPassword()));
 		Role defaultRole = roleService.findById(defaultUserRoleId);
@@ -149,5 +152,12 @@ public class UserService implements UserDetailsService {
 		}
 		VerificationToken token = new VerificationToken(user, tokenValue);
 		return tokenRepository.save(token);
+	}
+
+	public void validateUniqueInsert(UserInsert userInsert) {
+		Optional<User> optional = repository.findByEmail(userInsert.getEmail());
+		if (optional.isPresent()) {
+			throw new BusinessException(String.format(MSG_USER_ALREADY_EXISTS, userInsert.getName()));
+		}
 	}
 }

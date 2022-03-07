@@ -1,5 +1,6 @@
 package br.com.roanrobersson.rshop.domain.service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -21,6 +23,7 @@ import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 public class CategoryService {
 
 	private static final String MSG_CATEGORY_IN_USE = "Category with ID %s cannot be removed, because it is in use";
+	private static final String MSG_CATEGORY_ALREADY_EXISTS = "There is already a category registered with that name %s";
 
 	@Autowired
 	private CategoryRepository repository;
@@ -40,12 +43,14 @@ public class CategoryService {
 
 	@Transactional
 	public Category insert(CategoryInput categoryInput) {
+		validateUniqueInsert(categoryInput);
 		Category category = mapper.toCategory(categoryInput);
 		return repository.save(category);
 	}
 
 	@Transactional
 	public Category update(UUID categoryId, CategoryInput categoryInput) {
+		validateUniqueUpdate(categoryId, categoryInput);
 		Category category = findById(categoryId);
 		mapper.update(categoryInput, category);
 		return repository.save(category);
@@ -58,6 +63,20 @@ public class CategoryService {
 			throw new CategoryNotFoundException(categoryId);
 		} catch (DataIntegrityViolationException e) {
 			throw new EntityInUseException(String.format(MSG_CATEGORY_IN_USE, categoryId));
+		}
+	}
+	
+	public void validateUniqueInsert(CategoryInput categoryInput) {
+		Optional<Category> optional = repository.findByName(categoryInput.getName());
+		if (optional.isPresent()) {
+			throw new BusinessException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));
+		}
+	}
+	
+	public void validateUniqueUpdate(UUID categoryId, CategoryInput categoryInput) {
+		Optional<Category> optional = repository.findByName(categoryInput.getName());
+		if (optional.isPresent() && !optional.get().getId().equals(categoryId)) {
+			throw new BusinessException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));
 		}
 	}
 }

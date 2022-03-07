@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
@@ -23,6 +25,7 @@ import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 public class RoleService {
 
 	private static final String MSG_ROLE_IN_USE = "Role with ID %s cannot be removed, because it is in use";
+	private static final String MSG_ROLE_ALREADY_EXISTS = "There is already a role registered with that name %s";
 
 	@Autowired
 	private RoleRepository repository;
@@ -47,6 +50,7 @@ public class RoleService {
 
 	@Transactional
 	public Role insert(RoleInput roleInput) {
+		validateUniqueInsert(roleInput);
 		Role role = mapper.toRole(roleInput);
 		role = repository.save(role);
 		return role;
@@ -54,6 +58,7 @@ public class RoleService {
 
 	@Transactional
 	public Role update(UUID roleId, RoleInput roleInput) {
+		validateUniqueUpdate(roleId, roleInput);
 		Role role = findById(roleId);
 		mapper.update(roleInput, role);
 		return repository.save(role);
@@ -88,5 +93,19 @@ public class RoleService {
 		Privilege privilege = privilegeService.findById(privilegeId);
 		role.getPrivileges().remove(privilege);
 		repository.save(role);
+	}
+
+	public void validateUniqueInsert(RoleInput roleInput) {
+		Optional<Role> optional = repository.findByName(roleInput.getName());
+		if (optional.isPresent()) {
+			throw new BusinessException(String.format(MSG_ROLE_ALREADY_EXISTS, roleInput.getName()));
+		}
+	}
+
+	public void validateUniqueUpdate(UUID categoryId, RoleInput roleInput) {
+		Optional<Role> optional = repository.findByName(roleInput.getName());
+		if (optional.isPresent() && !optional.get().getId().equals(categoryId)) {
+			throw new BusinessException(String.format(MSG_ROLE_ALREADY_EXISTS, roleInput.getName()));
+		}
 	}
 }

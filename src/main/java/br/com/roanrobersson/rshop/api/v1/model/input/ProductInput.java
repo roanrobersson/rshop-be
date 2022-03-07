@@ -12,7 +12,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.id.CategoryIdInput;
-import br.com.roanrobersson.rshop.domain.validation.ProductInputValid;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +20,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ProductInputValid
 @Getter
 @Setter
 @Builder

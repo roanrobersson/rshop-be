@@ -11,9 +11,9 @@ import br.com.roanrobersson.rshop.domain.model.Category;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
-	Optional<Category> findByName(String name);
-
 	Optional<Category> findById(UUID categoryId);
+
+	Optional<Category> findByName(String name);
 
 	void deleteById(UUID categoryId);
 }

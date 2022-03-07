@@ -29,6 +29,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
+import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -51,6 +52,8 @@ public class CategoryServiceTests {
 	private UUID existingId;
 	private UUID nonExistingId;
 	private UUID dependentId;
+	private String existingName;
+	private String nonExistingName;
 	private Category category;
 	private PageImpl<Category> categories;
 	private CategoryInput categoryInput;
@@ -60,6 +63,8 @@ public class CategoryServiceTests {
 		existingId = UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518");
 		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
 		dependentId = UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11");
+		existingName = "Videogame";
+		nonExistingName = "Inexistent";
 		categoryInput = CategoryFactory.createCategoryInput();
 		category = CategoryFactory.createCategory();
 		categories = new PageImpl<>(List.of(category));
@@ -70,6 +75,10 @@ public class CategoryServiceTests {
 		// findById
 		when(repository.findById(existingId)).thenReturn(Optional.of(category));
 		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+		// findByName
+		when(repository.findByName(existingName)).thenReturn(Optional.of(category));
+		when(repository.findByName(nonExistingName)).thenReturn(Optional.empty());
 
 		// insert
 		when(repository.save(any())).thenReturn(category);
@@ -82,6 +91,9 @@ public class CategoryServiceTests {
 		doNothing().when(repository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
+
+		// mapper
+		when(mapper.toCategory(any(CategoryInput.class))).thenReturn(category);
 	}
 
 	@Test
@@ -101,6 +113,7 @@ public class CategoryServiceTests {
 		Category result = service.findById(existingId);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findById(existingId);
 	}
 
 	@Test
@@ -109,34 +122,56 @@ public class CategoryServiceTests {
 		assertThrows(CategoryNotFoundException.class, () -> {
 			service.findById(nonExistingId);
 		});
+
+		verify(repository, times(1)).findById(nonExistingId);
 	}
 
 	@Test
-	public void insert_ReturnCategoryModel() {
+	public void insert_ReturnCategoryModel_InputValid() {
+		categoryInput.setName(nonExistingName);
 
 		Category result = service.insert(categoryInput);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findByName(nonExistingName);
+	}
+
+	@Test
+	public void insert_ThrowsBusinessException_NameAlreadyInUse() {
+		categoryInput.setName(existingName);
+
+		assertThrows(BusinessException.class, () -> {
+			service.insert(categoryInput);
+		});
+
+		verify(repository, times(1)).findByName(existingName);
 	}
 
 	@Test
 	public void update_ReturnCategoryModel_IdExist() {
+		categoryInput.setName(nonExistingName);
 
 		Category result = service.update(existingId, categoryInput);
 
 		assertNotNull(result);
+		verify(repository, times(1)).findById(existingId);
+		verify(repository, times(1)).findByName(nonExistingName);
 	}
 
 	@Test
 	public void update_ThrowCategoryNotFoundException_IdDoesNotExist() {
+		categoryInput.setName(nonExistingName);
 
 		assertThrows(CategoryNotFoundException.class, () -> {
 			service.update(nonExistingId, categoryInput);
 		});
+
+		verify(repository, times(1)).findByName(nonExistingName);
+		verify(repository, times(1)).findById(nonExistingId);
 	}
 
 	@Test
-	public void delete_DoNothingIdExists() {
+	public void delete_DoNothing_IdExists() {
 
 		assertDoesNotThrow(() -> {
 			service.delete(existingId);
