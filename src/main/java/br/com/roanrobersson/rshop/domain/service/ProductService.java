@@ -26,7 +26,7 @@ import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 public class ProductService {
 
 	private static final String MSG_PRODUCT_IN_USE = "Product with ID %s cannot be removed, because it is in use";
-	private static final String MSG_PRODUCT_WITHOUT_CATEGORY = "Category cannot be unlinked, because the product shoud have at least one category";
+	private static final String MSG_PRODUCT_WITH_ONE_CATEGORY = "Category cannot be unlinked, because the product shoud have at least one category";
 	private static final String MSG_PRODUCT_NAME_ALREADY_EXISTS = "There is already a product registered with that name %s";
 	private static final String MSG_PRODUCT_SKU_ALREADY_EXISTS = "There is already a product registered with that SKU %s";
 
@@ -56,8 +56,8 @@ public class ProductService {
 
 	@Transactional
 	public Product insert(ProductInput productInput) {
-		validateUniqueInsert(productInput);
 		try {
+			validateUniqueInsert(productInput);
 			Product product = mapper.toProduct(productInput);
 			repository.save(product);
 			return product;
@@ -68,8 +68,8 @@ public class ProductService {
 
 	@Transactional
 	public Product update(UUID productId, ProductInput productInput) {
-		validateUniqueUpdate(productId, productInput);
 		try {
+			validateUniqueUpdate(productId, productInput);
 			Product product = findById(productId);
 			mapper.update(productInput, product);
 			return repository.save(product);
@@ -97,6 +97,9 @@ public class ProductService {
 	public void linkCategory(UUID productId, UUID categoryId) {
 		Product product = findById(productId);
 		Category category = categoryService.findById(categoryId);
+		if (product.getCategories().contains(category)) {
+			return;
+		}
 		product.getCategories().add(category);
 		repository.save(product);
 	}
@@ -105,7 +108,7 @@ public class ProductService {
 	public void unlinkCategory(UUID productId, UUID categoryId) {
 		Product product = findById(productId);
 		if (product.getCategories().size() == 1) {
-			throw new BusinessException(MSG_PRODUCT_WITHOUT_CATEGORY);
+			throw new BusinessException(MSG_PRODUCT_WITH_ONE_CATEGORY);
 		}
 		Category category = categoryService.findById(categoryId);
 		product.getCategories().remove(category);

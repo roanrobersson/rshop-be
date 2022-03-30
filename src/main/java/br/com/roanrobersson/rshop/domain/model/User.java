@@ -28,6 +28,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,7 +62,7 @@ public class User implements UserDetails {
 
 	@OneToOne(mappedBy = "user")
 	private VerificationToken verificationToken;
-	
+
 	@Column(nullable = false, length = 50)
 	private String firstName;
 
@@ -101,11 +102,17 @@ public class User implements UserDetails {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant lastLoginAt;
 
+	@Builder
 	public User(UUID id, Set<Role> roles, List<Address> addresses, String firstName, String name, LocalDate birthDate,
 			String cpf, String rg, String email, String password, String primaryTelephone, String secondaryTelephone,
 			Instant verifiedAt, Instant createdAt, Instant updatedAt, Instant lastLoginAt) {
 		this.id = id;
-		this.roles.addAll(roles);
+		if (roles != null) {
+			this.roles.addAll(roles);
+		}
+		if (addresses != null) {
+			this.addresses.addAll(addresses);
+		}
 		this.firstName = firstName;
 		this.name = name;
 		this.birthDate = birthDate;

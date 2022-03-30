@@ -55,8 +55,7 @@ public class AddressService {
 	@Transactional(readOnly = true)
 	public Address findMain(UUID userId) {
 		Optional<Address> optional = repository.findFirstByUserIdAndMain(userId, true);
-		return optional.orElseThrow(() -> new AddressNotFoundException(
-				String.format(MSG_NO_MAIN_ADDRESS, userId)));
+		return optional.orElseThrow(() -> new AddressNotFoundException(String.format(MSG_NO_MAIN_ADDRESS, userId)));
 	}
 
 	@Transactional
@@ -99,14 +98,14 @@ public class AddressService {
 
 	@Transactional
 	public void unsetMain(UUID userId) {
-		Address address;
 		try {
+			Address address;
 			address = findMain(userId);
+			address.setMain(false);
+			repository.save(address);
 		} catch (EntityNotFoundException e) {
 			return;
 		}
-		address.setMain(false);
-		repository.save(address);
 	}
 
 	private void validateAddressOwner(UUID userId, Address address) {
@@ -115,14 +114,14 @@ public class AddressService {
 			throw new ForbiddenException(message);
 		}
 	}
-	
+
 	public void validateUniqueInsert(UUID userId, AddressInput addressInput) {
 		Optional<Address> optional = repository.findByUserIdAndNick(userId, addressInput.getNick());
 		if (optional.isPresent()) {
 			throw new BusinessException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
 		}
 	}
-	
+
 	public void validateUniqueUpdate(UUID userId, UUID addressId, AddressInput addressInput) {
 		Optional<Address> optional = repository.findByUserIdAndNick(userId, addressInput.getNick());
 		if (optional.isPresent() && !optional.get().getId().equals(addressId)) {

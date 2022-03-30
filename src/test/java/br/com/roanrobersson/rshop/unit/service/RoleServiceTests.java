@@ -1,10 +1,13 @@
 package br.com.roanrobersson.rshop.unit.service;
 
+import static br.com.roanrobersson.rshop.builder.RoleBuilder.aRole;
+import static br.com.roanrobersson.rshop.builder.RoleBuilder.anExistingRole;
+import static br.com.roanrobersson.rshop.builder.RoleBuilder.aNonExistingRole;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -15,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,16 +31,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
+import br.com.roanrobersson.rshop.builder.RoleBuilder;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
-import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
-import br.com.roanrobersson.rshop.factory.PrivilegeFactory;
-import br.com.roanrobersson.rshop.factory.RoleFactory;
 
 @ExtendWith(SpringExtension.class)
 public class RoleServiceTests {
@@ -55,161 +55,154 @@ public class RoleServiceTests {
 	@Mock
 	private RoleMapper mapper;
 
-	private UUID existingId;
-	private UUID nonExistingId;
-	private UUID dependentId;
-	private String existingName;
-	private String nonExistingName;
-	private Role role;
-	private List<Role> roles;
-	private RoleInput roleInput;
-	private Privilege privilege;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		existingId = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
-		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
-		dependentId = UUID.fromString("5e0b121c-9f12-4fd3-a7e6-179b5007149a");
-		existingName = "ROLE_ADMIN";
-		nonExistingName = "ROLE_INEXISTENT";
-		role = RoleFactory.createRole();
-		roles = List.of(role);
-		roleInput = RoleFactory.createRoleInput();
-		privilege = PrivilegeFactory.createPrivilege();
-
-		// findAllPaged
-		when(repository.findAll(any(Sort.class))).thenReturn(roles);
-
-		// findByIdWithPrivileges
-		when(repository.findByIdWithPrivileges(existingId)).thenReturn(Optional.of(role));
-		when(repository.findByIdWithPrivileges(nonExistingId)).thenReturn(Optional.empty());
-
-		// findByName
-		when(repository.findByName(existingName)).thenReturn(Optional.of(role));
-		when(repository.findByName(nonExistingName)).thenReturn(Optional.empty());
-
-		// insert
-		when(repository.save(any())).thenReturn(role);
-
-		// update
-		when(repository.getById(existingId)).thenReturn(role);
-		doThrow(RoleNotFoundException.class).when(repository).getById(nonExistingId);
-
-		// delete
-		doNothing().when(repository).deleteById(existingId);
-		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
-		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-
-		// PrivilegeService
-		when(privilegeService.findById(any(UUID.class))).thenReturn(privilege);
-
-		// mapper
-		when(mapper.toRole(any(RoleInput.class))).thenReturn(role);
-	}
+	private final UUID EXISTING_ID = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+	private final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	private final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
 
 	@Test
 	public void findAllPaged_ReturnPage() {
 		Sort sort = Sort.by(new Order(Direction.fromString("ASC"), "name"));
+		List<Role> roles = List.of(anExistingRole().build());
+		when(repository.findAll(sort)).thenReturn(roles);
+		when(repository.findRolesWithPrivileges(roles)).thenReturn(roles);
 
 		List<Role> result = service.findAll(sort);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
+		assertEquals(result, roles);
 		verify(repository, times(1)).findAll(sort);
+		verify(repository, times(1)).findRolesWithPrivileges(roles);
 	}
 
 	@Test
 	public void findById_ReturnRoleModel_IdExist() {
+		Role role = anExistingRole().build();
+		UUID id = role.getId();
+		when(repository.findByIdWithPrivileges(id)).thenReturn(Optional.of(role));
 
-		Role result = service.findById(existingId);
+		Role result = service.findById(id);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByIdWithPrivileges(existingId);
+		assertEquals(result, role);
+		verify(repository, times(1)).findByIdWithPrivileges(id);
 	}
 
 	@Test
 	public void findById_ThrowRoleNotFoundException_IdDoesNotExist() {
+		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(RoleNotFoundException.class, () -> {
-			service.findById(nonExistingId);
+			service.findById(NON_EXISTING_ID);
 		});
 
-		verify(repository, times(1)).findByIdWithPrivileges(nonExistingId);
+		verify(repository, times(1)).findByIdWithPrivileges(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void insert_ReturnRoleModel_InputValid() {
-		roleInput.setName(nonExistingName);
+		RoleBuilder builder = aNonExistingRole();
+		RoleInput input = builder.buildInput();
+		Role role = builder.build();
+		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
+		when(mapper.toRole(input)).thenReturn(role);
+		when(repository.save(role)).thenReturn(role);
 
-		Role result = service.insert(roleInput);
+		Role result = service.insert(input);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByName(nonExistingName);
+		assertEquals(result, role);
+		verify(repository, times(1)).findByName(input.getName());
+		verify(mapper, times(1)).toRole(input);
 		verify(repository, times(1)).save(role);
 	}
 
 	@Test
 	public void insert_ThrowsBusinessException_NameAlreadyInUse() {
-		roleInput.setName(existingName);
+		RoleInput input = aNonExistingRole().withExistingName().buildInput();
+		when(repository.findByName(input.getName())).thenReturn(Optional.of(aRole().build()));
 
 		assertThrows(BusinessException.class, () -> {
-			service.insert(roleInput);
+			service.insert(input);
 		});
 
-		verify(repository, times(1)).findByName(existingName);
+		verify(repository, times(1)).findByName(input.getName());
 	}
 
 	@Test
 	public void update_ReturnRoleModel_IdExist() {
-		roleInput.setName(nonExistingName);
+		RoleBuilder builder = aNonExistingRole();
+		RoleInput input = builder.buildInput();
+		Role role = builder.withId(EXISTING_ID).build();
+		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
+		when(repository.findByIdWithPrivileges(EXISTING_ID)).thenReturn(Optional.of(role));
+		when(repository.save(role)).thenReturn(role);
 
-		Role result = service.update(existingId, roleInput);
+		Role result = service.update(EXISTING_ID, input);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByName(nonExistingName);
-		verify(repository, times(1)).findByIdWithPrivileges(existingId);
+		assertEquals(result, role);
+		verify(repository, times(1)).findByName(input.getName());
+		verify(repository, times(1)).findByIdWithPrivileges(EXISTING_ID);
 		verify(repository, times(1)).save(role);
 	}
 
 	@Test
 	public void update_ThrowRoleNotFoundException_IdDoesNotExist() {
-		roleInput.setName(nonExistingName);
+		RoleInput input = aNonExistingRole().buildInput();
+		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
+		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(RoleNotFoundException.class, () -> {
-			service.update(nonExistingId, roleInput);
+			service.update(NON_EXISTING_ID, input);
 		});
 
-		verify(repository, times(1)).findByName(nonExistingName);
-		verify(repository, times(1)).findByIdWithPrivileges(nonExistingId);
+		verify(repository, times(1)).findByName(input.getName());
+		verify(repository, times(1)).findByIdWithPrivileges(NON_EXISTING_ID);
+	}
+
+	@Test
+	public void update_ThrowsBusinessException_NameAlreadyInUse() {
+		RoleInput input = aNonExistingRole().withExistingName().buildInput();
+		when(repository.findByName(input.getName())).thenReturn(Optional.of(aRole().build()));
+
+		assertThrows(BusinessException.class, () -> {
+			service.update(EXISTING_ID, input);
+		});
+
+		verify(repository, times(1)).findByName(input.getName());
 	}
 
 	@Test
 	public void delete_DoNothingIdExists() {
+		doNothing().when(repository).deleteById(EXISTING_ID);
 
 		assertDoesNotThrow(() -> {
-			service.delete(existingId);
+			service.delete(EXISTING_ID);
 		});
 
-		verify(repository, times(1)).deleteById(existingId);
+		verify(repository, times(1)).deleteById(EXISTING_ID);
 	}
 
 	@Test
 	public void delete_ThrowRoleNotFoundException_IdDoesNotExist() {
+		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
 		assertThrows(RoleNotFoundException.class, () -> {
-			service.delete(nonExistingId);
+			service.delete(NON_EXISTING_ID);
 		});
 
-		verify(repository, times(1)).deleteById(nonExistingId);
+		verify(repository, times(1)).deleteById(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void delete_ThrowDatabaseException_DependentId() {
+		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
 		assertThrows(DatabaseException.class, () -> {
-			service.delete(dependentId);
+			service.delete(DEPENDENT_ID);
 		});
 
-		verify(repository, times(1)).deleteById(dependentId);
+		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 }

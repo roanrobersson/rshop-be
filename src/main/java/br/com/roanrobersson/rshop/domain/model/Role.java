@@ -17,6 +17,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,9 +61,12 @@ public class Role implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
+	@Builder
 	public Role(UUID id, Set<Privilege> privileges, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
-		this.privileges.addAll(privileges);
+		if (privileges != null) {
+			this.privileges.addAll(privileges);
+		}
 		this.name = name;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;

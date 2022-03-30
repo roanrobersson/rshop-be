@@ -18,6 +18,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,7 +47,7 @@ public class Product implements Serializable {
 
 	@Column(unique = true, nullable = false, length = 12)
 	private String sku;
-	
+
 	@Column(unique = true, nullable = false, length = 127)
 	private String name;
 
@@ -65,11 +66,14 @@ public class Product implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
-	public Product(UUID id, String sku, Set<Category> categories, String name, String description, BigDecimal price, String imgUrl,
-			Instant createdAt, Instant updatedAt) {
+	@Builder
+	public Product(UUID id, Set<Category> categories, String sku, String name, String description, BigDecimal price,
+			String imgUrl, Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.sku = sku;
-		this.categories.addAll(categories);
+		if (categories != null) {
+			this.categories.addAll(categories);
+		}
 		this.name = name;
 		this.description = description;
 		this.price = price;

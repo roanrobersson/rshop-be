@@ -14,6 +14,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,9 +55,19 @@ public class VerificationToken implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 
+	@Builder
 	public VerificationToken(User user, UUID token) {
 		this.user = user;
 		this.token = token;
+	}
+
+	@Builder
+	public VerificationToken(User user, UUID token, Instant expiryAt, Instant createdAt, Instant updatedAt) {
+		this.user = user;
+		this.token = token;
+		this.expiryAt = expiryAt;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	@PrePersist

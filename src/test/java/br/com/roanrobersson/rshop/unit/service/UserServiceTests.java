@@ -1,11 +1,17 @@
 package br.com.roanrobersson.rshop.unit.service;
 
+import static br.com.roanrobersson.rshop.builder.UserBuilder.DEPENDENT_ID;
+import static br.com.roanrobersson.rshop.builder.UserBuilder.EXISTING_EMAIL;
+import static br.com.roanrobersson.rshop.builder.UserBuilder.EXISTING_ID;
+import static br.com.roanrobersson.rshop.builder.UserBuilder.NON_EXISTING_ID;
+import static br.com.roanrobersson.rshop.builder.UserBuilder.aNonExistingUser;
+import static br.com.roanrobersson.rshop.builder.UserBuilder.anExistingUser;
+import static br.com.roanrobersson.rshop.builder.UserBuilder.anUser;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -14,9 +20,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,17 +40,15 @@ import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
+import br.com.roanrobersson.rshop.builder.UserBuilder;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
-import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 import br.com.roanrobersson.rshop.domain.service.AuthService;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
 import br.com.roanrobersson.rshop.domain.service.UserService;
-import br.com.roanrobersson.rshop.factory.RoleFactory;
-import br.com.roanrobersson.rshop.factory.UserFactory;
 
 @ExtendWith(SpringExtension.class)
 public class UserServiceTests {
@@ -72,204 +74,187 @@ public class UserServiceTests {
 	@Mock
 	private UserMapper mapper;
 
-	private UUID existingId;
-	private UUID nonExistingId;
-	private UUID dependentId;
-	private String existingEmail;
-	private String nonExistingEmail;
-	private String validPassword;
-	private User user;
-	private UserInsert userInsert;
-	private UserUpdate userUpdate;
-	private PageImpl<User> page;
-	private UserChangePasswordInput changePasswordInput;
-	private Role role;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		existingId = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
-		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
-		dependentId = UUID.fromString("8903af19-36e2-44d9-b649-c3319f33be20");
-		existingEmail = "alex@gmail.com";
-		nonExistingEmail = "a1b2c3d4e5f6@gmail.com";
-		validPassword = "123456";
-		user = UserFactory.createUser();
-		userInsert = UserFactory.createUserInsert();
-		userUpdate = UserFactory.createUserUpdate();
-		page = new PageImpl<>(List.of(user));
-		changePasswordInput = new UserChangePasswordInput(validPassword);
-		role = RoleFactory.createRole();
-
-		// findAll
-		when(repository.findAll(any(PageRequest.class))).thenReturn(page);
-
-		// findById
-		when(repository.findByIdWithRolesAndPrivileges(existingId)).thenReturn(Optional.of(user));
-		when(repository.findByIdWithRolesAndPrivileges(nonExistingId)).thenReturn(Optional.empty());
-
-		// findByEmail
-		when(repository.findByEmail(existingEmail)).thenReturn(Optional.of(user));
-		when(repository.findByEmail(nonExistingEmail)).thenReturn(Optional.empty());
-		when(repository.findByEmailWithRolesAndPrivileges(existingEmail)).thenReturn(Optional.of(user));
-		when(repository.findByEmailWithRolesAndPrivileges(nonExistingEmail)).thenReturn(Optional.empty());
-
-		// insert
-		when(repository.save(any(User.class))).thenReturn(user);
-		when(passwordEncoder.encode(anyString())).thenReturn("4546454");
-		when(roleService.findById(any(UUID.class))).thenReturn(role);
-
-		// update
-		when(repository.getById(existingId)).thenReturn(user);
-		doThrow(UserNotFoundException.class).when(repository).getById(nonExistingId);
-
-		// delete
-		doNothing().when(repository).deleteById(existingId);
-		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
-		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-
-		// mapper
-		when(mapper.toUser(any(UserInsert.class))).thenReturn(user);
-		when(mapper.toUser(any(UserUpdate.class))).thenReturn(user);
-	}
-
 	@Test
 	public void findAllPaged_ReturnPage() {
 		PageRequest pageRequest = PageRequest.of(0, 10);
+		List<User> users = List.of(anExistingUser().build());
+		Page<User> page = new PageImpl<>(List.of(anExistingUser().build()));
+		when(repository.findAll(pageRequest)).thenReturn(page);
+		when(repository.findWithRolesAndPrivileges(users)).thenReturn(users);
 
 		Page<User> result = service.findAllPaged(pageRequest);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
+		assertEquals(result, page);
 		verify(repository, times(1)).findAll(pageRequest);
+		verify(repository, times(1)).findWithRolesAndPrivileges(users);
 	}
 
 	@Test
 	public void findById_ReturnUserModel_IdExist() {
+		User user = anExistingUser().build();
+		when(repository.findByIdWithRolesAndPrivileges(EXISTING_ID)).thenReturn(Optional.of(user));
 
-		User result = service.findById(existingId);
+		User result = service.findById(EXISTING_ID);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(existingId);
+		verify(repository, times(1)).findByIdWithRolesAndPrivileges(EXISTING_ID);
 	}
 
 	@Test
 	public void findById_ThrowUserNotFoundException_IdDoesNotExist() {
+		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(UserNotFoundException.class, () -> {
-			service.findById(nonExistingId);
+			service.findById(NON_EXISTING_ID);
 		});
 
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(nonExistingId);
+		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void insert_ReturnUserModel_InputValid() {
-		userInsert.setEmail(nonExistingEmail);
+		UserBuilder builder = aNonExistingUser();
+		UserInsert insert = builder.buildInsert();
+		User user = builder.build();
+		String encodedPassword = "00000000";
+		when(repository.findByEmail(insert.getEmail())).thenReturn(Optional.empty());
+		when(mapper.toUser(insert)).thenReturn(user);
+		when(passwordEncoder.encode(insert.getPassword())).thenReturn(encodedPassword);
+		when(repository.save(user)).thenReturn(user);
 
-		User result = service.insert(userInsert);
+		User result = service.insert(insert);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByEmail(nonExistingEmail);
+		assertEquals(result, user);
+		verify(repository, times(1)).findByEmail(insert.getEmail());
+		verify(mapper, times(1)).toUser(insert);
+		verify(passwordEncoder, times(1)).encode(insert.getPassword());
 		verify(repository, times(1)).save(user);
 	}
 
 	@Test
 	public void insert_ThrowsBusinessException_EmailAlreadyInUse() {
-		userInsert.setEmail(existingEmail);
+		UserInsert insert = aNonExistingUser().buildInsert();
+		when(repository.findByEmail(insert.getEmail())).thenReturn(Optional.of(anUser().build()));
 
 		assertThrows(BusinessException.class, () -> {
-			service.insert(userInsert);
+			service.insert(insert);
 		});
 
-		verify(repository, times(1)).findByEmail(existingEmail);
+		verify(repository, times(1)).findByEmail(insert.getEmail());
 	}
 
 	@Test
 	public void update_ReturnUserModel_IdExist() {
+		UserBuilder builder = aNonExistingUser().withId(EXISTING_ID);
+		UserUpdate update = builder.buildUpdate();
+		User user = builder.build();
+		when(repository.findByIdWithRolesAndPrivileges(EXISTING_ID)).thenReturn(Optional.of(user));
+		when(repository.save(user)).thenReturn(user);
 
-		User result = service.update(existingId, userUpdate);
+		User result = service.update(EXISTING_ID, update);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(existingId);
+		assertEquals(result, user);
+		verify(repository, times(1)).findByIdWithRolesAndPrivileges(EXISTING_ID);
+		verify(mapper, times(1)).update(update, user);
 		verify(repository, times(1)).save(user);
 	}
 
 	@Test
 	public void update_ThrowUserNotFoundException_IdDoesNotExist() {
+		UserUpdate update = anExistingUser().buildUpdate();
+		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(UserNotFoundException.class, () -> {
-			service.update(nonExistingId, userUpdate);
+			service.update(NON_EXISTING_ID, update);
 		});
 
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(nonExistingId);
+		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void delete_DoNothing_IdExists() {
+		doNothing().when(repository).deleteById(EXISTING_ID);
 
 		assertDoesNotThrow(() -> {
-			service.delete(existingId);
+			service.delete(EXISTING_ID);
 		});
 
-		verify(repository, times(1)).deleteById(existingId);
+		verify(repository, times(1)).deleteById(EXISTING_ID);
 	}
 
 	@Test
 	public void delete_ThrowUserNotFoundException_IdDoesNotExist() {
+		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
 		assertThrows(UserNotFoundException.class, () -> {
-			service.delete(nonExistingId);
+			service.delete(NON_EXISTING_ID);
 		});
 
-		verify(repository, times(1)).deleteById(nonExistingId);
+		verify(repository, times(1)).deleteById(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void delete_ThrowDatabaseException_DependentId() {
+		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
 		assertThrows(DatabaseException.class, () -> {
-			service.delete(dependentId);
+			service.delete(DEPENDENT_ID);
 		});
 
-		verify(repository, times(1)).deleteById(dependentId);
+		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 
 	@Test
 	public void changePassword_DoNothing_IdExists() {
+		UserChangePasswordInput passwordInput = new UserChangePasswordInput("a3g&3Pd#");
+		User user = anUser().build();
+		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.of(user));
+		when(repository.save(user)).thenReturn(user);
 
 		assertDoesNotThrow(() -> {
-			service.changePassword(existingId, changePasswordInput);
+			service.changePassword(NON_EXISTING_ID, passwordInput);
 		});
 
+		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 		verify(repository, times(1)).save(user);
 	}
 
 	@Test
 	public void changePassword_ThrowUserNotFoundException_IdDoesNotExist() {
+		UserChangePasswordInput passwordInput = new UserChangePasswordInput("a3g&3Pd#");
+		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(UserNotFoundException.class, () -> {
-			service.changePassword(nonExistingId, changePasswordInput);
+			service.changePassword(NON_EXISTING_ID, passwordInput);
 		});
 
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(nonExistingId);
+		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void loadUserByUsername_ReturnUserDetails_IdExist() {
+		User user = anUser().build();
+		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.of(user));
 
-		UserDetails result = service.loadUserByUsername(existingEmail);
+		UserDetails result = service.loadUserByUsername(EXISTING_EMAIL);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(existingEmail);
+		assertEquals(result, user);
+		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(EXISTING_EMAIL);
 	}
 
 	@Test
 	public void loadUserByUsername_ThrowUsernameNotFoundException_EmailDoesNotExist() {
+		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.empty());
 
 		assertThrows(UsernameNotFoundException.class, () -> {
-			service.loadUserByUsername(nonExistingEmail);
+			service.loadUserByUsername(EXISTING_EMAIL);
 		});
 
-		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(nonExistingEmail);
+		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(EXISTING_EMAIL);
 	}
 }

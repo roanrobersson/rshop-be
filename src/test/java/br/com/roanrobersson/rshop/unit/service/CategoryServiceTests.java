@@ -1,10 +1,15 @@
 package br.com.roanrobersson.rshop.unit.service;
 
+import static br.com.roanrobersson.rshop.builder.CategoryBuilder.DEPENDENT_ID;
+import static br.com.roanrobersson.rshop.builder.CategoryBuilder.EXISTING_ID;
+import static br.com.roanrobersson.rshop.builder.CategoryBuilder.NON_EXISTING_ID;
+import static br.com.roanrobersson.rshop.builder.CategoryBuilder.aNonExistingCategory;
+import static br.com.roanrobersson.rshop.builder.CategoryBuilder.anExistingCategory;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -13,9 +18,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,13 +32,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
+import br.com.roanrobersson.rshop.builder.CategoryBuilder;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
-import br.com.roanrobersson.rshop.factory.CategoryFactory;
 
 @ExtendWith(SpringExtension.class)
 public class CategoryServiceTests {
@@ -49,154 +52,138 @@ public class CategoryServiceTests {
 	@Mock
 	private CategoryMapper mapper;
 
-	private UUID existingId;
-	private UUID nonExistingId;
-	private UUID dependentId;
-	private String existingName;
-	private String nonExistingName;
-	private Category category;
-	private PageImpl<Category> categories;
-	private CategoryInput categoryInput;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		existingId = UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518");
-		nonExistingId = UUID.fromString("00000000-0000-0000-0000-000000000000");
-		dependentId = UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11");
-		existingName = "Videogame";
-		nonExistingName = "Inexistent";
-		categoryInput = CategoryFactory.createCategoryInput();
-		category = CategoryFactory.createCategory();
-		categories = new PageImpl<>(List.of(category));
-
-		// findAllPaged
-		when(repository.findAll(any(PageRequest.class))).thenReturn(categories);
-
-		// findById
-		when(repository.findById(existingId)).thenReturn(Optional.of(category));
-		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
-
-		// findByName
-		when(repository.findByName(existingName)).thenReturn(Optional.of(category));
-		when(repository.findByName(nonExistingName)).thenReturn(Optional.empty());
-
-		// insert
-		when(repository.save(any())).thenReturn(category);
-
-		// update
-		when(repository.getById(existingId)).thenReturn(category);
-		doThrow(CategoryNotFoundException.class).when(repository).getById(nonExistingId);
-
-		// delete
-		doNothing().when(repository).deleteById(existingId);
-		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
-		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
-
-		// mapper
-		when(mapper.toCategory(any(CategoryInput.class))).thenReturn(category);
-	}
-
 	@Test
 	public void findAllPaged_ReturnPage() {
+		Category category = anExistingCategory().build();
+		PageImpl<Category> categories = new PageImpl<>(List.of(category));
 		PageRequest pageRequest = PageRequest.of(0, 10);
+		when(repository.findAll(pageRequest)).thenReturn(categories);
 
 		Page<Category> result = service.findAllPaged(pageRequest);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
+		assertEquals(result, categories);
 		verify(repository, times(1)).findAll(pageRequest);
 	}
 
 	@Test
 	public void findById_ReturnCategoryModel_IdExist() {
+		Category category = anExistingCategory().build();
+		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(category));
 
-		Category result = service.findById(existingId);
+		Category result = service.findById(EXISTING_ID);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findById(existingId);
+		assertEquals(result, category);
+		verify(repository, times(1)).findById(EXISTING_ID);
 	}
 
 	@Test
 	public void findById_ThrowCategoryNotFoundException_IdDoesNotExist() {
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(CategoryNotFoundException.class, () -> {
-			service.findById(nonExistingId);
+			service.findById(NON_EXISTING_ID);
 		});
 
-		verify(repository, times(1)).findById(nonExistingId);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void insert_ReturnCategoryModel_InputValid() {
-		categoryInput.setName(nonExistingName);
+		CategoryBuilder builder = aNonExistingCategory();
+		CategoryInput input = builder.buildInput();
+		Category category = builder.build();
+		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
+		when(mapper.toCategory(input)).thenReturn(category);
+		when(repository.save(category)).thenReturn(category);
 
-		Category result = service.insert(categoryInput);
+		Category result = service.insert(input);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findByName(nonExistingName);
+		assertEquals(result, category);
+		verify(repository, times(1)).findByName(input.getName());
+		verify(mapper, times(1)).toCategory(input);
+		verify(repository, times(1)).save(category);
 	}
 
 	@Test
 	public void insert_ThrowsBusinessException_NameAlreadyInUse() {
-		categoryInput.setName(existingName);
+		CategoryBuilder builder = aNonExistingCategory().withExistingName();
+		CategoryInput input = builder.buildInput();
+		Category category = builder.build();
+		when(repository.findByName(input.getName())).thenReturn(Optional.of(category));
 
 		assertThrows(BusinessException.class, () -> {
-			service.insert(categoryInput);
+			service.insert(input);
 		});
 
-		verify(repository, times(1)).findByName(existingName);
+		verify(repository, times(1)).findByName(input.getName());
 	}
 
 	@Test
 	public void update_ReturnCategoryModel_IdExist() {
-		categoryInput.setName(nonExistingName);
+		CategoryBuilder builder = aNonExistingCategory();
+		CategoryInput input = builder.buildInput();
+		Category category = builder.withId(EXISTING_ID).build();
+		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
+		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(category));
+		when(repository.save(category)).thenReturn(category);
 
-		Category result = service.update(existingId, categoryInput);
+		Category result = service.update(EXISTING_ID, input);
 
 		assertNotNull(result);
-		verify(repository, times(1)).findById(existingId);
-		verify(repository, times(1)).findByName(nonExistingName);
+		verify(repository, times(1)).findById(EXISTING_ID);
+		verify(repository, times(1)).findByName(input.getName());
+		verify(mapper, times(1)).update(input, category);
+		verify(repository, times(1)).save(category);
 	}
 
 	@Test
 	public void update_ThrowCategoryNotFoundException_IdDoesNotExist() {
-		categoryInput.setName(nonExistingName);
+		CategoryInput input = aNonExistingCategory().buildInput();
+		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(CategoryNotFoundException.class, () -> {
-			service.update(nonExistingId, categoryInput);
+			service.update(NON_EXISTING_ID, input);
 		});
 
-		verify(repository, times(1)).findByName(nonExistingName);
-		verify(repository, times(1)).findById(nonExistingId);
+		verify(repository, times(1)).findByName(input.getName());
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void delete_DoNothing_IdExists() {
+		doNothing().when(repository).deleteById(EXISTING_ID);
 
 		assertDoesNotThrow(() -> {
-			service.delete(existingId);
+			service.delete(EXISTING_ID);
 		});
 
-		verify(repository, times(1)).deleteById(existingId);
+		verify(repository, times(1)).deleteById(EXISTING_ID);
 	}
 
 	@Test
 	public void delete_ThrowCategoryNotFoundException_IdDoesNotExist() {
+		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
 		assertThrows(CategoryNotFoundException.class, () -> {
-			service.delete(nonExistingId);
+			service.delete(NON_EXISTING_ID);
 		});
 
-		verify(repository, times(1)).deleteById(nonExistingId);
+		verify(repository, times(1)).deleteById(NON_EXISTING_ID);
 	}
 
 	@Test
 	public void delete_ThrowDatabaseException_DependentId() {
+		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
 		assertThrows(DatabaseException.class, () -> {
-			service.delete(dependentId);
+			service.delete(DEPENDENT_ID);
 		});
 
-		verify(repository, times(1)).deleteById(dependentId);
+		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 }

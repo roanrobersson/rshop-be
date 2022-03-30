@@ -2,6 +2,9 @@ package br.com.roanrobersson.rshop.api.v1.model.input.id;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import br.com.roanrobersson.rshop.api.v1.model.input.id.serializer.CategoryIdInputSerializer;
 import br.com.roanrobersson.rshop.core.validation.UUIDValid;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -15,6 +18,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonSerialize(using = CategoryIdInputSerializer.class)
 public class CategoryIdInput {
 
 	@NotNull
