@@ -113,8 +113,8 @@ public class ProductServiceIT {
 
 		assertFalse(result.isEmpty());
 		assertEquals("Macbook Pro", result.getContent().get(0).getName());
-		assertEquals("O Senhor dos Anéis", result.getContent().get(1).getName());
-		assertEquals("PC Gamer", result.getContent().get(2).getName());
+		assertEquals("PC Gamer", result.getContent().get(1).getName());
+		assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
 	}
 
 	@Test

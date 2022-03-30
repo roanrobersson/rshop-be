@@ -42,7 +42,7 @@ public class ProductControllerIT {
 	private TokenUtil tokenUtil;
 
 	private final String INVALID_ID = "TTTTTTTTTT_TTTT";
-	private final String USERNAME = "administrador@gmail.com";
+	private final String USERNAME = "administrator@gmail.com";
 	private final String PASSWORD = "12345678";
 	private final String JSON_PRODUCT_WITHOUT_NAME_PROPERTY = ResourceUtils
 			.getContentFromResource("/json/incorrect/product-without-name-property.json");
@@ -57,8 +57,8 @@ public class ProductControllerIT {
 		result.andExpect(jsonPath("$.totalElements").value(25L));
 		result.andExpect(jsonPath("$.content").exists());
 		result.andExpect(jsonPath("$.content[0].name").value("Macbook Pro"));
-		result.andExpect(jsonPath("$.content[1].name").value("O Senhor dos Anéis"));
-		result.andExpect(jsonPath("$.content[2].name").value("PC Gamer"));
+		result.andExpect(jsonPath("$.content[1].name").value("PC Gamer"));
+		result.andExpect(jsonPath("$.content[2].name").value("PC Gamer Alfa"));
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class ProductControllerIT {
 
 		result.andExpect(status().isOk());
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-		result.andExpect(jsonPath("name", is("O Senhor dos Anéis")));
+		result.andExpect(jsonPath("name", is("The Lord of The Rings")));
 	}
 
 	@Test

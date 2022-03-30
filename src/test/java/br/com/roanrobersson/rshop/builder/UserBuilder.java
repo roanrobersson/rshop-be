@@ -35,8 +35,8 @@ public class UserBuilder {
 	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("d16c83fe-3a2e-42b6-97b4-503b203647f6");
 	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	public static final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
-	public static final String EXISTING_EMAIL = "cliente@gmail.com";
-	public static final String ANOTHER_EXISTING_EMAIL = "operador@gmail.com";
+	public static final String EXISTING_EMAIL = "client@gmail.com";
+	public static final String ANOTHER_EXISTING_EMAIL = "operator@gmail.com";
 	public static final String NON_EXISTING_EMAIL = "nonexistingemail@gmail.com";
 	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
 
@@ -44,8 +44,8 @@ public class UserBuilder {
 	private Set<Role> roles = new HashSet<>();
 	private List<Address> addresses = new ArrayList<>();
 	private VerificationToken verificationToken = null;
-	private String firstName = "Operador";
-	private String name = "Operador Sobrenome";
+	private String firstName = "Operator";
+	private String name = "Operator LastName";
 	private LocalDate birthDate = LocalDate.parse("1993-05-15");
 	private String cpf = "86213939059";
 	private String rg = "355144724";

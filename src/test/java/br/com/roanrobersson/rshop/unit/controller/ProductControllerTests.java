@@ -3,6 +3,7 @@ package br.com.roanrobersson.rshop.unit.controller;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
+import static br.com.roanrobersson.rshop.builder.ProductBuilder.aNonExistingProduct;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -64,7 +65,7 @@ public class ProductControllerTests {
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
 
-	private final String USERNAME = "administrador@gmail.com";
+	private final String USERNAME = "administrator@gmail.com";
 	private final String PASSWORD = "12345678";
 
 	@Test
@@ -123,7 +124,7 @@ public class ProductControllerTests {
 	@Test
 	public void insert_ReturnBadRequest_NegativePrice() throws Exception {
 		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-		ProductInput invalidInput = aProduct().withInvalidPrice().buildInput();
+		ProductInput invalidInput = aNonExistingProduct().withInvalidPrice().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(invalidInput);
 
 		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
