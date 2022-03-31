@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.domain.exception.UnauthorizedException;
+import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 
@@ -21,7 +22,9 @@ public class AuthService {
 	public UUID getUserId() {
 		try {
 			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-			return repository.findByEmail(email).get().getId();
+			User user = repository.findByEmail(email).orElseThrow(
+					() -> new UserNotFoundException(String.format("There is no user with the email %s", email)));
+			return user.getId();
 		} catch (Exception e) {
 			throw new UnauthorizedException("Invalid user");
 		}
@@ -31,12 +34,15 @@ public class AuthService {
 	public User getAuthenticatedUser() {
 		try {
 			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-			return repository.findByEmail(email).get();
+			User user = repository.findByEmail(email).orElseThrow(
+					() -> new UserNotFoundException(String.format("There is no user with the email %s", email)));
+			return user;
 		} catch (Exception e) {
 			throw new UnauthorizedException("Invalid user");
 		}
 	}
 
+	@Transactional(readOnly = true)
 	public boolean authenticatedUserIdEquals(UUID userId) {
 		return getUserId().equals(userId);
 	}

@@ -47,9 +47,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Autowired
 	private MessageSource messageSource;
 
-	@Autowired 
+	@Autowired
 	private Environment env;
-	
+
 	@Override
 	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -135,10 +135,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ProblemType problemType = ProblemType.INVALID_PARAMETER;
 
+		Class<?> type = ex.getRequiredType();
+
+		String typeName = type != null ? type.getSimpleName() : "Unknown Type";
+
 		String detail = String.format(
 				"The URL parameter '%s' received the value '%s', "
 						+ "which is of an invalid type. Correct and enter a value compatible with type %s.",
-				ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+				ex.getName(), ex.getValue(), typeName);
 
 		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(GENERIC_ERROR_MSG_FINAL_USER)
 				.build();
@@ -253,7 +257,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.INVALID_DATA;
 
-		String detail = String.format("Maximum upload size of %s exceeded", 
+		String detail = String.format("Maximum upload size of %s exceeded",
 				env.getProperty("spring.servlet.multipart.max-file-size"));
 
 		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(detail).build();

@@ -31,7 +31,7 @@ public class VerificationToken implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final long EXPIRATION_IN_SECONDS = 60 * 60 * 24;
+	private static final long EXPIRATION_IN_SECONDS = 60L * 60L * 24L;
 
 	@Id
 	@Column(name = "user_id")
