@@ -20,6 +20,4 @@ public interface AddressRepository extends JpaRepository<Address, UUID> {
 	Optional<Address> findByUserIdAndId(UUID userId, UUID id);
 
 	Optional<Address> findByUserIdAndNick(UUID userId, String nick);
-
-	void deleteById(UUID addressId);
 }

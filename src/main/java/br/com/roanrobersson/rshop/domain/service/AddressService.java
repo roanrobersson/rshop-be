@@ -17,7 +17,6 @@ import br.com.roanrobersson.rshop.domain.exception.AddressNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
-import br.com.roanrobersson.rshop.domain.exception.ForbiddenException;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
@@ -27,7 +26,6 @@ public class AddressService {
 
 	private static final String MSG_ADDRESS_IN_USE = "Address with ID %s cannot be removed, because it is in use";
 	private static final String MSG_NO_MAIN_ADDRESS = "User with the ID %s dont have a main address";
-	private static final String MSG_ADDRESS_NOT_BELONG = "Address with ID %s does not belong to user";
 	private static final String MSG_ADDRESS_ALREADY_EXISTS = "There is already a address registered with that nick %s";
 
 	@Autowired
@@ -48,7 +46,6 @@ public class AddressService {
 	public Address findById(UUID userId, UUID addressId) {
 		Address address = repository.findByUserIdAndId(userId, addressId)
 				.orElseThrow(() -> new AddressNotFoundException(addressId));
-		validateAddressOwner(userId, address);
 		return address;
 	}
 
@@ -78,6 +75,7 @@ public class AddressService {
 
 	public void delete(UUID userId, UUID addressId) {
 		try {
+			findById(userId, addressId);
 			repository.deleteById(addressId);
 		} catch (EmptyResultDataAccessException e) {
 			throw new AddressNotFoundException(addressId);
@@ -105,13 +103,6 @@ public class AddressService {
 			repository.save(address);
 		} catch (EntityNotFoundException e) {
 			return;
-		}
-	}
-
-	private void validateAddressOwner(UUID userId, Address address) {
-		if (!address.getUser().getId().equals(userId)) {
-			String message = String.format(MSG_ADDRESS_NOT_BELONG, userId);
-			throw new ForbiddenException(message);
 		}
 	}
 
