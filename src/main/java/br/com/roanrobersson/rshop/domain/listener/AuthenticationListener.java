@@ -17,7 +17,7 @@ import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 @Component
 public class AuthenticationListener {
 
-	private static Logger logger = LoggerFactory.getLogger(AuthenticationListener.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationListener.class);
 
 	@Autowired
 	private UserRepository repository;
@@ -35,7 +35,7 @@ public class AuthenticationListener {
 		User user = (User) event.getAuthentication().getPrincipal();
 		user.setLastLoginAt(Instant.now());
 		repository.save(user);
-		logger.info(String.format("User %s has been authenticated", user.getUsername()));
+		LOGGER.info("User {} has been authenticated", user.getUsername());
 	}
 
 	@EventListener
@@ -44,6 +44,6 @@ public class AuthenticationListener {
 		if (event.getAuthentication().getDetails() instanceof WebAuthenticationDetails) {
 			return;
 		}
-		logger.warn(String.format("Error authenticating %s", event.getAuthentication().getPrincipal()));
+		LOGGER.warn("Error authenticating {}", event.getAuthentication().getPrincipal());
 	}
 }

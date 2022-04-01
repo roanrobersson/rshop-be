@@ -43,7 +43,7 @@ public class Product implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	@Setter(value = AccessLevel.NONE)
-	Set<Category> categories = new HashSet<>();
+	private Set<Category> categories = new HashSet<>();
 
 	@Column(unique = true, nullable = false, length = 12)
 	private String sku;

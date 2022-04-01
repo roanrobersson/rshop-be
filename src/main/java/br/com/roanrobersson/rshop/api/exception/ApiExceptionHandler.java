@@ -203,7 +203,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<?> handleForbidden(AccessDeniedException ex, WebRequest request) {
+	public ResponseEntity<Object> handleForbidden(AccessDeniedException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.FORBIDDEN;
 		ProblemType problemType = ProblemType.ACCESS_DENIED;
@@ -216,7 +216,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)
-	public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
+	public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
@@ -228,7 +228,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(EntityInUseException.class)
-	public ResponseEntity<?> handleEntityInUse(EntityInUseException ex, WebRequest request) {
+	public ResponseEntity<Object> handleEntityInUse(EntityInUseException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.CONFLICT;
 		ProblemType problemType = ProblemType.ENTITY_IN_USE;
@@ -240,7 +240,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(BusinessException.class)
-	public ResponseEntity<?> handleBusiness(BusinessException ex, WebRequest request) {
+	public ResponseEntity<Object> handleBusiness(BusinessException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.BUSINESS_ERROR;
@@ -252,7 +252,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
-	public ResponseEntity<?> handleBusiness(MaxUploadSizeExceededException ex, WebRequest request) {
+	public ResponseEntity<Object> handleBusiness(MaxUploadSizeExceededException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.INVALID_DATA;
@@ -287,6 +287,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	private String joinPath(List<Reference> references) {
-		return references.stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+		return references.stream().map(Reference::getFieldName).collect(Collectors.joining("."));
 	}
 }

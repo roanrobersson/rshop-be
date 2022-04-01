@@ -34,9 +34,8 @@ public class AuthService {
 	public User getAuthenticatedUser() {
 		try {
 			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-			User user = repository.findByEmail(email).orElseThrow(
+			return repository.findByEmail(email).orElseThrow(
 					() -> new UserNotFoundException(String.format("There is no user with the email %s", email)));
-			return user;
 		} catch (Exception e) {
 			throw new UnauthorizedException("Invalid user");
 		}

@@ -47,7 +47,7 @@ import br.com.roanrobersson.rshop.domain.service.CategoryService;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 
 @ExtendWith(SpringExtension.class)
-public class ProductServiceTests {
+class ProductServiceTests {
 
 	@InjectMocks
 	private ProductService service;
@@ -62,7 +62,7 @@ public class ProductServiceTests {
 	ProductMapper mapper;
 
 	@Test
-	public void findAllPaged_ReturnPage() {
+	void findAllPaged_ReturnPage() {
 		Product product = anExistingProduct().build();
 		PageImpl<Product> products = new PageImpl<>(List.of(product));
 		Set<UUID> categories = Set.of(CategoryBuilder.EXISTING_ID, CategoryBuilder.ANOTHER_EXISTING_ID);
@@ -79,7 +79,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void findById_ReturnProductModel_IdExist() {
+	void findById_ReturnProductModel_IdExist() {
 		Product product = anExistingProduct().build();
 		UUID id = product.getId();
 		when(repository.findByIdWithCategories(id)).thenReturn(Optional.of(product));
@@ -92,7 +92,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void findById_ThrowProductNotFoundException_IdDoesNotExist() {
+	void findById_ThrowProductNotFoundException_IdDoesNotExist() {
 		when(repository.findByIdWithCategories(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(ProductNotFoundException.class, () -> {
@@ -103,7 +103,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void insert_ReturnProductModel_InputValid() {
+	void insert_ReturnProductModel_InputValid() {
 		ProductBuilder builder = aNonExistingProduct();
 		Product product = builder.build();
 		ProductInput input = builder.buildInput();
@@ -121,7 +121,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void insert_ThrowsBusinessException_NameAlreadyInUse() {
+	void insert_ThrowsBusinessException_NameAlreadyInUse() {
 		ProductInput input = aNonExistingProduct().withExistingName().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(aProduct().build()));
 
@@ -133,7 +133,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void insert_ThrowsBusinessException_CategoryNonExist() {
+	void insert_ThrowsBusinessException_CategoryNonExist() {
 		ProductInput input = aProduct().withNonExistingCategory().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(mapper.toProduct(input)).thenThrow(CategoryNotFoundException.class);
@@ -147,7 +147,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void update_ReturnProductModel_IdExist() {
+	void update_ReturnProductModel_IdExist() {
 		ProductBuilder builder = aNonExistingProduct().withId(EXISTING_ID);
 		Product product = builder.build();
 		ProductInput input = builder.withId(EXISTING_ID).buildInput();
@@ -166,7 +166,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void update_ThrowBusinessException_IdDoesNotExist() {
+	void update_ThrowBusinessException_IdDoesNotExist() {
 		ProductInput input = aNonExistingProduct().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findByIdWithCategories(NON_EXISTING_ID)).thenReturn(Optional.empty());
@@ -180,7 +180,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void delete_DoNothing_IdExists() {
+	void delete_DoNothing_IdExists() {
 		doNothing().when(repository).deleteById(EXISTING_ID);
 
 		assertDoesNotThrow(() -> {
@@ -191,7 +191,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void delete_ThrowProductNotFoundException_IdDoesNotExist() {
+	void delete_ThrowProductNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
 		assertThrows(ProductNotFoundException.class, () -> {
@@ -202,7 +202,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void delete_ThrowDatabaseException_DependentId() {
+	void delete_ThrowDatabaseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
 		assertThrows(DatabaseException.class, () -> {

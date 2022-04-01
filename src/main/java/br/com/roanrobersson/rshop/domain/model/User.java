@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -60,7 +61,7 @@ public class User implements UserDetails {
 	@Setter(value = AccessLevel.NONE)
 	private List<Address> addresses = new ArrayList<>();
 
-	@OneToOne(mappedBy = "user")
+	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
 	private VerificationToken verificationToken;
 
 	@Column(nullable = false, length = 50)

@@ -41,7 +41,7 @@ import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
 
 @ExtendWith(SpringExtension.class)
-public class CategoryServiceTests {
+class CategoryServiceTests {
 
 	@InjectMocks
 	private CategoryService service;
@@ -53,7 +53,7 @@ public class CategoryServiceTests {
 	private CategoryMapper mapper;
 
 	@Test
-	public void findAllPaged_ReturnPage() {
+	void findAllPaged_ReturnPage() {
 		Category category = anExistingCategory().build();
 		PageImpl<Category> categories = new PageImpl<>(List.of(category));
 		PageRequest pageRequest = PageRequest.of(0, 10);
@@ -68,7 +68,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void findById_ReturnCategoryModel_IdExist() {
+	void findById_ReturnCategoryModel_IdExist() {
 		Category category = anExistingCategory().build();
 		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(category));
 
@@ -80,7 +80,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void findById_ThrowCategoryNotFoundException_IdDoesNotExist() {
+	void findById_ThrowCategoryNotFoundException_IdDoesNotExist() {
 		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		assertThrows(CategoryNotFoundException.class, () -> {
@@ -91,7 +91,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void insert_ReturnCategoryModel_InputValid() {
+	void insert_ReturnCategoryModel_InputValid() {
 		CategoryBuilder builder = aNonExistingCategory();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.build();
@@ -109,7 +109,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void insert_ThrowsBusinessException_NameAlreadyInUse() {
+	void insert_ThrowsBusinessException_NameAlreadyInUse() {
 		CategoryBuilder builder = aNonExistingCategory().withExistingName();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.build();
@@ -123,7 +123,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void update_ReturnCategoryModel_IdExist() {
+	void update_ReturnCategoryModel_IdExist() {
 		CategoryBuilder builder = aNonExistingCategory();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.withId(EXISTING_ID).build();
@@ -141,7 +141,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void update_ThrowCategoryNotFoundException_IdDoesNotExist() {
+	void update_ThrowCategoryNotFoundException_IdDoesNotExist() {
 		CategoryInput input = aNonExistingCategory().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
@@ -155,7 +155,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void delete_DoNothing_IdExists() {
+	void delete_DoNothing_IdExists() {
 		doNothing().when(repository).deleteById(EXISTING_ID);
 
 		assertDoesNotThrow(() -> {
@@ -166,7 +166,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void delete_ThrowCategoryNotFoundException_IdDoesNotExist() {
+	void delete_ThrowCategoryNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
 		assertThrows(CategoryNotFoundException.class, () -> {
@@ -177,7 +177,7 @@ public class CategoryServiceTests {
 	}
 
 	@Test
-	public void delete_ThrowDatabaseException_DependentId() {
+	void delete_ThrowDatabaseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
 		assertThrows(DatabaseException.class, () -> {

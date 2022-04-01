@@ -52,7 +52,7 @@ public class Privilege implements Serializable {
 		this.description = description;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-	};
+	}
 
 	@PrePersist
 	public void prePersist() {

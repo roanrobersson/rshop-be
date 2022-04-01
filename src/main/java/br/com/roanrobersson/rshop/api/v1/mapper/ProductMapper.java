@@ -41,7 +41,7 @@ public abstract class ProductMapper {
 	}
 
 	protected Set<UUID> categoriesToCategoriesIds(Set<Category> categories) {
-		return categories.stream().map(x -> x.getId()).collect(Collectors.toSet());
+		return categories.stream().map(Category::getId).collect(Collectors.toSet());
 	}
 
 	protected Set<Category> categoriesIdsToCategories(Set<CategoryIdInput> categoriesIds) {

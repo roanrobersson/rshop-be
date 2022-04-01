@@ -41,7 +41,7 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Page<Product> findAllPaged(Set<UUID> categoriesIds, String name, PageRequest pageRequest) {
-		if (categoriesIds.size() == 0) {
+		if (categoriesIds.isEmpty()) {
 			categoriesIds = null;
 		}
 		Page<Product> productPage = repository.search(categoriesIds, name, pageRequest);

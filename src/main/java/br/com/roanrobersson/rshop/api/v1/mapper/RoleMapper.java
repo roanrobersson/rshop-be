@@ -41,7 +41,7 @@ public abstract class RoleMapper {
 	}
 
 	protected Set<UUID> privilegesToPrivilegesIds(Set<Privilege> privileges) {
-		return privileges.stream().map(x -> x.getId()).collect(Collectors.toSet());
+		return privileges.stream().map(Privilege::getId).collect(Collectors.toSet());
 	}
 
 	protected Set<Privilege> privilegesIdsToPrivileges(Set<PrivilegeIdInput> privilegesIds) {

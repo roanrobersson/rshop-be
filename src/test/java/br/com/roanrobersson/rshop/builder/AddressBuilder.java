@@ -23,7 +23,7 @@ public class AddressBuilder {
 	private User user = null;
 	private String nick = EXISTING_NICK;
 	private Boolean main = true;
-	private String address = "Brockton Avenue";
+	private String addressLine = "Brockton Avenue";
 	private String number = "65";
 	private String neighborhood = "Center";
 	private String city = "Massapequa";
@@ -60,7 +60,7 @@ public class AddressBuilder {
 	}
 
 	public Address build() {
-		return new Address(id, user, nick, main, address, number, neighborhood, city, state, uf, postalCode, complement,
+		return new Address(id, user, nick, main, addressLine, number, neighborhood, city, state, uf, postalCode, complement,
 				referencePoint, telephone, VALID_INSTANT, VALID_INSTANT);
 	}
 

@@ -53,7 +53,7 @@ public class Address implements Serializable {
 	private Boolean main;
 
 	@Column(nullable = false, length = 75)
-	private String address;
+	private String addressLine;
 
 	@Column(nullable = false, length = 6)
 	private String number;

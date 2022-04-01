@@ -16,7 +16,6 @@ import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import br.com.roanrobersson.rshop.domain.exception.AddressNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
-import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
@@ -44,9 +43,8 @@ public class AddressService {
 
 	@Transactional(readOnly = true)
 	public Address findById(UUID userId, UUID addressId) {
-		Address address = repository.findByUserIdAndId(userId, addressId)
+		return repository.findByUserIdAndId(userId, addressId)
 				.orElseThrow(() -> new AddressNotFoundException(addressId));
-		return address;
 	}
 
 	@Transactional(readOnly = true)
@@ -73,6 +71,7 @@ public class AddressService {
 		return repository.save(address);
 	}
 
+	@Transactional
 	public void delete(UUID userId, UUID addressId) {
 		try {
 			findById(userId, addressId);
@@ -87,8 +86,9 @@ public class AddressService {
 	@Transactional
 	public void setMain(UUID userId, UUID addressId) {
 		Address address = findById(userId, addressId);
-		if (address.getMain())
+		if (Boolean.TRUE.equals(address.getMain())) {
 			return;
+		}
 		unsetMain(userId);
 		address.setMain(true);
 		repository.save(address);
@@ -96,14 +96,10 @@ public class AddressService {
 
 	@Transactional
 	public void unsetMain(UUID userId) {
-		try {
-			Address address;
-			address = findMain(userId);
-			address.setMain(false);
-			repository.save(address);
-		} catch (EntityNotFoundException e) {
-			return;
-		}
+		Address address;
+		address = findMain(userId);
+		address.setMain(false);
+		repository.save(address);
 	}
 
 	public void validateUniqueInsert(UUID userId, AddressInput addressInput) {

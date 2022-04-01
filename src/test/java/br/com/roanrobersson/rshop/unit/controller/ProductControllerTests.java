@@ -48,7 +48,7 @@ import br.com.roanrobersson.rshop.domain.service.ProductService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ProductControllerTests {
+class ProductControllerTests {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -69,7 +69,7 @@ public class ProductControllerTests {
 	private final String PASSWORD = "12345678";
 
 	@Test
-	public void findAll_ReturnPage() throws Exception {
+	void findAll_ReturnPage() throws Exception {
 		Product product = aProduct().build();
 		PageImpl<Product> page = new PageImpl<>(List.of(product));
 		when(service.findAllPaged(anySet(), anyString(), any(PageRequest.class))).thenReturn(page);
@@ -81,7 +81,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void findById_ReturnProduct_IdExist() throws Exception {
+	void findById_ReturnProduct_IdExist() throws Exception {
 		ProductBuilder builder = aProduct().withId(EXISTING_ID).withExistingName().withExistingSKU();
 		Product product = builder.build();
 		ProductModel model = builder.buildModel();
@@ -96,7 +96,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void findById_ReturnNotFound_IdDoesNotExist() throws Exception {
+	void findById_ReturnNotFound_IdDoesNotExist() throws Exception {
 		when(service.findById(NON_EXISTING_ID)).thenThrow(ProductNotFoundException.class);
 
 		ResultActions result = mockMvc
@@ -106,7 +106,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void insert_ReturnProductModel_ValidProductInput() throws Exception {
+	void insert_ReturnProductModel_ValidProductInput() throws Exception {
 		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 		ProductBuilder builder = aProduct().withExistingId().withNonExistingName().withNonExistingSKU()
 				.withExistingCategory();
@@ -122,7 +122,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void insert_ReturnBadRequest_NegativePrice() throws Exception {
+	void insert_ReturnBadRequest_NegativePrice() throws Exception {
 		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 		ProductInput invalidInput = aNonExistingProduct().withInvalidPrice().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(invalidInput);
@@ -134,7 +134,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void update_ReturnProductModel_IdExists() throws Exception {
+	void update_ReturnProductModel_IdExists() throws Exception {
 		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 		ProductBuilder builder = aProduct().withId(EXISTING_ID).withNonExistingName().withNonExistingSKU()
 				.withExistingCategory();
@@ -151,7 +151,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void update_ReturnNotFound_IdDoesNotExist() throws Exception {
+	void update_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 		ProductInput input = aProduct().withExistingCategory().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(input);
@@ -165,7 +165,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void delete_ReturnNoContent_IdExist() throws Exception {
+	void delete_ReturnNoContent_IdExist() throws Exception {
 		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 		doNothing().when(service).delete(EXISTING_ID);
 
@@ -176,7 +176,7 @@ public class ProductControllerTests {
 	}
 
 	@Test
-	public void delete_ReturnNotFound_IdDoesNotExist() throws Exception {
+	void delete_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 		doThrow(ProductNotFoundException.class).when(service).delete(NON_EXISTING_ID);
 

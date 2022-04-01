@@ -21,7 +21,7 @@ import freemarker.template.Template;
 
 public class SendGridEmailService implements EmailService {
 
-	private static Logger LOG = LoggerFactory.getLogger(SendGridEmailService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SendGridEmailService.class);
 
 	@Autowired
 	private SendGrid sendGrid;
@@ -37,13 +37,13 @@ public class SendGridEmailService implements EmailService {
 
 	@Autowired
 	private Configuration freemarkerConfig;
-	
+
 	public void sendEmail(Message msg) {
 		String body = processTemplate(msg);
 		Email fromEmail = new Email(senderEmail, senderName);
 		Content content = new Content("text/html", body);
 		String subject = msg.getSubject();
-		for(String recipient : msg.getRecipients()) {
+		for (String recipient : msg.getRecipients()) {
 			Email toEmail = new Email(recipient);
 			Mail mail = new Mail(fromEmail, subject, toEmail, content);
 			sendRequest(mail);
@@ -56,19 +56,19 @@ public class SendGridEmailService implements EmailService {
 			request.setMethod(Method.POST);
 			request.setEndpoint("mail/send");
 			request.setBody(mail.build());
-			LOG.info("Sending email to: " + mail.getSubject());
+			LOGGER.info("Sending email to: {}", mail.getSubject());
 			Response response = sendGrid.api(request);
 			if (response.getStatusCode() >= 400 && response.getStatusCode() <= 500) {
-				LOG.error("Error sending email: " + response.getBody());
+				LOGGER.error("Error sending email: {}", response.getBody());
 				throw new EmailException(response.getBody());
 			} else {
-				LOG.info("Email sent! Status = " + response.getStatusCode());
+				LOGGER.info("Email sent! Status = {}", response.getStatusCode());
 			}
 		} catch (IOException e) {
 			throw new EmailException(e.getMessage());
-		}	
+		}
 	}
-	
+
 	protected String processTemplate(Message msg) {
 		try {
 			Template template = freemarkerConfig.getTemplate(msg.getBody());

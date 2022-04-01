@@ -1,7 +1,7 @@
 package br.com.roanrobersson.rshop.builder;
 
-import static br.com.roanrobersson.rshop.builder.CategoryBuilder.anExistingCategory;
 import static br.com.roanrobersson.rshop.builder.CategoryBuilder.aNonExistingCategory;
+import static br.com.roanrobersson.rshop.builder.CategoryBuilder.anExistingCategory;
 
 import java.math.BigDecimal;
 import java.time.Instant;

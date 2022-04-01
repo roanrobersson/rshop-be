@@ -26,7 +26,7 @@ import br.com.roanrobersson.rshop.domain.service.ProductService;
 
 @SpringBootTest
 @Transactional
-public class ProductServiceIT {
+class ProductServiceIT {
 
 	@Autowired
 	private ProductService service;
@@ -40,7 +40,7 @@ public class ProductServiceIT {
 	private static final Set<UUID> EMPTY_SET = Set.of();
 
 	@Test
-	public void findAllPaged_ReturnAllProducts_CategoryNotInformed() {
+	void findAllPaged_ReturnAllProducts_CategoryNotInformed() {
 
 		Page<Product> result = service.findAllPaged(EMPTY_SET, "", DEFAULT_PAGE_REQUEST);
 
@@ -49,7 +49,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPaged_ReturnOnlySelectedCategory_CategoryInformed() {
+	void findAllPaged_ReturnOnlySelectedCategory_CategoryInformed() {
 		UUID computersCategoryId = UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11");
 		long countComputersProducts = 23L;
 		Set<UUID> categories = Set.of(computersCategoryId);
@@ -61,7 +61,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPaged_ReturnAllProducts_NameIsEmpty() {
+	void findAllPaged_ReturnAllProducts_NameIsEmpty() {
 
 		Page<Product> result = service.findAllPaged(EMPTY_SET, "", DEFAULT_PAGE_REQUEST);
 
@@ -70,7 +70,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPaged_ReturnProducts_NameExistsIgnoringCase() {
+	void findAllPaged_ReturnProducts_NameExistsIgnoringCase() {
 
 		Page<Product> result = service.findAllPaged(EMPTY_SET, "pc gAMeR", DEFAULT_PAGE_REQUEST);
 
@@ -79,7 +79,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPaged_ReturnProducts_NameExists() {
+	void findAllPaged_ReturnProducts_NameExists() {
 
 		Page<Product> result = service.findAllPaged(EMPTY_SET, "PC Gamer", DEFAULT_PAGE_REQUEST);
 
@@ -88,7 +88,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPaged_ReturnPage_Page0Size10() {
+	void findAllPaged_ReturnPage_Page0Size10() {
 
 		Page<Product> result = service.findAllPaged(EMPTY_SET, "", DEFAULT_PAGE_REQUEST);
 
@@ -99,7 +99,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPaged_ReturnEmptyPage_PageDoesNotExist() {
+	void findAllPaged_ReturnEmptyPage_PageDoesNotExist() {
 
 		Page<Product> result = service.findAllPaged(EMPTY_SET, "", PageRequest.of(50, 10));
 
@@ -107,7 +107,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void findAllPaged_ReturnSortedPage_SortByName() {
+	void findAllPaged_ReturnSortedPage_SortByName() {
 
 		Page<Product> result = service.findAllPaged(EMPTY_SET, "", PageRequest.of(0, 10, Sort.by("name")));
 
@@ -118,7 +118,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void delete_DoNothing_IdExists() {
+	void delete_DoNothing_IdExists() {
 
 		assertDoesNotThrow(() -> {
 			service.delete(EXISTING_ID);
@@ -128,7 +128,7 @@ public class ProductServiceIT {
 	}
 
 	@Test
-	public void delete_ThrowResourceNotFoundException_IdDoesNotExist() {
+	void delete_ThrowResourceNotFoundException_IdDoesNotExist() {
 
 		assertThrows(EntityNotFoundException.class, () -> {
 			service.delete(NON_EXISTING_ID);

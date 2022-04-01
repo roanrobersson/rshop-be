@@ -30,7 +30,7 @@ import br.com.roanrobersson.rshop.util.TokenUtil;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class ProductControllerIT {
+class ProductControllerIT {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -48,7 +48,7 @@ public class ProductControllerIT {
 			.getContentFromResource("/json/incorrect/product-without-name-property.json");
 
 	@Test
-	public void findAll_ReturnSortedPage_SortByName() throws Exception {
+	void findAll_ReturnSortedPage_SortByName() throws Exception {
 
 		ResultActions result = mockMvc
 				.perform(get("/v1/products?page=0&size=12&sort=name,asc").accept(MediaType.APPLICATION_JSON));
@@ -62,7 +62,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void findById_ReturnProductModel_IdExists() throws Exception {
+	void findById_ReturnProductModel_IdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(get("/v1/products/{productId}", EXISTING_ID)
@@ -74,7 +74,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void findById_ReturnNotFound_IdDoesNotExists() throws Exception {
+	void findById_ReturnNotFound_IdDoesNotExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(get("/v1/products/{productId}", NON_EXISTING_ID)
@@ -84,7 +84,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void findById_ReturnBadRequest_InvalidId() throws Exception {
+	void findById_ReturnBadRequest_InvalidId() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(get("/v1/products/{productId}", INVALID_ID)
@@ -94,7 +94,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void insert_ReturnProductModel_ValidInput() throws Exception {
+	void insert_ReturnProductModel_ValidInput() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aNonExistingProduct().buildInput());
 
@@ -107,7 +107,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void insert_ReturnBadRequest_InputWithoutName() throws Exception {
+	void insert_ReturnBadRequest_InputWithoutName() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
@@ -118,7 +118,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void insert_ReturnBadRequest_InputWithoutCategory() throws Exception {
+	void insert_ReturnBadRequest_InputWithoutCategory() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aProduct().withoutCategories().buildInput());
 
@@ -129,7 +129,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void insert_ReturnBadRequest_InputWithNonExistingCategory() throws Exception {
+	void insert_ReturnBadRequest_InputWithNonExistingCategory() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aProduct().withNonExistingCategory().buildInput());
 
@@ -140,7 +140,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void update_ReturnProductModel_IdExists() throws Exception {
+	void update_ReturnProductModel_IdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aNonExistingProduct().buildInput());
 
@@ -154,7 +154,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void update_ReturnNotFound_IdDoesNotExist() throws Exception {
+	void update_ReturnNotFound_IdDoesNotExist() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aNonExistingProduct().buildInput());
 
@@ -166,7 +166,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void update_ReturnBadRequest_InvalidId() throws Exception {
+	void update_ReturnBadRequest_InvalidId() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aNonExistingProduct().buildInput());
 
@@ -178,7 +178,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void update_ReturnBadRequest_InputWithoutName() throws Exception {
+	void update_ReturnBadRequest_InputWithoutName() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(put("/v1/products/{productId}", EXISTING_ID)
@@ -189,7 +189,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void update_ReturnBadRequest_InputWithNonExistingCategory() throws Exception {
+	void update_ReturnBadRequest_InputWithNonExistingCategory() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aProduct().withNonExistingCategory().buildInput());
 
@@ -201,7 +201,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void update_ReturnBadRequest_InputWithoutCategory() throws Exception {
+	void update_ReturnBadRequest_InputWithoutCategory() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 		String jsonBody = objectMapper.writeValueAsString(aProduct().withoutCategories().buildInput());
 
@@ -213,7 +213,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void delete_ReturnNoContent_IdExists() throws Exception {
+	void delete_ReturnNoContent_IdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(delete("/v1/products/{productId}", EXISTING_ID)
@@ -223,7 +223,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void delete_ReturnNotFound_IdDoesNotExists() throws Exception {
+	void delete_ReturnNotFound_IdDoesNotExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(delete("/v1/products/{productId}", NON_EXISTING_ID)
@@ -233,7 +233,7 @@ public class ProductControllerIT {
 	}
 
 	@Test
-	public void delete_ReturnBadRequest_InvalidId() throws Exception {
+	void delete_ReturnBadRequest_InvalidId() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, USERNAME, PASSWORD);
 
 		ResultActions result = mockMvc.perform(delete("/v1/products/{productId}", INVALID_ID)

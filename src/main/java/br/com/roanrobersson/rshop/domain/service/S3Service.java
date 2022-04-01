@@ -24,8 +24,6 @@ public class S3Service {
 
 	public URL uploadFile(MultipartFile file) {
 		try {
-			//String originalName = file.getOriginalFilename();
-			//String extension = FilenameUtils.getExtension(originalName);
 			String fileName = UUID.randomUUID().toString().replace("-", "");
 			InputStream is = file.getInputStream();
 			String contentType = file.getContentType();

@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 
 public class MockEmailService implements EmailService {
 
-	private static Logger LOG = LoggerFactory.getLogger(MockEmailService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MockEmailService.class);
 
 	@Override
 	public void sendEmail(Message msg) {
-		LOG.info("Sending email to: " + msg.getRecipients());
-		LOG.info("Email sent!");
+		LOGGER.info("Sending email to: {}", msg.getRecipients());
+		LOGGER.info("Email sent!");
 	}
 }
