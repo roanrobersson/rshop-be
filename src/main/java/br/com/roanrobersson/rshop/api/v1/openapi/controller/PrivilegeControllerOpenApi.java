@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 
@@ -22,7 +23,16 @@ public interface PrivilegeControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Privileges retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<List<PrivilegeModel>> getPrivileges(
+	public ResponseEntity<List<PrivilegeModel>> findPrivileges(
 			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
 			@Parameter(description = "Property to orderby", example = "name", required = false) String orderBy);
+
+	@Operation(summary = "Retrives a privilege by ID", security = @SecurityRequirement(name = "basicAuth"))
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Privilege retrived with success"),
+			@ApiResponse(responseCode = "400", description = "Invalid privilege ID", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "404", description = "Privilege not found", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
+	public ResponseEntity<PrivilegeModel> findById(
+			@Parameter(description = "Id of a privilege", example = "b7e8b3c9-d426-42f0-8594-5c46cd112aae", required = false) UUID id);
 }

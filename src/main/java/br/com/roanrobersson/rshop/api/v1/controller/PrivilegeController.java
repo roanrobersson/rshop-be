@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,7 +37,7 @@ public class PrivilegeController implements PrivilegeControllerOpenApi{
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<List<PrivilegeModel>> getPrivileges(
+	public ResponseEntity<List<PrivilegeModel>> findPrivileges(
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
 		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
@@ -43,5 +45,13 @@ public class PrivilegeController implements PrivilegeControllerOpenApi{
 		List<PrivilegeModel> privilegeModels = privileges.stream()
 				.map(privilege -> mapper.toPrivilegeModel(privilege)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(privilegeModels);
+	}
+	
+	@GetMapping(value = "/{privilegeId}", produces = "application/json")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<PrivilegeModel> findById(@PathVariable("privilegeId") UUID id) {
+		Privilege privilege = service.findById(id);
+		PrivilegeModel privilegeModel = mapper.toPrivilegeModel(privilege);
+		return ResponseEntity.ok().body(privilegeModel);
 	}
 }
