@@ -17,8 +17,8 @@ public class CategoryBuilder {
 	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-4000-0000-000000000000");
 	public static final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
 	public static final String NON_EXISTING_NAME = "Non existing category name";
-	public static final String EXISTING_NAME = "Computers";
-	public static final String ANOTHER_EXISTING_NAME = "Books";
+	public static final String EXISTING_NAME = "Books";
+	public static final String ANOTHER_EXISTING_NAME = "Computers";
 	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
 
 	private UUID id = EXISTING_ID;

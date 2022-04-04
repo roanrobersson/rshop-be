@@ -2,15 +2,14 @@ package br.com.roanrobersson.rshop.unit.controller;
 
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_ID;
-import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aNonExistingProduct;
+import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,7 +24,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,8 +32,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,6 +41,9 @@ import br.com.roanrobersson.rshop.builder.ProductBuilder;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
+import br.com.roanrobersson.rshop.util.Account;
+import br.com.roanrobersson.rshop.util.ResourceUtils;
+import br.com.roanrobersson.rshop.util.TokenUtil;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -59,14 +58,19 @@ class ProductControllerTests {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	private TokenUtil tokenUtil;
+
 	@Value("${security.oauth2.client.client-id}")
 	private String clientId;
 
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
 
-	private final String USERNAME = "administrator@gmail.com";
-	private final String PASSWORD = "12345678";
+	private final String INVALID_ID = "TTTTTTTTTT_TTTT";
+	private final Account ADMINSTRATOR = Account.ADMINSTRATOR;
+	private final String JSON_PRODUCT_WITHOUT_NAME_PROPERTY = ResourceUtils
+			.getContentFromResource("/json/incorrect/product-without-name-property.json");
 
 	@Test
 	void findAll_ReturnPage() throws Exception {
@@ -81,7 +85,7 @@ class ProductControllerTests {
 	}
 
 	@Test
-	void findById_ReturnProduct_IdExist() throws Exception {
+	void findById_ReturnProductModel_IdExists() throws Exception {
 		ProductBuilder builder = aProduct().withId(EXISTING_ID).withExistingName().withExistingSKU();
 		Product product = builder.build();
 		ProductModel model = builder.buildModel();
@@ -106,8 +110,18 @@ class ProductControllerTests {
 	}
 
 	@Test
-	void insert_ReturnProductModel_ValidProductInput() throws Exception {
-		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+	void findById_ReturnBadRequest_InvalidId() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+
+		ResultActions result = mockMvc.perform(get("/v1/products/{productId}", INVALID_ID)
+				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void insert_ReturnProductModel_ValidInput() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		ProductBuilder builder = aProduct().withExistingId().withNonExistingName().withNonExistingSKU()
 				.withExistingCategory();
 		String jsonBody = objectMapper.writeValueAsString(builder.buildInput());
@@ -122,10 +136,45 @@ class ProductControllerTests {
 	}
 
 	@Test
+	void insert_ReturnBadRequest_InputWithoutNameProperty() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+
+		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
+				.content(JSON_PRODUCT_WITHOUT_NAME_PROPERTY).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	void insert_ReturnBadRequest_NegativePrice() throws Exception {
-		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
-		ProductInput invalidInput = aNonExistingProduct().withInvalidPrice().buildInput();
-		String jsonBody = objectMapper.writeValueAsString(invalidInput);
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+		ProductInput inputWithNegativePrice = aNonExistingProduct().withInvalidPrice().buildInput();
+		String jsonBody = objectMapper.writeValueAsString(inputWithNegativePrice);
+
+		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
+				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void insert_ReturnBadRequest_InputWithoutCategory() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+		ProductInput inputWithoutCategories = aProduct().withoutCategories().buildInput();
+		String jsonBody = objectMapper.writeValueAsString(inputWithoutCategories);
+
+		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
+				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void insert_ReturnBadRequest_InputWithNonExistingCategory() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+		ProductInput inputWithNonExistingCategory = aProduct().withNonExistingCategory().buildInput();
+		String jsonBody = objectMapper.writeValueAsString(inputWithNonExistingCategory);
 
 		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
 				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
@@ -135,7 +184,7 @@ class ProductControllerTests {
 
 	@Test
 	void update_ReturnProductModel_IdExists() throws Exception {
-		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		ProductBuilder builder = aProduct().withId(EXISTING_ID).withNonExistingName().withNonExistingSKU()
 				.withExistingCategory();
 		String jsonBody = objectMapper.writeValueAsString(builder.buildInput());
@@ -152,7 +201,7 @@ class ProductControllerTests {
 
 	@Test
 	void update_ReturnNotFound_IdDoesNotExist() throws Exception {
-		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		ProductInput input = aProduct().withExistingCategory().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(input);
 		when(service.update(any(UUID.class), any(ProductInput.class))).thenThrow(ProductNotFoundException.class);
@@ -165,8 +214,57 @@ class ProductControllerTests {
 	}
 
 	@Test
+	void update_ReturnBadRequest_InvalidId() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+		String jsonBody = objectMapper.writeValueAsString(aNonExistingProduct().buildInput());
+
+		ResultActions result = mockMvc
+				.perform(put("/v1/products/{productId}", INVALID_ID).header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void update_ReturnBadRequest_InputWithoutNameProperty() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+
+		ResultActions result = mockMvc.perform(put("/v1/products/{productId}", EXISTING_ID)
+				.header("Authorization", "Bearer " + accessToken).content(JSON_PRODUCT_WITHOUT_NAME_PROPERTY)
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void update_ReturnBadRequest_InputWithNonExistingCategory() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+		ProductInput inputWithNonExistingCategory = aProduct().withNonExistingCategory().buildInput();
+		String jsonBody = objectMapper.writeValueAsString(inputWithNonExistingCategory);
+
+		ResultActions result = mockMvc
+				.perform(put("/v1/products/{productId}", EXISTING_ID).header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void update_ReturnBadRequest_InputWithoutCategory() throws Exception {
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
+		ProductInput inputWithoutCategories = aProduct().withoutCategories().buildInput();
+		String jsonBody = objectMapper.writeValueAsString(inputWithoutCategories);
+
+		ResultActions result = mockMvc
+				.perform(put("/v1/products/{productId}", EXISTING_ID).header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	void delete_ReturnNoContent_IdExist() throws Exception {
-		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		doNothing().when(service).delete(EXISTING_ID);
 
 		ResultActions result = mockMvc.perform(delete("/v1/products/{productId}", EXISTING_ID)
@@ -177,30 +275,12 @@ class ProductControllerTests {
 
 	@Test
 	void delete_ReturnNotFound_IdDoesNotExist() throws Exception {
-		String accessToken = obtainAccessToken(USERNAME, PASSWORD);
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		doThrow(ProductNotFoundException.class).when(service).delete(NON_EXISTING_ID);
 
 		ResultActions result = mockMvc.perform(delete("/v1/products/{productId}", NON_EXISTING_ID)
 				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(status().isNotFound());
-	}
-
-	private String obtainAccessToken(String username, String password) throws Exception {
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("grant_type", "password");
-		params.add("client_id", clientId);
-		params.add("username", username);
-		params.add("password", password);
-
-		ResultActions result = mockMvc
-				.perform(post("/oauth/token").params(params).with(httpBasic(clientId, clientSecret))
-						.accept("application/json;charset=UTF-8"))
-				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"));
-
-		String resultString = result.andReturn().getResponse().getContentAsString();
-
-		JacksonJsonParser jsonParser = new JacksonJsonParser();
-		return jsonParser.parseMap(resultString).get("access_token").toString();
 	}
 }

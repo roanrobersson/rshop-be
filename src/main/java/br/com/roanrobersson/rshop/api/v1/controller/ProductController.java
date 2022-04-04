@@ -49,12 +49,12 @@ public class ProductController implements ProductControllerOpenApi {
 			@RequestParam(value = "categories", required = false) UUID[] categories,
 			@RequestParam(value = "name", defaultValue = "") String name,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
-			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+			@RequestParam(value = "size", defaultValue = "12") Integer size,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
+			@RequestParam(value = "sort", defaultValue = "name") String sort) {
 		if (categories == null)
 			categories = new UUID[0];
-		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		PageRequest pageRequest = PageRequest.of(page, size, Direction.valueOf(direction), sort);
 		Page<Product> products = service.findAllPaged(Set.of(categories), name.trim(), pageRequest);
 		Page<ProductModel> productModels = products.map(x -> mapper.toProductModel(x));
 		return ResponseEntity.ok().body(productModels);

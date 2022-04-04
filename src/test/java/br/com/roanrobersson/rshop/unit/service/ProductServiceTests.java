@@ -79,7 +79,7 @@ class ProductServiceTests {
 	}
 
 	@Test
-	void findById_ReturnProductModel_IdExist() {
+	void findById_ReturnProduct_IdExist() {
 		Product product = anExistingProduct().build();
 		UUID id = product.getId();
 		when(repository.findByIdWithCategories(id)).thenReturn(Optional.of(product));

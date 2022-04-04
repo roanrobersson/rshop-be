@@ -20,14 +20,14 @@ import lombok.Getter;
 public class ProductBuilder {
 
 	public static final UUID EXISTING_ID = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
-	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
 	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-4000-0000-000000000000");
 	public static final UUID DEPENDENT_ID = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
-	public static final String EXISTING_NAME = "PC Gamer";
-	public static final String ANOTHER_EXISTING_NAME = "Playstation 2";
+	public static final String EXISTING_NAME = "The Lord of The Rings";
+	public static final String ANOTHER_EXISTING_NAME = "PC Gamer";
 	public static final String NON_EXISTING_NAME = "Non existing name";
 	public static final String EXISTING_SKU = "XBSO0200";
-	public static final String ANOTHER_EXISTING_SKU = "PS2O0123";
+	public static final String ANOTHER_EXISTING_SKU = "PCPO01BL";
 	public static final String NON_EXISTING_SKU = "NEN12345";
 	public static final BigDecimal VALID_PRICE = BigDecimal.valueOf(800);
 	public static final BigDecimal INVALID_PRICE = BigDecimal.valueOf(-1);

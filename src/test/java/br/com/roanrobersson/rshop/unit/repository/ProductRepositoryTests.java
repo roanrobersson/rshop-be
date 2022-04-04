@@ -12,15 +12,16 @@ import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import br.com.roanrobersson.rshop.builder.CategoryBuilder;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
+import br.com.roanrobersson.rshop.util.StringToUUIDSetConverter;
 
 @DataJpaTest
 class ProductRepositoryTests {
@@ -29,33 +30,17 @@ class ProductRepositoryTests {
 	private ProductRepository repository;
 
 	@ParameterizedTest
-	@CsvSource(value = { "'':25", "pc gAMeR:21", "PC G:21", "PC Gamer:21", "Non existing name:0" }, delimiter = ':')
-	void search_ReturnAllProducts_CategoryNotInformed(String name, long expectedResultCount) {
+	@CsvFileSource(resources = "/csv/product-search-filters.csv", numLinesToSkip = 1)
+	void search_ReturnProducts_AppliedFilters(String productName,
+			@ConvertWith(StringToUUIDSetConverter.class) Set<UUID> categories, long expectedResultCount) {
+		if (categories.isEmpty()) {
+			categories = null;
+		}
 
-		Page<Product> result = repository.search(null, name, PageRequest.of(0, 10));
+		Page<Product> result = repository.search(categories, productName, PageRequest.of(0, 10));
 
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(expectedResultCount, result.getTotalElements());
-	}
-
-	@Test
-	void search_ReturnOnlySelectedCategory_CategoryInformed() {
-		Set<UUID> categories = Set.of(CategoryBuilder.EXISTING_ID, CategoryBuilder.ANOTHER_EXISTING_ID);
-
-		Page<Product> result = repository.search(categories, "", PageRequest.of(0, 10));
-
-		Assertions.assertNotNull(result);
-		Assertions.assertEquals(23, result.getTotalElements());
-	}
-
-	@Test
-	void search_ReturnEmpty_CategoryDoesNotExists() {
-		Set<UUID> categories = Set.of(CategoryBuilder.NON_EXISTING_ID);
-
-		Page<Product> result = repository.search(categories, "", PageRequest.of(0, 10));
-
-		Assertions.assertNotNull(result);
-		Assertions.assertTrue(result.isEmpty());
 	}
 
 	@Test
