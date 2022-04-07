@@ -4,8 +4,6 @@ import static br.com.roanrobersson.rshop.builder.AddressBuilder.aNonExistingAddr
 import static br.com.roanrobersson.rshop.builder.AddressBuilder.anExistingAddress;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.aNonExistingRole;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.anExistingRole;
-import static br.com.roanrobersson.rshop.builder.VerificationTokenBuilder.aNonExpiredVerificationToken;
-import static br.com.roanrobersson.rshop.builder.VerificationTokenBuilder.anExpiredVerificationToken;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -24,7 +22,6 @@ import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
-import br.com.roanrobersson.rshop.domain.model.VerificationToken;
 import lombok.Getter;
 
 @Getter
@@ -43,7 +40,6 @@ public class UserBuilder {
 	private UUID id = EXISTING_ID;
 	private Set<Role> roles = new HashSet<>();
 	private List<Address> addresses = new ArrayList<>();
-	private VerificationToken verificationToken = null;
 	private String firstName = "Operator";
 	private String name = "Operator LastName";
 	private LocalDate birthDate = LocalDate.parse("1993-05-15");
@@ -64,7 +60,6 @@ public class UserBuilder {
 		builder.id = EXISTING_ID;
 		builder.roles.add(anExistingRole().build());
 		builder.addresses.add(anExistingAddress().build());
-		builder.verificationToken = aNonExpiredVerificationToken().build();
 		builder.email = EXISTING_EMAIL;
 		return builder;
 	}
@@ -74,7 +69,6 @@ public class UserBuilder {
 		builder.id = EXISTING_ID;
 		builder.roles.add(anExistingRole().build());
 		builder.addresses.add(aNonExistingAddress().build());
-		builder.verificationToken = aNonExpiredVerificationToken().build();
 		builder.email = NON_EXISTING_EMAIL;
 		return builder;
 	}
@@ -164,26 +158,6 @@ public class UserBuilder {
 		return this;
 	}
 
-	public UserBuilder withVerificationToken(VerificationToken verificationToken) {
-		this.verificationToken = verificationToken;
-		return this;
-	}
-
-	public UserBuilder withNonExpiredVerificationToken() {
-		this.verificationToken = anExpiredVerificationToken().build();
-		return this;
-	}
-
-	public UserBuilder withExpiredVerificationToken() {
-		this.verificationToken = anExpiredVerificationToken().build();
-		return this;
-	}
-
-	public UserBuilder withoutVerificationToken() {
-		this.verificationToken = null;
-		return this;
-	}
-
 	public UserBuilder withVerifiedAt(Instant verifiedAt) {
 		this.verifiedAt = verifiedAt;
 		return this;
@@ -232,11 +206,7 @@ public class UserBuilder {
 	public User build() {
 		User user = new User(id, roles, addresses, firstName, name, birthDate, cpf, rg, email, password,
 				primaryTelephone, secondaryTelephone, VALID_INSTANT, VALID_INSTANT, verifiedAt, VALID_INSTANT);
-		user.setVerificationToken(verificationToken);
 		addresses.forEach(address -> address.setUser(user));
-		if (verificationToken != null) {
-			verificationToken.setUser(user);
-		}
 		return user;
 	}
 

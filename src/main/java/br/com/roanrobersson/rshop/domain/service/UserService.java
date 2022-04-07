@@ -27,9 +27,7 @@ import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
-import br.com.roanrobersson.rshop.domain.model.VerificationToken;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
-import br.com.roanrobersson.rshop.domain.repository.VerificationTokenRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -43,9 +41,6 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
-
-	@Autowired
-	private VerificationTokenRepository tokenRepository;
 
 	@Autowired
 	private RoleService roleService;
@@ -141,17 +136,6 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException("Username not found");
 		}
 		return optional.get();
-	}
-
-	@Transactional
-	public VerificationToken createVerificationToken(UUID userId, UUID tokenValue) {
-		User user = findById(userId);
-		Optional<VerificationToken> optional = tokenRepository.findByUserId(userId);
-		if (optional.isPresent()) {
-			tokenRepository.delete(optional.get());
-		}
-		VerificationToken token = new VerificationToken(user, tokenValue);
-		return tokenRepository.save(token);
 	}
 
 	public void validateUniqueInsert(UserInsert userInsert) {

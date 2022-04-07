@@ -12,14 +12,12 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -60,9 +58,6 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "user")
 	@Setter(value = AccessLevel.NONE)
 	private List<Address> addresses = new ArrayList<>();
-
-	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-	private VerificationToken verificationToken;
 
 	@Column(nullable = false, length = 50)
 	private String firstName;
