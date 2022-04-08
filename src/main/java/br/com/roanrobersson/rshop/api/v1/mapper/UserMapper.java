@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import br.com.roanrobersson.rshop.api.v1.model.UserModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
+import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
@@ -61,7 +62,8 @@ public abstract class UserMapper {
 
 	@Named("rolesToPrivilegesIds")
 	protected Set<UUID> rolesToPrivilegesIds(Set<Role> roles) {
-		return roles.stream().map(Role::getId).collect(Collectors.toSet());
+		return roles.stream().flatMap(r -> r.getPrivileges().stream()).map(Privilege::getId)
+				.collect(Collectors.toSet());
 	}
 
 	protected Set<Role> rolesIdsToRoles(Set<UUID> rolesIds) {
