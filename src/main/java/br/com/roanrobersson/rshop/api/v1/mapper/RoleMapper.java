@@ -34,8 +34,6 @@ public abstract class RoleMapper {
 
 	public abstract void update(RoleInput roleInput, @MappingTarget Role role);
 
-	public abstract void update(Role role, @MappingTarget RoleInput roleInput);
-
 	protected String uuidToString(UUID uuid) {
 		return uuid.toString();
 	}

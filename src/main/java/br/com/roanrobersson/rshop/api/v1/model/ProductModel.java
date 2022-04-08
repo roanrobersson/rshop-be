@@ -6,8 +6,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +20,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Schema(title = "Product")
 @ToString(of = { "id", "name", "categories" })
 public class ProductModel {
@@ -26,6 +29,7 @@ public class ProductModel {
 	private UUID id;
 
 	@Builder.Default
+	@Setter(value = AccessLevel.NONE)
 	@Schema(example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]")
 	private Set<UUID> categories = new HashSet<>();
 

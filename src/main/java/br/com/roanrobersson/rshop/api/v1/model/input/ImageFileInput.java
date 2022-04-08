@@ -8,11 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.roanrobersson.rshop.core.validation.FileContentType;
 import br.com.roanrobersson.rshop.core.validation.FileSize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @Schema(title = "ImageFileInput")
 public class ImageFileInput {
 

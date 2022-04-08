@@ -8,6 +8,7 @@ import br.com.roanrobersson.rshop.api.v1.model.input.id.serializer.CategoryIdInp
 import br.com.roanrobersson.rshop.core.validation.UUIDValid;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @ToString
 @JsonSerialize(using = CategoryIdInputSerializer.class)
 public class CategoryIdInput {

@@ -21,6 +21,4 @@ public abstract class PrivilegeMapper {
 	public abstract Privilege toPrivilege(PrivilegeInput privilegeInput);
 
 	public abstract void update(PrivilegeInput privilegeInput, @MappingTarget Privilege privilege);
-
-	public abstract void update(Privilege privilege, @MappingTarget PrivilegeInput privilegeInput);
 }

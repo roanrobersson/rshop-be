@@ -13,8 +13,10 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.id.CategoryIdInput;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +27,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Schema(title = "ProductInput")
 @ToString(of = { "name", "categories" })
 public class ProductInput {
@@ -32,6 +35,7 @@ public class ProductInput {
 	@Valid
 	@NotEmpty
 	@Builder.Default
+	@Setter(value = AccessLevel.NONE)
 	@Schema(example = "[\"753dad79-2a1f-4f5c-bbd1-317a53587518\", \"5227c10f-c81a-4885-b460-dbfee6dcc019\"]")
 	private Set<CategoryIdInput> categories = new HashSet<>();
 

@@ -21,6 +21,4 @@ public abstract class CategoryMapper {
 	public abstract Category toCategory(CategoryInput categoryInput);
 
 	public abstract void update(CategoryInput categoryInput, @MappingTarget Category category);
-
-	public abstract void update(Category category, @MappingTarget CategoryInput categoryInput);
 }

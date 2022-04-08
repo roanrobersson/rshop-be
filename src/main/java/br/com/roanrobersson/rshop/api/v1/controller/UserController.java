@@ -62,8 +62,7 @@ public class UserController implements UserControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<UserModel> findById(@PathVariable UUID userId) {
 		User user = service.findById(userId);
-		UserModel userModel = new UserModel();
-		mapper.update(user, userModel);
+		UserModel userModel = mapper.toUserModel(user);
 		return ResponseEntity.ok(userModel);
 	}
 
@@ -72,8 +71,7 @@ public class UserController implements UserControllerOpenApi {
 	public ResponseEntity<UserModel> insert(@Valid @RequestBody UserInsert userInsert) {
 		User user = service.insert(userInsert);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(user.getId()).toUri();
-		UserModel userModel = new UserModel();
-		mapper.update(user, userModel);
+		UserModel userModel = mapper.toUserModel(user);
 		return ResponseEntity.created(uri).body(userModel);
 	}
 
@@ -82,8 +80,7 @@ public class UserController implements UserControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<UserModel> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdate userUpdate) {
 		User user = service.update(userId, userUpdate);
-		UserModel userModel = new UserModel();
-		mapper.update(user, userModel);
+		UserModel userModel = mapper.toUserModel(user);
 		return ResponseEntity.ok(userModel);
 	}
 

@@ -42,18 +42,10 @@ public abstract class UserMapper {
 
 	public abstract User toUser(UserUpdate userUpdate);
 
-	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesIds")
-	@Mapping(source = "roles", target = "privileges", qualifiedByName = "rolesToPrivilegesIds")
-	public abstract void update(User user, @MappingTarget UserModel userModel);
-
 	@Mapping(target = "password", ignore = true)
 	public abstract void update(UserInsert userInsert, @MappingTarget User user);
 
-	public abstract void update(User user, @MappingTarget UserInsert userInsert);
-
 	public abstract void update(UserUpdate userUpdate, @MappingTarget User user);
-
-	public abstract void update(User user, @MappingTarget UserUpdate userUpdate);
 
 	@Named("rolesToRolesIds")
 	protected Set<UUID> rolesToRolesIds(Set<Role> roles) {

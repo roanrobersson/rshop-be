@@ -32,9 +32,7 @@ public abstract class ProductMapper {
 
 	public abstract Product toProduct(ProductInput productInput);
 
-	public abstract void update(ProductInput roleInput, @MappingTarget Product product);
-
-	public abstract void update(Product product, @MappingTarget ProductInput roleInput);
+	public abstract void update(ProductInput productInput, @MappingTarget Product product);
 
 	protected String uuidToString(UUID uuid) {
 		return uuid.toString();
