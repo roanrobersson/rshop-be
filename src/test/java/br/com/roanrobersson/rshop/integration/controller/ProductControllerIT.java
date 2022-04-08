@@ -53,7 +53,7 @@ class ProductControllerIT {
 	private static final String INVALID_ID = "TTTTTTTTTT_TTTT";
 	private static final Account ADMINSTRATOR = Account.ADMINSTRATOR;
 	private static final String JSON_PRODUCT_WITHOUT_NAME_PROPERTY = ResourceUtils
-			.getContentFromResource("/json/incorrect/product-without-name-property.json");
+			.getContentFromResource("/json/incorrect/product-input-without-name-property.json");
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/csv/product-search-filters.csv", numLinesToSkip = 1)

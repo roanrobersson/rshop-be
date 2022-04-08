@@ -70,7 +70,7 @@ class ProductControllerTests {
 	private final String INVALID_ID = "TTTTTTTTTT_TTTT";
 	private final Account ADMINSTRATOR = Account.ADMINSTRATOR;
 	private final String JSON_PRODUCT_WITHOUT_NAME_PROPERTY = ResourceUtils
-			.getContentFromResource("/json/incorrect/product-without-name-property.json");
+			.getContentFromResource("/json/incorrect/product-input-without-name-property.json");
 
 	@Test
 	void findAll_ReturnPage() throws Exception {
