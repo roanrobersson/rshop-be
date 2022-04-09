@@ -1,0 +1,11 @@
+{
+	"firstName": "Maria",
+	"name": "Maria Green",
+	"birthDate": "2001-01-14",
+	"cpf": "67709960065",
+	"rg": "355144724",
+	"email": "maria@gmail.com",
+	"password": "12345678",
+	"primaryTelephone": "54991200038",
+	"secondaryTelephone": null
+}

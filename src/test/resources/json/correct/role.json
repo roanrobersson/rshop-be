@@ -1,0 +1,16 @@
+{
+	"id": "18aace1e-f36a-4d71-b4d1-124387d9b63a",
+	"name": "CLIENT",
+	"privileges": [
+		{
+			"id": "b7705487-51a1-4092-8b62-91dccd76a41a",
+			"name": "CONSULT_CATEGORIES",
+			"description": "Allow consult categories"
+		},
+		{
+			"id": "bafcfedf-8f1c-4f16-b474-351e347b13de",
+			"name": "EDIT_USERS",
+			"description": "Allow edit users"
+		}
+	]
+}

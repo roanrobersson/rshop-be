@@ -6,13 +6,7 @@
 	"imgUrl": "url of image",
 	"price": 900.0,
 	"categories": [
-		{
-			"id": "753dad79-2a1f-4f5c-bbd1-317a53587518",
-			"name": "Computers"
-		},
-		{
-			"id": "5c2b2b98-7b72-42dd-8add-9e97a2967e11",
-			"name": "Electronics"
-		}
+		"753dad79-2a1f-4f5c-bbd1-317a53587518",
+		"5c2b2b98-7b72-42dd-8add-9e97a2967e11"
 	]
 }
