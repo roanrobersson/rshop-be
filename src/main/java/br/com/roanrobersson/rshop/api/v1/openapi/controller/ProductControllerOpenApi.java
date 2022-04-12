@@ -26,7 +26,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Page<ProductModel>> findAll(
 			@Parameter(description = "Category array", example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]") UUID[] categories,
-			@Parameter(description = "Product's name", example = "uf", required = false) String name,
+			@Parameter(description = "Product's name", example = "Computer", required = false) String name,
 			@Parameter(description = "Page number", example = "3", required = false) Integer page,
 			@Parameter(description = "Register per page", example = "15", required = false) Integer linesPerPage,
 			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
