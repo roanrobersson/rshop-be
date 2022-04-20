@@ -79,6 +79,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.tokenStore(tokenStore)
 		.accessTokenConverter(acessTokenConverter)
 		.tokenEnhancer(chain)
-		.userDetailsService(userDetailsService);
+		.userDetailsService(userDetailsService)
+		.pathMapping("/oauth/token", "/v1/auth");
 	}
 }
