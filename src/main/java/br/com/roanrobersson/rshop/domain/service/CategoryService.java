@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
@@ -66,17 +66,17 @@ public class CategoryService {
 		}
 	}
 	
-	public void validateUniqueInsert(CategoryInput categoryInput) {
+	private void validateUniqueInsert(CategoryInput categoryInput) {
 		Optional<Category> optional = repository.findByName(categoryInput.getName());
 		if (optional.isPresent()) {
-			throw new BusinessException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));
+			throw new UniqueException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));
 		}
 	}
 	
-	public void validateUniqueUpdate(UUID categoryId, CategoryInput categoryInput) {
+	private void validateUniqueUpdate(UUID categoryId, CategoryInput categoryInput) {
 		Optional<Category> optional = repository.findByName(categoryInput.getName());
 		if (optional.isPresent() && !optional.get().getId().equals(categoryId)) {
-			throw new BusinessException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));
+			throw new UniqueException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));
 		}
 	}
 }

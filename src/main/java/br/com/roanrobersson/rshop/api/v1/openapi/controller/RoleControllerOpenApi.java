@@ -39,6 +39,7 @@ public interface RoleControllerOpenApi {
 
 	@Operation(summary = "Creates a new role", security = @SecurityRequirement(name = "basicAuth"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Role created with success"),
+			@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<RoleModel> insert(
@@ -48,6 +49,7 @@ public interface RoleControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Category updated with success"),
 			@ApiResponse(responseCode = "400", description = "Invalid role ID", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "404", description = "Role not found", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<RoleModel> update(

@@ -43,6 +43,7 @@ public interface UserControllerOpenApi {
 
 	@Operation(summary = "Creates a new user")
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "User created with success"),
+			@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<UserModel> insert(
@@ -52,6 +53,7 @@ public interface UserControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "User updated with success"),
 			@ApiResponse(responseCode = "400", description = "Invalid user ID", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<UserModel> update(

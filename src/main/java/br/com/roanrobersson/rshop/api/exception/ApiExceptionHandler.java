@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -232,6 +233,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		HttpStatus status = HttpStatus.CONFLICT;
 		ProblemType problemType = ProblemType.ENTITY_IN_USE;
+		String detail = ex.getMessage();
+
+		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(detail).build();
+
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(UniqueException.class)
+	public ResponseEntity<Object> handleUnique(UniqueException ex, WebRequest request) {
+
+		HttpStatus status = HttpStatus.CONFLICT;
+		ProblemType problemType = ProblemType.UNIQUE_ERROR;
 		String detail = ex.getMessage();
 
 		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(detail).build();

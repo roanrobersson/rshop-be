@@ -12,14 +12,15 @@ public enum ProblemType {
 	INCOMPREHENSIBLE_MESSAGE("/incomprehensible-message", "Incomprehensible message"),
 	RESOURCE_NOT_FOUND("/resource-not-found", "Resource not found"),
 	ENTITY_IN_USE("/entity-in-use", "Entity in use"),
-	BUSINESS_ERROR("/business-error", "Business rule violation");
-	
+	BUSINESS_ERROR("/business-error", "Business rule violation"),
+	UNIQUE_ERROR("/unique-error", "Unique rule violation");
+
 	private String title;
 	private String uri;
-	
+
 	ProblemType(String path, String title) {
 		this.uri = "https://rshop.com" + path;
 		this.title = title;
 	}
-	
+
 }

@@ -16,6 +16,7 @@ import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Category;
@@ -107,7 +108,7 @@ public class ProductService {
 	@Transactional
 	public void unlinkCategory(UUID productId, UUID categoryId) {
 		Product product = findById(productId);
-		if (product.getCategories().size() == 1) {
+		if (product.getCategories().size() <= 1) {
 			throw new BusinessException(MSG_PRODUCT_WITH_ONE_CATEGORY);
 		}
 		Category category = categoryService.findById(categoryId);
@@ -115,25 +116,25 @@ public class ProductService {
 		repository.save(product);
 	}
 
-	public void validateUniqueInsert(ProductInput productInput) {
+	private void validateUniqueInsert(ProductInput productInput) {
 		Optional<Product> optional = repository.findByName(productInput.getName());
 		if (optional.isPresent()) {
-			throw new BusinessException(String.format(MSG_PRODUCT_NAME_ALREADY_EXISTS, productInput.getName()));
+			throw new UniqueException(String.format(MSG_PRODUCT_NAME_ALREADY_EXISTS, productInput.getName()));
 		}
 		optional = repository.findBySku(productInput.getSku());
 		if (optional.isPresent()) {
-			throw new BusinessException(String.format(MSG_PRODUCT_SKU_ALREADY_EXISTS, productInput.getSku()));
+			throw new UniqueException(String.format(MSG_PRODUCT_SKU_ALREADY_EXISTS, productInput.getSku()));
 		}
 	}
 
-	public void validateUniqueUpdate(UUID productId, ProductInput productInput) {
+	private void validateUniqueUpdate(UUID productId, ProductInput productInput) {
 		Optional<Product> optional = repository.findByName(productInput.getName());
 		if (optional.isPresent() && !optional.get().getId().equals(productId)) {
-			throw new BusinessException(String.format(MSG_PRODUCT_NAME_ALREADY_EXISTS, productInput.getName()));
+			throw new UniqueException(String.format(MSG_PRODUCT_NAME_ALREADY_EXISTS, productInput.getName()));
 		}
 		optional = repository.findBySku(productInput.getSku());
 		if (optional.isPresent() && !optional.get().getId().equals(productId)) {
-			throw new BusinessException(String.format(MSG_PRODUCT_SKU_ALREADY_EXISTS, productInput.getSku()));
+			throw new UniqueException(String.format(MSG_PRODUCT_SKU_ALREADY_EXISTS, productInput.getSku()));
 		}
 	}
 }

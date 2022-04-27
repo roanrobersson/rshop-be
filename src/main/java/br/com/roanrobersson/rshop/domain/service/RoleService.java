@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
@@ -95,17 +95,17 @@ public class RoleService {
 		repository.save(role);
 	}
 
-	public void validateUniqueInsert(RoleInput roleInput) {
+	private void validateUniqueInsert(RoleInput roleInput) {
 		Optional<Role> optional = repository.findByName(roleInput.getName());
 		if (optional.isPresent()) {
-			throw new BusinessException(String.format(MSG_ROLE_ALREADY_EXISTS, roleInput.getName()));
+			throw new UniqueException(String.format(MSG_ROLE_ALREADY_EXISTS, roleInput.getName()));
 		}
 	}
 
-	public void validateUniqueUpdate(UUID categoryId, RoleInput roleInput) {
+	private void validateUniqueUpdate(UUID categoryId, RoleInput roleInput) {
 		Optional<Role> optional = repository.findByName(roleInput.getName());
 		if (optional.isPresent() && !optional.get().getId().equals(categoryId)) {
-			throw new BusinessException(String.format(MSG_ROLE_ALREADY_EXISTS, roleInput.getName()));
+			throw new UniqueException(String.format(MSG_ROLE_ALREADY_EXISTS, roleInput.getName()));
 		}
 	}
 }

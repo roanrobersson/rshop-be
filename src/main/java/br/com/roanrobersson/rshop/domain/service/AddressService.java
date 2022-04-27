@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import br.com.roanrobersson.rshop.domain.exception.AddressNotFoundException;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.model.User;
@@ -102,17 +102,17 @@ public class AddressService {
 		repository.save(address);
 	}
 
-	public void validateUniqueInsert(UUID userId, AddressInput addressInput) {
+	private void validateUniqueInsert(UUID userId, AddressInput addressInput) {
 		Optional<Address> optional = repository.findByUserIdAndNick(userId, addressInput.getNick());
 		if (optional.isPresent()) {
-			throw new BusinessException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
+			throw new UniqueException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
 		}
 	}
 
-	public void validateUniqueUpdate(UUID userId, UUID addressId, AddressInput addressInput) {
+	private void validateUniqueUpdate(UUID userId, UUID addressId, AddressInput addressInput) {
 		Optional<Address> optional = repository.findByUserIdAndNick(userId, addressInput.getNick());
 		if (optional.isPresent() && !optional.get().getId().equals(addressId)) {
-			throw new BusinessException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
+			throw new UniqueException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
 		}
 	}
 }

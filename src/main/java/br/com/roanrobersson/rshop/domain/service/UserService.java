@@ -22,7 +22,7 @@ import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.event.OnRegistrationCompleteEvent;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
@@ -138,10 +138,10 @@ public class UserService implements UserDetailsService {
 		return optional.get();
 	}
 
-	public void validateUniqueInsert(UserInsert userInsert) {
+	private void validateUniqueInsert(UserInsert userInsert) {
 		Optional<User> optional = repository.findByEmail(userInsert.getEmail());
 		if (optional.isPresent()) {
-			throw new BusinessException(String.format(MSG_USER_ALREADY_EXISTS, userInsert.getName()));
+			throw new UniqueException(String.format(MSG_USER_ALREADY_EXISTS, userInsert.getName()));
 		}
 	}
 }
