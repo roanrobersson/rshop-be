@@ -35,6 +35,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Value("${jwt.refresh-token.duration}")
 	private Integer jwtRefreshTokenDuration;
 	
+	@Value("${rshop.api.base-path}")
+	private String apiBasePath;
+	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
@@ -80,6 +83,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.accessTokenConverter(acessTokenConverter)
 		.tokenEnhancer(chain)
 		.userDetailsService(userDetailsService)
-		.pathMapping("/oauth/token", "/v1/auth");
+		.pathMapping("/oauth/token", String.format("%s/auth", apiBasePath));
 	}
 }
