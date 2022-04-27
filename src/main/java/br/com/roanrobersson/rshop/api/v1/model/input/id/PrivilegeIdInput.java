@@ -18,13 +18,14 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 @JsonSerialize(using = PrivilegeIdInputSerializer.class)
 public class PrivilegeIdInput {
 
 	@NotNull
 	@UUIDValid
+	@EqualsAndHashCode.Include
 	@Schema(example = "753dad79-2a1f-4f5c-bbd1-317a53587518")
 	private String id;
 }

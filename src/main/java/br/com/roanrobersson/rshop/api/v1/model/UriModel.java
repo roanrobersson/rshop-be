@@ -14,11 +14,12 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "Uri")
 @ToString
 public class UriModel {
 
+	@EqualsAndHashCode.Include
 	@Schema(example = "http://www.ficticiousimagehost.com/image.png")
 	private String uri;
 }

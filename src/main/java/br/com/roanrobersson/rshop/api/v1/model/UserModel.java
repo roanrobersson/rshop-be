@@ -21,11 +21,12 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "User")
 @ToString(of = { "id", "firstName" })
 public class UserModel {
 
+	@EqualsAndHashCode.Include
 	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
 
