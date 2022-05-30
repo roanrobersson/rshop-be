@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
+import br.com.roanrobersson.rshop.api.v1.model.CountModel;
 import br.com.roanrobersson.rshop.api.v1.model.RoleModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.RoleControllerOpenApi;
@@ -94,5 +95,13 @@ public class RoleController implements RoleControllerOpenApi {
 	public ResponseEntity<Void> delete(@PathVariable UUID roleId) {
 		service.delete(roleId);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping(value = "/count", produces = "application/json")
+	@CheckSecurity.Role.CanEdit
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CountModel> count() {
+		CountModel countModel = new CountModel(service.count());
+		return ResponseEntity.ok().body(countModel);
 	}
 }

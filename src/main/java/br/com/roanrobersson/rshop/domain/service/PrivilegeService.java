@@ -27,4 +27,9 @@ public class PrivilegeService {
 	public Privilege findById(UUID privilegeId) {
 		return repository.findById(privilegeId).orElseThrow(() -> new PrivilegeNotFoundException(privilegeId));
 	}
+
+	@Transactional(readOnly = true)
+	public Long count() {
+		return repository.count();
+	}
 }

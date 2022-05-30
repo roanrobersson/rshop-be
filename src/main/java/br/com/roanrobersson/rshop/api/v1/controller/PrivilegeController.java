@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.PrivilegeMapper;
+import br.com.roanrobersson.rshop.api.v1.model.CountModel;
 import br.com.roanrobersson.rshop.api.v1.model.PrivilegeModel;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.PrivilegeControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
@@ -41,10 +42,19 @@ public class PrivilegeController implements PrivilegeControllerOpenApi {
 	}
 
 	@GetMapping(value = "/{privilegeId}", produces = "application/json")
+	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<PrivilegeModel> findById(@PathVariable("privilegeId") UUID id) {
 		Privilege privilege = service.findById(id);
 		PrivilegeModel privilegeModel = mapper.toPrivilegeModel(privilege);
 		return ResponseEntity.ok().body(privilegeModel);
+	}
+
+	@GetMapping(value = "/count", produces = "application/json")
+	@CheckSecurity.Role.CanEdit
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CountModel> count() {
+		CountModel countModel = new CountModel(service.count());
+		return ResponseEntity.ok().body(countModel);
 	}
 }

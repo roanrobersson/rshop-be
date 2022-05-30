@@ -90,6 +90,11 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
+	public Long count() {
+		return repository.count();
+	}
+
+	@Transactional(readOnly = true)
 	public Set<Category> getCategories(UUID productId) {
 		return findById(productId).getCategories();
 	}

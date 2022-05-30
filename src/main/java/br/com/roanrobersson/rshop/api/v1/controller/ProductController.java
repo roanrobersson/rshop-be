@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
+import br.com.roanrobersson.rshop.api.v1.model.CountModel;
 import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.ProductControllerOpenApi;
@@ -91,5 +92,13 @@ public class ProductController implements ProductControllerOpenApi {
 	public ResponseEntity<Void> delete(@PathVariable UUID productId) {
 		service.delete(productId);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping(value = "/count", produces = "application/json")
+	@CheckSecurity.Product.CanEdit
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CountModel> count() {
+		CountModel countModel = new CountModel(service.count());
+		return ResponseEntity.ok().body(countModel);
 	}
 }

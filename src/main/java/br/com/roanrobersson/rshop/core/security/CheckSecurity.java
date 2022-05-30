@@ -67,7 +67,8 @@ public @interface CheckSecurity {
 
 	public @interface Role {
 
-		@PreAuthorize("isAuthenticated() and hasAuthority('CONSULT_ROLES')")
+		@PreAuthorize("isAuthenticated() and @authService.authenticatedUserIdEquals(#userId) or "
+				+ "hasAuthority('CONSULT_ROLES')")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface CanConsult {

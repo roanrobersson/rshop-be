@@ -75,6 +75,11 @@ public class RoleService {
 	}
 
 	@Transactional(readOnly = true)
+	public Long count() {
+		return repository.count();
+	}
+
+	@Transactional(readOnly = true)
 	public Set<Privilege> getPrivileges(UUID roleId) {
 		return findById(roleId).getPrivileges();
 	}

@@ -66,6 +66,11 @@ public class CategoryService {
 		}
 	}
 	
+	@Transactional(readOnly = true)
+	public Long count() {
+		return repository.count();
+	}
+	
 	private void validateUniqueInsert(CategoryInput categoryInput) {
 		Optional<Category> optional = repository.findByName(categoryInput.getName());
 		if (optional.isPresent()) {

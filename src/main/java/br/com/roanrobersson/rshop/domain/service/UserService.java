@@ -100,6 +100,11 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
+	@Transactional(readOnly = true)
+	public Long count() {
+		return repository.count();
+	}
+
 	@Transactional
 	public void changePassword(UUID userId, UserChangePasswordInput userChangePasswordInput) {
 		User user = findById(userId);

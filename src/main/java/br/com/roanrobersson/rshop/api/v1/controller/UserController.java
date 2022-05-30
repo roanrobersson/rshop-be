@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
+import br.com.roanrobersson.rshop.api.v1.model.CountModel;
 import br.com.roanrobersson.rshop.api.v1.model.UserModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
@@ -85,6 +86,14 @@ public class UserController implements UserControllerOpenApi {
 	public ResponseEntity<Void> delete(@PathVariable UUID userId) {
 		service.delete(userId);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping(value = "/count", produces = "application/json")
+	@CheckSecurity.User.CanEdit
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CountModel> count() {
+		CountModel countModel = new CountModel(service.count());
+		return ResponseEntity.ok().body(countModel);
 	}
 
 	@PutMapping(value = "/{userId}/password")

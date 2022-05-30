@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.roanrobersson.rshop.api.v1.model.CategoryModel;
+import br.com.roanrobersson.rshop.api.v1.model.CountModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.CategoryControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
@@ -85,5 +86,13 @@ public class CategoryController implements CategoryControllerOpenApi {
 	public ResponseEntity<Void> delete(@PathVariable UUID categoryId) {
 		service.delete(categoryId);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping(value = "/count", produces = "application/json")
+	@CheckSecurity.Category.CanEdit
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CountModel> count() {
+		CountModel countModel = new CountModel(service.count());
+		return ResponseEntity.ok().body(countModel);
 	}
 }
