@@ -1,16 +1,14 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -48,12 +45,9 @@ public class RoleController implements RoleControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<List<RoleModel>> getRoles(
-			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) {
-		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
-		List<Role> roles = service.findAll(sort);
-		List<RoleModel> roleModels = roles.stream().map(role -> mapper.toRoleModel(role)).collect(Collectors.toList());
+	public ResponseEntity<Page<RoleModel>> list(@PageableDefault(size = 10) Pageable pageable) {
+		Page<Role> roles = service.list(pageable);
+		Page<RoleModel> roleModels = roles.map(role -> mapper.toRoleModel(role));
 		return ResponseEntity.ok().body(roleModels);
 	}
 

@@ -31,6 +31,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -76,18 +77,18 @@ class UserServiceTests {
 
 	@Test
 	void findAllPaged_ReturnPage() {
-		PageRequest pageRequest = PageRequest.of(0, 10);
+		Pageable pageable = PageRequest.of(0, 10);
 		List<User> users = List.of(anExistingUser().build());
 		Page<User> page = new PageImpl<>(List.of(anExistingUser().build()));
-		when(repository.findAll(pageRequest)).thenReturn(page);
+		when(repository.findAll(pageable)).thenReturn(page);
 		when(repository.findWithRolesAndPrivileges(users)).thenReturn(users);
 
-		Page<User> result = service.findAllPaged(pageRequest);
+		Page<User> result = service.list(pageable);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
 		assertEquals(result, page);
-		verify(repository, times(1)).findAll(pageRequest);
+		verify(repository, times(1)).findAll(pageable);
 		verify(repository, times(1)).findWithRolesAndPrivileges(users);
 	}
 

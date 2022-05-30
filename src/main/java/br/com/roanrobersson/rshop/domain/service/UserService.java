@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,8 +22,8 @@ import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.event.OnRegistrationCompleteEvent;
-import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
@@ -54,8 +54,8 @@ public class UserService implements UserDetailsService {
 	private UUID defaultUserRoleId = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
 
 	@Transactional(readOnly = true)
-	public Page<User> findAllPaged(PageRequest pageRequest) {
-		Page<User> users = repository.findAll(pageRequest);
+	public Page<User> list(Pageable pageable) {
+		Page<User> users = repository.findAll(pageable);
 		repository.findWithRolesAndPrivileges(users.toList());
 		return users;
 	}

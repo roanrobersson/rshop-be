@@ -24,7 +24,7 @@ import io.swagger.v3.oas.models.info.License;
 public class OpenApi {
 
 	@Bean
-	public OpenAPI springShopOpenAPI() {
+	public OpenAPI rShopOpenAPI() {
 		return new OpenAPI()
 				.info(new Info().title("rShop API").description("Project in development").version("v0.0.1")
 						.license(new License().name("MIT").url("https://mit-license.org/")))

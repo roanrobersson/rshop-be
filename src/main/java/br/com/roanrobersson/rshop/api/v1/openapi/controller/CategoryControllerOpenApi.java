@@ -2,7 +2,9 @@ package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
 import java.util.UUID;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
@@ -19,16 +21,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Category")
 public interface CategoryControllerOpenApi {
-
 	@Operation(summary = "Retrive a categories page", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Categories retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<Page<CategoryModel>> findAll(
-			@Parameter(description = "Page number", example = "3", required = false) Integer page,
-			@Parameter(description = "Registers per page", example = "15", required = false) Integer linesPerPage,
-			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
-			@Parameter(description = "Property to orderby", example = "uf", required = false) String orderBy);
+	public ResponseEntity<Page<CategoryModel>> list(@ParameterObject Pageable pageable);
 
 	@Operation(summary = "Retrives a category by ID", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Category retrived with success"),

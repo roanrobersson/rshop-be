@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 			+ "INNER JOIN obj.categories cats "
 			+ "WHERE (COALESCE(:categories) IS NULL OR cats.id IN :categories) "
 			+ "AND (LOWER(obj.name) LIKE LOWER(CONCAT('%',:name,'%')) )")
-	Page<Product> search(Set<UUID> categories, String name, Pageable page);
+	Page<Product> search(Set<UUID> categories, String name, Pageable pageable);
 
 	@Query("SELECT obj " 
 			+ "FROM Product obj " 

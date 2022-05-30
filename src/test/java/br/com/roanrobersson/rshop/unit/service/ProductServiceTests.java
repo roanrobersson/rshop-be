@@ -31,6 +31,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
@@ -61,20 +64,21 @@ class ProductServiceTests {
 	@Mock
 	ProductMapper mapper;
 
+	private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.by(Order.asc("id")));
+
 	@Test
 	void findAllPaged_ReturnPage() {
 		Product product = anExistingProduct().build();
 		PageImpl<Product> products = new PageImpl<>(List.of(product));
 		Set<UUID> categories = Set.of(CategoryBuilder.EXISTING_ID, CategoryBuilder.ANOTHER_EXISTING_ID);
-		PageRequest pageRequest = PageRequest.of(0, 10);
-		when(repository.search(categories, "", pageRequest)).thenReturn(products);
+		when(repository.search(categories, "", DEFAULT_PAGEABLE)).thenReturn(products);
 
-		Page<Product> result = service.findAllPaged(categories, "", pageRequest);
+		Page<Product> result = service.list(categories, "", DEFAULT_PAGEABLE);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
 		assertEquals(result, products);
-		verify(repository, times(1)).search(categories, "", pageRequest);
+		verify(repository, times(1)).search(categories, "", DEFAULT_PAGEABLE);
 		verify(repository, times(1)).findWithCategories(products.toList());
 	}
 

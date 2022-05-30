@@ -1,8 +1,10 @@
 package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
-import java.util.List;
 import java.util.UUID;
 
+import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
@@ -24,9 +26,7 @@ public interface RoleControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Roles retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<List<RoleModel>> getRoles(
-			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
-			@Parameter(description = "Property to orderby", example = "name", required = false) String orderBy);
+	public ResponseEntity<Page<RoleModel>> list(@ParameterObject Pageable pageable);
 
 	@Operation(summary = "Retrives a role by ID", security = @SecurityRequirement(name = "basicAuth"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Role retrived with success"),

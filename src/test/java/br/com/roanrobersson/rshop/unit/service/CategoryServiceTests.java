@@ -28,6 +28,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
@@ -56,15 +57,15 @@ class CategoryServiceTests {
 	void findAllPaged_ReturnPage() {
 		Category category = anExistingCategory().build();
 		PageImpl<Category> categories = new PageImpl<>(List.of(category));
-		PageRequest pageRequest = PageRequest.of(0, 10);
-		when(repository.findAll(pageRequest)).thenReturn(categories);
+		Pageable pageable = PageRequest.of(0, 10);
+		when(repository.findAll(pageable)).thenReturn(categories);
 
-		Page<Category> result = service.findAllPaged(pageRequest);
+		Page<Category> result = service.list(pageable);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
 		assertEquals(result, categories);
-		verify(repository, times(1)).findAll(pageRequest);
+		verify(repository, times(1)).findAll(pageable);
 	}
 
 	@Test

@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
@@ -47,7 +49,7 @@ class ProductServiceIT {
 	private ProductRepository repository;
 
 	private static final long COUNT_TOTAL_PRODUCTS = 25L;
-	private static final PageRequest DEFAULT_PAGE_REQUEST = PageRequest.of(0, 10);
+	private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.by(Order.asc("id")));
 	private static final Set<UUID> EMPTY_SET = Set.of();
 
 	@ParameterizedTest
@@ -56,15 +58,16 @@ class ProductServiceIT {
 			@ConvertWith(StringToUUIDSetConverter.class) Set<UUID> categories, long expectedResultCount)
 			throws Exception {
 
-		Page<Product> result = service.findAllPaged(categories, productName, DEFAULT_PAGE_REQUEST);
+		Page<Product> result = service.list(categories, productName, DEFAULT_PAGEABLE);
 
 		assertEquals(expectedResultCount, result.getTotalElements());
 	}
 
 	@Test
-	void findAllPaged_ReturnSortedPage_SortByName() {
+	void findAllPaged_ReturnSortedPage_SortByNameAsc() {
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Order.asc("name")));
 
-		Page<Product> result = service.findAllPaged(EMPTY_SET, "", PageRequest.of(0, 10, Sort.by("name")));
+		Page<Product> result = service.list(EMPTY_SET, "", pageable);
 
 		assertFalse(result.isEmpty());
 		assertEquals("Macbook Pro", result.getContent().get(0).getName());
@@ -75,7 +78,7 @@ class ProductServiceIT {
 	@Test
 	void findAllPaged_ReturnPage_Page0Size10() {
 
-		Page<Product> result = service.findAllPaged(EMPTY_SET, "", DEFAULT_PAGE_REQUEST);
+		Page<Product> result = service.list(EMPTY_SET, "", DEFAULT_PAGEABLE);
 
 		assertFalse(result.isEmpty());
 		assertEquals(0, result.getNumber());
@@ -85,7 +88,7 @@ class ProductServiceIT {
 	@Test
 	void findAllPaged_ReturnEmptyPage_PageDoesNotExist() {
 
-		Page<Product> result = service.findAllPaged(EMPTY_SET, "", PageRequest.of(50, 10));
+		Page<Product> result = service.list(EMPTY_SET, "", PageRequest.of(50, 10));
 
 		assertTrue(result.isEmpty());
 	}

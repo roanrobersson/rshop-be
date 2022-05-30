@@ -1,8 +1,8 @@
 package br.com.roanrobersson.rshop.unit.service;
 
+import static br.com.roanrobersson.rshop.builder.RoleBuilder.aNonExistingRole;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.aRole;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.anExistingRole;
-import static br.com.roanrobersson.rshop.builder.RoleBuilder.aNonExistingRole;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,8 +24,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -58,21 +61,24 @@ class RoleServiceTests {
 	private final UUID EXISTING_ID = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
 	private final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	private final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
+	private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.by(Order.asc("id")));
+
 
 	@Test
 	void findAllPaged_ReturnPage() {
-		Sort sort = Sort.by(new Order(Direction.fromString("ASC"), "name"));
-		List<Role> roles = List.of(anExistingRole().build());
-		when(repository.findAll(sort)).thenReturn(roles);
-		when(repository.findRolesWithPrivileges(roles)).thenReturn(roles);
+		List<Role> roleList = List.of(anExistingRole().build());
+		Page<Role> roles = new PageImpl<Role>(roleList);
 
-		List<Role> result = service.findAll(sort);
+		when(repository.findAll(DEFAULT_PAGEABLE)).thenReturn(roles);
+		when(repository.findRolesWithPrivileges(roleList)).thenReturn(roleList);
+
+		Page<Role> result = service.list(DEFAULT_PAGEABLE);
 
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
 		assertEquals(result, roles);
-		verify(repository, times(1)).findAll(sort);
-		verify(repository, times(1)).findRolesWithPrivileges(roles);
+		verify(repository, times(1)).findAll(DEFAULT_PAGEABLE);
+		verify(repository, times(1)).findRolesWithPrivileges(roleList);
 	}
 
 	@Test

@@ -1,8 +1,9 @@
 package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
-import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
@@ -24,10 +25,9 @@ public interface UserAddressControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Addresses retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<List<AddressModel>> findAllByUserId(
+	public ResponseEntity<Page<AddressModel>> list(
 			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
-			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
-			@Parameter(description = "Address property to orderby", example = "uf", required = false) String orderBy);
+			Pageable pageable);
 
 	@Operation(summary = "Retrives a address by ID", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Address retrived with success"),

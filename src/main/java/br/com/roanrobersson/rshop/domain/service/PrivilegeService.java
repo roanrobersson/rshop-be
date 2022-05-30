@@ -1,10 +1,10 @@
 package br.com.roanrobersson.rshop.domain.service;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +19,8 @@ public class PrivilegeService {
 	private PrivilegeRepository repository;
 
 	@Transactional(readOnly = true)
-	public List<Privilege> findAll(Sort sort) {
-		return repository.findAll(sort);
+	public Page<Privilege> list(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 
 	@Transactional(readOnly = true)

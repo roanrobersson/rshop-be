@@ -22,7 +22,7 @@ public interface RolePrivilegeControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Privileges retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<Set<UUID>> findAll(
+	public ResponseEntity<Set<UUID>> list(
 			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId);
 
 	@Operation(summary = "Link a category to a role", security = @SecurityRequirement(name = "OAuth2"))

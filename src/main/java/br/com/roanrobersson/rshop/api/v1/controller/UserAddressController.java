@@ -1,17 +1,15 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -46,13 +43,10 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<List<AddressModel>> findAllByUserId(@PathVariable UUID userId,
-			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderby", defaultValue = "nick") String orderBy) {
-		Sort sort = Sort.by(new Order(Direction.fromString(direction), orderBy));
-		List<Address> addresses = service.findAll(userId, sort);
-		List<AddressModel> addressModels = addresses.stream().map(x -> mapper.map(x, AddressModel.class))
-				.collect(Collectors.toList());
+	public ResponseEntity<Page<AddressModel>> list(@PathVariable UUID userId,
+			@PageableDefault(size = 10) Pageable pageable) {
+		Page<Address> addresses = service.list(userId, pageable);
+		Page<AddressModel> addressModels = addresses.map(x -> mapper.map(x, AddressModel.class));
 		return ResponseEntity.ok(addressModels);
 	}
 
@@ -81,8 +75,8 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 			@Valid @RequestBody AddressInput addressInput) {
 		Address address = service.insert(userId, addressInput);
 		AddressModel addressModel = mapper.map(address, AddressModel.class);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}")
-				.buildAndExpand(addressModel.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(addressModel.getId())
+				.toUri();
 		return ResponseEntity.created(uri).body(addressModel);
 	}
 

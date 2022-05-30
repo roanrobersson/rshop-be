@@ -2,7 +2,9 @@ package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
 import java.util.UUID;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
@@ -24,13 +26,10 @@ public interface ProductControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Products retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<Page<ProductModel>> findAll(
+	public ResponseEntity<Page<ProductModel>> list(
 			@Parameter(description = "Category array", example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]") UUID[] categories,
 			@Parameter(description = "Product's name", example = "Computer", required = false) String name,
-			@Parameter(description = "Page number", example = "3", required = false) Integer page,
-			@Parameter(description = "Register per page", example = "15", required = false) Integer linesPerPage,
-			@Parameter(description = "Sort direction", example = "DESC", required = false) String direction,
-			@Parameter(description = "Property to orderby", example = "uf", required = false) String orderBy);
+			@ParameterObject Pageable pageable);
 
 	@Operation(summary = "Retrives a product by ID")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Product retrived with success"),

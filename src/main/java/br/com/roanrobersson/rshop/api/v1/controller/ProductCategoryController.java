@@ -30,7 +30,7 @@ public class ProductCategoryController implements ProductCategoryControllerOpenA
 	@GetMapping
 	@CheckSecurity.Product.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Set<UUID>> findAll(@PathVariable UUID productId) {
+	public ResponseEntity<Set<UUID>> list(@PathVariable UUID productId) {
 		Set<UUID> categoriesIds = service.getCategories(productId).stream().map(Category::getId)
 				.collect(Collectors.toSet());
 		return ResponseEntity.ok().body(categoriesIds);

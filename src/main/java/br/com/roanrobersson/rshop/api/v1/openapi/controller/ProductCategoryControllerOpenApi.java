@@ -22,7 +22,7 @@ public interface ProductCategoryControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Product categories retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<Set<UUID>> findAll(
+	public ResponseEntity<Set<UUID>> list(
 			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId);
 
 	@Operation(summary = "Link a category to a product", security = @SecurityRequirement(name = "OAuth2"))

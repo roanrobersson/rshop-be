@@ -30,7 +30,7 @@ public class UserRoleController implements UserRoleControllerOpenApi {
 	@GetMapping
 	@CheckSecurity.UserRole.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Set<UUID>> findAll(@PathVariable UUID userId) {
+	public ResponseEntity<Set<UUID>> list(@PathVariable UUID userId) {
 		Set<UUID> rolesIds = service.getRoles(userId).stream().map(Role::getId).collect(Collectors.toSet());
 		return ResponseEntity.ok().body(rolesIds);
 	}

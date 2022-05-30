@@ -1,6 +1,5 @@
 package br.com.roanrobersson.rshop.domain.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -8,15 +7,16 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
-import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
@@ -37,9 +37,9 @@ public class RoleService {
 	private RoleMapper mapper;
 
 	@Transactional(readOnly = true)
-	public List<Role> findAll(Sort sort) {
-		List<Role> roles = repository.findAll(sort);
-		repository.findRolesWithPrivileges(roles);
+	public Page<Role> list(Pageable pageable) {
+		Page<Role> roles = repository.findAll(pageable);
+		repository.findRolesWithPrivileges(roles.toList());
 		return roles;
 	}
 

@@ -76,7 +76,7 @@ class ProductControllerTests {
 	void findAll_ReturnPage() throws Exception {
 		Product product = aProduct().build();
 		PageImpl<Product> page = new PageImpl<>(List.of(product));
-		when(service.findAllPaged(anySet(), anyString(), any(PageRequest.class))).thenReturn(page);
+		when(service.list(anySet(), anyString(), any(PageRequest.class))).thenReturn(page);
 
 		ResultActions result = mockMvc.perform(get("/v1/products").accept(MediaType.APPLICATION_JSON));
 
