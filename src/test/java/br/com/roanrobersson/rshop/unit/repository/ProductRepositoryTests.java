@@ -9,7 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
@@ -39,8 +43,8 @@ class ProductRepositoryTests {
 
 		Page<Product> result = repository.search(categories, productName, PageRequest.of(0, 10));
 
-		Assertions.assertNotNull(result);
-		Assertions.assertEquals(expectedResultCount, result.getTotalElements());
+		assertNotNull(result);
+		assertEquals(expectedResultCount, result.getTotalElements());
 	}
 
 	@Test
@@ -50,9 +54,9 @@ class ProductRepositoryTests {
 
 		List<Product> result = repository.findWithCategories(products);
 
-		Assertions.assertNotNull(result);
-		Assertions.assertFalse(result.isEmpty());
-		Assertions.assertEquals(1, result.get(0).getCategories().size());
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+		assertEquals(2, result.get(0).getCategories().size());
 	}
 
 	@Test
@@ -60,8 +64,8 @@ class ProductRepositoryTests {
 
 		Optional<Product> optional = repository.findByIdWithCategories(EXISTING_ID);
 
-		Assertions.assertNotNull(optional);
-		Assertions.assertTrue(optional.isPresent());
-		Assertions.assertEquals(1, optional.get().getCategories().size());
+		assertNotNull(optional);
+		assertTrue(optional.isPresent());
+		assertEquals(2, optional.get().getCategories().size());
 	}
 }

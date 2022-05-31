@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -42,8 +42,8 @@ import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.builder.UserBuilder;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
@@ -76,7 +76,7 @@ class UserServiceTests {
 	private UserMapper mapper;
 
 	@Test
-	void findAllPaged_ReturnPage() {
+	void findAllPaged_ReturnUserPage() {
 		Pageable pageable = PageRequest.of(0, 10);
 		List<User> users = List.of(anExistingUser().build());
 		Page<User> page = new PageImpl<>(List.of(anExistingUser().build()));
@@ -93,7 +93,7 @@ class UserServiceTests {
 	}
 
 	@Test
-	void findById_ReturnUserModel_IdExist() {
+	void findById_ReturnUser_IdExist() {
 		User user = anExistingUser().build();
 		when(repository.findByIdWithRolesAndPrivileges(EXISTING_ID)).thenReturn(Optional.of(user));
 
@@ -107,7 +107,7 @@ class UserServiceTests {
 	void findById_ThrowUserNotFoundException_IdDoesNotExist() {
 		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(UserNotFoundException.class, () -> {
+		assertThrowsExactly(UserNotFoundException.class, () -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
@@ -115,7 +115,7 @@ class UserServiceTests {
 	}
 
 	@Test
-	void insert_ReturnUserModel_InputValid() {
+	void insert_ReturnUser_InputValid() {
 		UserBuilder builder = aNonExistingUser();
 		UserInsert insert = builder.buildInsert();
 		User user = builder.build();
@@ -136,11 +136,11 @@ class UserServiceTests {
 	}
 
 	@Test
-	void insert_ThrowsBusinessException_EmailAlreadyInUse() {
+	void insert_ThrowsUniqueException_EmailAlreadyInUse() {
 		UserInsert insert = aNonExistingUser().buildInsert();
 		when(repository.findByEmail(insert.getEmail())).thenReturn(Optional.of(anUser().build()));
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(UniqueException.class, () -> {
 			service.insert(insert);
 		});
 
@@ -148,7 +148,7 @@ class UserServiceTests {
 	}
 
 	@Test
-	void update_ReturnUserModel_IdExist() {
+	void update_ReturnUser_IdExist() {
 		UserBuilder builder = aNonExistingUser().withId(EXISTING_ID);
 		UserUpdate update = builder.buildUpdate();
 		User user = builder.build();
@@ -169,7 +169,7 @@ class UserServiceTests {
 		UserUpdate update = anExistingUser().buildUpdate();
 		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(UserNotFoundException.class, () -> {
+		assertThrowsExactly(UserNotFoundException.class, () -> {
 			service.update(NON_EXISTING_ID, update);
 		});
 
@@ -191,7 +191,7 @@ class UserServiceTests {
 	void delete_ThrowUserNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrows(UserNotFoundException.class, () -> {
+		assertThrowsExactly(UserNotFoundException.class, () -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
@@ -199,10 +199,10 @@ class UserServiceTests {
 	}
 
 	@Test
-	void delete_ThrowDatabaseException_DependentId() {
+	void delete_ThrowEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrows(DatabaseException.class, () -> {
+		assertThrowsExactly(EntityInUseException.class, () -> {
 			service.delete(DEPENDENT_ID);
 		});
 
@@ -229,7 +229,7 @@ class UserServiceTests {
 		UserChangePasswordInput passwordInput = new UserChangePasswordInput("a3g&3Pd#");
 		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(UserNotFoundException.class, () -> {
+		assertThrowsExactly(UserNotFoundException.class, () -> {
 			service.changePassword(NON_EXISTING_ID, passwordInput);
 		});
 
@@ -252,7 +252,7 @@ class UserServiceTests {
 	void loadUserByUsername_ThrowUsernameNotFoundException_EmailDoesNotExist() {
 		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.empty());
 
-		assertThrows(UsernameNotFoundException.class, () -> {
+		assertThrowsExactly(UsernameNotFoundException.class, () -> {
 			service.loadUserByUsername(EXISTING_EMAIL);
 		});
 

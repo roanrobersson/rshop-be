@@ -3,16 +3,17 @@ package br.com.roanrobersson.rshop.integration.service;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_NAME;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_ID;
-import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_NAME;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aNonExistingProduct;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
+import static br.com.roanrobersson.rshop.util.ExceptionUtils.ignoreThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,9 +31,8 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
-import br.com.roanrobersson.rshop.domain.exception.EntityNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
@@ -94,21 +94,42 @@ class ProductServiceIT {
 	}
 
 	@Test
-	void findById_ReturnProduct_IdExist() {
-		UUID id = EXISTING_ID;
+	void findAllPaged_DoesNotThrowsException_ValidParameters() {
 
-		Product result = service.findById(id);
+		assertDoesNotThrow(() -> service.list(EMPTY_SET, "", DEFAULT_PAGEABLE));
+	}
+
+	@Test
+	void findById_ReturnProduct_IdExist() {
+
+		Product result = service.findById(EXISTING_ID);
 
 		assertNotNull(result);
 		assertEquals(EXISTING_NAME, result.getName());
 	}
 
 	@Test
+	void findById_DoesNotThrowsException_IdExist() {
+
+		assertDoesNotThrow(() -> service.findById(EXISTING_ID));
+	}
+	
+	@Test
 	void findById_ThrowProductNotFoundException_IdDoesNotExist() {
 
-		assertThrows(ProductNotFoundException.class, () -> {
+		assertThrowsExactly(ProductNotFoundException.class, () -> {
 			service.findById(NON_EXISTING_ID);
 		});
+	}
+
+	@Test
+	void insert_SaveNewProduct_InputValid() {
+		ProductInput input = aNonExistingProduct().buildInput();
+
+		Product savedProduct = service.insert(input);
+
+		Product product = repository.findById(savedProduct.getId()).get();
+		assertEquals(input.getName(), product.getName());
 	}
 
 	@Test
@@ -118,60 +139,87 @@ class ProductServiceIT {
 		Product result = service.insert(input);
 
 		assertNotNull(result);
+		assertNotNull(result.getId());
 		assertEquals(result.getName(), input.getName());
 	}
 
 	@Test
-	void insert_ThrowsBusinessException_NameAlreadyInUse() {
+	void insert_ThrowsUniqueException_NameAlreadyInUse() {
 		ProductInput input = aNonExistingProduct().withExistingName().buildInput();
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(UniqueException.class, () -> {
 			service.insert(input);
 		});
 	}
 
 	@Test
-	void insert_ThrowsBusinessException_CategoryNonExist() {
+	void insert_ThrowsUniqueException_CategoryNonExist() {
 		ProductInput input = aProduct().withNonExistingCategory().buildInput();
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(UniqueException.class, () -> {
 			service.insert(input);
 		});
 	}
 
 	@Test
-	void update_ReturnProduct_IdExist() {
+	void update_SaveUpdatedProduct_IdExist() {
+		ProductInput input = aNonExistingProduct().withExistingId().withNonExistingName().buildInput();
+
+		service.update(EXISTING_ID, input);
+
+		Product product = repository.findById(EXISTING_ID).get();
+		assertEquals(input.getName(), product.getName());
+	}
+
+	@Test
+	void update_ReturnUpdatedProduct_IdExist() {
 		ProductInput input = aNonExistingProduct().withExistingId().withNonExistingName().buildInput();
 
 		Product result = service.update(EXISTING_ID, input);
 
 		assertNotNull(result);
-		assertEquals(NON_EXISTING_NAME, result.getName());
+		assertEquals(EXISTING_ID, result.getId());
+		assertEquals(input.getName(), result.getName());
 	}
 
 	@Test
-	void update_ThrowBusinessException_IdDoesNotExist() {
+	void update_ThrowProductNotFoundException_IdDoesNotExist() {
 		ProductInput input = aNonExistingProduct().buildInput();
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(ProductNotFoundException.class, () -> {
 			service.update(NON_EXISTING_ID, input);
 		});
 	}
 
 	@Test
-	void delete_DoNothing_IdExists() {
+	void delete_DeleteProduct_IdExists() {
+
+		service.delete(EXISTING_ID);
+		Optional<Product> optional = repository.findById(EXISTING_ID);
+
+		assertFalse(optional.isPresent());
+	}
+
+	@Test
+	void delete_DoesNotThrowException_IdExists() {
 
 		assertDoesNotThrow(() -> {
 			service.delete(EXISTING_ID);
 		});
-
-		assertEquals(COUNT_TOTAL_PRODUCTS - 1, repository.count());
 	}
 
 	@Test
-	void delete_ThrowResourceNotFoundException_IdDoesNotExist() {
+	void delete_DoesNotDeleteProduct_IdDoesNotExist() throws Throwable {
 
-		assertThrows(EntityNotFoundException.class, () -> {
+		ignoreThrows(() -> service.delete(NON_EXISTING_ID));
+
+		assertEquals(COUNT_TOTAL_PRODUCTS, repository.count());
+	}
+
+	@Test
+	void delete_ThrowProductNotFoundException_IdDoesNotExist() {
+
+		assertThrowsExactly(ProductNotFoundException.class, () -> {
 			service.delete(NON_EXISTING_ID);
 		});
 	}

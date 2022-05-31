@@ -14,7 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @Component
-public class TokenUtil {
+public final class TokenUtil {
 
 	@Value("${security.oauth2.client.client-id}")
 	private String clientId;

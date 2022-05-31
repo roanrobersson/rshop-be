@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -35,9 +35,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.builder.RoleBuilder;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
@@ -65,7 +65,7 @@ class RoleServiceTests {
 
 
 	@Test
-	void findAllPaged_ReturnPage() {
+	void findAllPaged_ReturnRolePage() {
 		List<Role> roleList = List.of(anExistingRole().build());
 		Page<Role> roles = new PageImpl<Role>(roleList);
 
@@ -82,7 +82,7 @@ class RoleServiceTests {
 	}
 
 	@Test
-	void findById_ReturnRoleModel_IdExist() {
+	void findById_ReturnRole_IdExist() {
 		Role role = anExistingRole().build();
 		UUID id = role.getId();
 		when(repository.findByIdWithPrivileges(id)).thenReturn(Optional.of(role));
@@ -98,7 +98,7 @@ class RoleServiceTests {
 	void findById_ThrowRoleNotFoundException_IdDoesNotExist() {
 		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(RoleNotFoundException.class, () -> {
+		assertThrowsExactly(RoleNotFoundException.class, () -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
@@ -106,7 +106,7 @@ class RoleServiceTests {
 	}
 
 	@Test
-	void insert_ReturnRoleModel_InputValid() {
+	void insert_ReturnRole_InputValid() {
 		RoleBuilder builder = aNonExistingRole();
 		RoleInput input = builder.buildInput();
 		Role role = builder.build();
@@ -124,11 +124,11 @@ class RoleServiceTests {
 	}
 
 	@Test
-	void insert_ThrowsBusinessException_NameAlreadyInUse() {
+	void insert_UniqueException_NameAlreadyInUse() {
 		RoleInput input = aNonExistingRole().withExistingName().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(aRole().build()));
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(UniqueException.class, () -> {
 			service.insert(input);
 		});
 
@@ -136,7 +136,7 @@ class RoleServiceTests {
 	}
 
 	@Test
-	void update_ReturnRoleModel_IdExist() {
+	void update_ReturnRole_IdExist() {
 		RoleBuilder builder = aNonExistingRole();
 		RoleInput input = builder.buildInput();
 		Role role = builder.withId(EXISTING_ID).build();
@@ -159,7 +159,7 @@ class RoleServiceTests {
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(RoleNotFoundException.class, () -> {
+		assertThrowsExactly(RoleNotFoundException.class, () -> {
 			service.update(NON_EXISTING_ID, input);
 		});
 
@@ -168,11 +168,11 @@ class RoleServiceTests {
 	}
 
 	@Test
-	void update_ThrowsBusinessException_NameAlreadyInUse() {
+	void update_ThrowsUniqueException_NameAlreadyInUse() {
 		RoleInput input = aNonExistingRole().withExistingName().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(aRole().build()));
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(UniqueException.class, () -> {
 			service.update(EXISTING_ID, input);
 		});
 
@@ -194,7 +194,7 @@ class RoleServiceTests {
 	void delete_ThrowRoleNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrows(RoleNotFoundException.class, () -> {
+		assertThrowsExactly(RoleNotFoundException.class, () -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
@@ -202,10 +202,10 @@ class RoleServiceTests {
 	}
 
 	@Test
-	void delete_ThrowDatabaseException_DependentId() {
+	void delete_ThrowEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrows(DatabaseException.class, () -> {
+		assertThrowsExactly(EntityInUseException.class, () -> {
 			service.delete(DEPENDENT_ID);
 		});
 

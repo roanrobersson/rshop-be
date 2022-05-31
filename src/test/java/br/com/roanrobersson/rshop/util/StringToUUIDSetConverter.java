@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
-public class StringToUUIDSetConverter extends SimpleArgumentConverter {
+public final class StringToUUIDSetConverter extends SimpleArgumentConverter {
 
 	@Override
 	protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {

@@ -19,11 +19,11 @@ import lombok.Getter;
 @Getter
 public class ProductBuilder {
 
-	public static final UUID EXISTING_ID = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
+	public static final UUID EXISTING_ID = UUID.fromString("ff9d39d5-717f-4714-9688-9e75797c0ec0");
 	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
 	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-4000-0000-000000000000");
 	public static final UUID DEPENDENT_ID = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
-	public static final String EXISTING_NAME = "The Lord of The Rings";
+	public static final String EXISTING_NAME = "Smart TV";
 	public static final String ANOTHER_EXISTING_NAME = "PC Gamer";
 	public static final String NON_EXISTING_NAME = "Non existing name";
 	public static final String EXISTING_SKU = "XBSO0200";

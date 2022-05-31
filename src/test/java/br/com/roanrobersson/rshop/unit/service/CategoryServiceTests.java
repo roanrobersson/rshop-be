@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -34,9 +34,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.builder.CategoryBuilder;
-import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
@@ -54,7 +54,7 @@ class CategoryServiceTests {
 	private CategoryMapper mapper;
 
 	@Test
-	void findAllPaged_ReturnPage() {
+	void findAllPaged_ReturnCategoryPage() {
 		Category category = anExistingCategory().build();
 		PageImpl<Category> categories = new PageImpl<>(List.of(category));
 		Pageable pageable = PageRequest.of(0, 10);
@@ -69,7 +69,7 @@ class CategoryServiceTests {
 	}
 
 	@Test
-	void findById_ReturnCategoryModel_IdExist() {
+	void findById_ReturnCategory_IdExist() {
 		Category category = anExistingCategory().build();
 		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(category));
 
@@ -84,7 +84,7 @@ class CategoryServiceTests {
 	void findById_ThrowCategoryNotFoundException_IdDoesNotExist() {
 		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(CategoryNotFoundException.class, () -> {
+		assertThrowsExactly(CategoryNotFoundException.class, () -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
@@ -92,7 +92,7 @@ class CategoryServiceTests {
 	}
 
 	@Test
-	void insert_ReturnCategoryModel_InputValid() {
+	void insert_ReturnCategory_InputValid() {
 		CategoryBuilder builder = aNonExistingCategory();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.build();
@@ -110,13 +110,13 @@ class CategoryServiceTests {
 	}
 
 	@Test
-	void insert_ThrowsBusinessException_NameAlreadyInUse() {
+	void insert_ThrowsUniqueException_NameAlreadyInUse() {
 		CategoryBuilder builder = aNonExistingCategory().withExistingName();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.build();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(category));
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(UniqueException.class, () -> {
 			service.insert(input);
 		});
 
@@ -124,7 +124,7 @@ class CategoryServiceTests {
 	}
 
 	@Test
-	void update_ReturnCategoryModel_IdExist() {
+	void update_ReturnCategory_IdExist() {
 		CategoryBuilder builder = aNonExistingCategory();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.withId(EXISTING_ID).build();
@@ -147,7 +147,7 @@ class CategoryServiceTests {
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(CategoryNotFoundException.class, () -> {
+		assertThrowsExactly(CategoryNotFoundException.class, () -> {
 			service.update(NON_EXISTING_ID, input);
 		});
 
@@ -170,7 +170,7 @@ class CategoryServiceTests {
 	void delete_ThrowCategoryNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrows(CategoryNotFoundException.class, () -> {
+		assertThrowsExactly(CategoryNotFoundException.class, () -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
@@ -178,10 +178,10 @@ class CategoryServiceTests {
 	}
 
 	@Test
-	void delete_ThrowDatabaseException_DependentId() {
+	void delete_ThrowEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrows(DatabaseException.class, () -> {
+		assertThrowsExactly(EntityInUseException.class, () -> {
 			service.delete(DEPENDENT_ID);
 		});
 

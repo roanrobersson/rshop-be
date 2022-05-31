@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -42,8 +42,9 @@ import br.com.roanrobersson.rshop.builder.CategoryBuilder;
 import br.com.roanrobersson.rshop.builder.ProductBuilder;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
-import br.com.roanrobersson.rshop.domain.exception.DatabaseException;
+import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
+import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
@@ -67,7 +68,7 @@ class ProductServiceTests {
 	private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.by(Order.asc("id")));
 
 	@Test
-	void findAllPaged_ReturnPage() {
+	void findAllPaged_ReturnProductPage() {
 		Product product = anExistingProduct().build();
 		PageImpl<Product> products = new PageImpl<>(List.of(product));
 		Set<UUID> categories = Set.of(CategoryBuilder.EXISTING_ID, CategoryBuilder.ANOTHER_EXISTING_ID);
@@ -97,9 +98,9 @@ class ProductServiceTests {
 
 	@Test
 	void findById_ThrowProductNotFoundException_IdDoesNotExist() {
-		when(repository.findByIdWithCategories(NON_EXISTING_ID)).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(ProductNotFoundException.class, () -> {
+		assertThrowsExactly(ProductNotFoundException.class, () -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
@@ -107,7 +108,7 @@ class ProductServiceTests {
 	}
 
 	@Test
-	void insert_ReturnProductModel_InputValid() {
+	void insert_ReturnProduct_InputValid() {
 		ProductBuilder builder = aNonExistingProduct();
 		Product product = builder.build();
 		ProductInput input = builder.buildInput();
@@ -125,11 +126,11 @@ class ProductServiceTests {
 	}
 
 	@Test
-	void insert_ThrowsBusinessException_NameAlreadyInUse() {
+	void insert_ThrowsUniqueException_NameAlreadyInUse() {
 		ProductInput input = aNonExistingProduct().withExistingName().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(aProduct().build()));
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(UniqueException.class, () -> {
 			service.insert(input);
 		});
 
@@ -142,7 +143,7 @@ class ProductServiceTests {
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(mapper.toProduct(input)).thenThrow(CategoryNotFoundException.class);
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(BusinessException.class, () -> {
 			service.insert(input);
 		});
 
@@ -151,7 +152,7 @@ class ProductServiceTests {
 	}
 
 	@Test
-	void update_ReturnProductModel_IdExist() {
+	void update_ReturnProduct_IdExist() {
 		ProductBuilder builder = aNonExistingProduct().withId(EXISTING_ID);
 		Product product = builder.build();
 		ProductInput input = builder.withId(EXISTING_ID).buildInput();
@@ -170,12 +171,12 @@ class ProductServiceTests {
 	}
 
 	@Test
-	void update_ThrowBusinessException_IdDoesNotExist() {
+	void update_ThrowProductNotFoundException_IdDoesNotExist() {
 		ProductInput input = aNonExistingProduct().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findByIdWithCategories(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrows(BusinessException.class, () -> {
+		assertThrowsExactly(ProductNotFoundException.class, () -> {
 			service.update(NON_EXISTING_ID, input);
 		});
 
@@ -198,7 +199,7 @@ class ProductServiceTests {
 	void delete_ThrowProductNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrows(ProductNotFoundException.class, () -> {
+		assertThrowsExactly(ProductNotFoundException.class, () -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
@@ -206,10 +207,10 @@ class ProductServiceTests {
 	}
 
 	@Test
-	void delete_ThrowDatabaseException_DependentId() {
+	void delete_ThrowEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrows(DatabaseException.class, () -> {
+		assertThrowsExactly(EntityInUseException.class, () -> {
 			service.delete(DEPENDENT_ID);
 		});
 

@@ -73,7 +73,7 @@ class ProductControllerTests {
 			.getContentFromResource("/json/incorrect/product-input-without-name-property.json");
 
 	@Test
-	void findAll_ReturnPage() throws Exception {
+	void findAll_ReturnProductPage() throws Exception {
 		Product product = aProduct().build();
 		PageImpl<Product> page = new PageImpl<>(List.of(product));
 		when(service.list(anySet(), anyString(), any(PageRequest.class))).thenReturn(page);
@@ -120,7 +120,7 @@ class ProductControllerTests {
 	}
 
 	@Test
-	void insert_ReturnProductModel_ValidInput() throws Exception {
+	void insert_ReturnInsertedProductModel_ValidInput() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		ProductBuilder builder = aProduct().withExistingId().withNonExistingName().withNonExistingSKU()
 				.withExistingCategory();
@@ -183,7 +183,7 @@ class ProductControllerTests {
 	}
 
 	@Test
-	void update_ReturnProductModel_IdExists() throws Exception {
+	void update_ReturnUpdatedProductModel_IdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		ProductBuilder builder = aProduct().withId(EXISTING_ID).withNonExistingName().withNonExistingSKU()
 				.withExistingCategory();
