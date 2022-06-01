@@ -10,22 +10,20 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Component;
 
-import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.User;
-import br.com.roanrobersson.rshop.domain.repository.UserRepository;
+import br.com.roanrobersson.rshop.domain.service.UserService;
 
 @Component
 public class JwtTokenEnhancer implements TokenEnhancer {
 
 	@Autowired
-	private UserRepository userRepository;
+	private UserService service;
 
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 
 		String email = authentication.getName();
-		User user = userRepository.findByEmail(email).orElseThrow(
-				() -> new UserNotFoundException(String.format("There is no user with the email %s", email)));
+		User user = service.findByEmail(email);
 
 		Map<String, Object> map = new HashMap<>();
 
@@ -38,5 +36,4 @@ public class JwtTokenEnhancer implements TokenEnhancer {
 
 		return accessToken;
 	}
-
 }
