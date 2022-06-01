@@ -22,9 +22,6 @@ public final class TokenUtil {
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
 
-	@Value("${rshop.api.base-path}/auth")
-	private String authPath;
-	
 	public String obtainAccessToken(MockMvc mockMvc, String username, String password) throws Exception {
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -34,7 +31,7 @@ public final class TokenUtil {
 		params.add("password", password);
 
 		ResultActions result = mockMvc
-				.perform(post(authPath).params(params).with(httpBasic(clientId, clientSecret))
+				.perform(post("/auth").params(params).with(httpBasic(clientId, clientSecret))
 						.accept("application/json;charset=UTF-8"))
 				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"));
 

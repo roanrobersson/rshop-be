@@ -25,37 +25,34 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Value("${security.oauth2.client.client-id}")
 	private String clientId;
-	
+
 	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
-	
+
 	@Value("${jwt.token.duration}")
 	private Integer jwtTokenDuration;
 	
 	@Value("${jwt.refresh-token.duration}")
 	private Integer jwtRefreshTokenDuration;
-	
-	@Value("${rshop.api.base-path}")
-	private String apiBasePath;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private JwtAccessTokenConverter acessTokenConverter;
-	
+
 	@Autowired
 	private JwtTokenStore tokenStore;
-	
+
 	@Autowired 
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private JwtTokenEnhancer tokenEnhancer;
-	
+
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
@@ -83,6 +80,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.accessTokenConverter(acessTokenConverter)
 		.tokenEnhancer(chain)
 		.userDetailsService(userDetailsService)
-		.pathMapping("/oauth/token", String.format("%s/auth", apiBasePath));
+		.pathMapping("/oauth/token", "/auth");
 	}
 }
