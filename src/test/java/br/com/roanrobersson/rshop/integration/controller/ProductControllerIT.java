@@ -57,7 +57,7 @@ class ProductControllerIT {
 
 	@Test
 	void findAllPaged_ReturnOk_ValidParameters() throws Exception {
-		String validURI = "/v1/products?page=0&size=15&sort=name,asc&name=tv&categories="
+		String validURI = "/v1/products?page=0&size=15&sort=name,asc&q=tv&categories="
 				+ "753dad79-2a1f-4f5c-bbd1-317a53587518,431d856e-caf2-4367-823a-924ce46b2e02";
 
 		ResultActions result = mockMvc.perform(get(validURI).accept(MediaType.APPLICATION_JSON));
@@ -87,7 +87,7 @@ class ProductControllerIT {
 	@CsvFileSource(resources = "/csv/product-search-filters.csv", numLinesToSkip = 1)
 	void findAll_ReturnProductPageWithCorrectProductCount_SpecificRequestParams(String productName, String categories,
 			long expectedResultCount) throws Exception {
-		String uri = "/v1/products?name={productName}&categories={categories}&size=1000";
+		String uri = "/v1/products?q={productName}&categories={categories}&size=1000";
 
 		ResultActions result = mockMvc.perform(get(uri, productName, categories).accept(MediaType.APPLICATION_JSON));
 

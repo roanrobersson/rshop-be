@@ -48,7 +48,7 @@ public class ProductController implements ProductControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<ProductModel>> list(
 			@RequestParam(value = "categories", required = false) UUID[] categories,
-			@RequestParam(value = "name", defaultValue = "") String name,
+			@RequestParam(value = "q", defaultValue = "") String name,
 			@PageableDefault(size = 10) Pageable pageable) {
 		if (categories == null)
 			categories = new UUID[0];
