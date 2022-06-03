@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,8 +42,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<AddressModel>> list(@PathVariable UUID userId,
-			@PageableDefault(size = 10) Pageable pageable) {
+	public ResponseEntity<Page<AddressModel>> list(@PathVariable UUID userId, Pageable pageable) {
 		Page<Address> addresses = service.list(userId, pageable);
 		Page<AddressModel> addressModels = addresses.map(x -> mapper.map(x, AddressModel.class));
 		return ResponseEntity.ok(addressModels);

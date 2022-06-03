@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,8 +47,7 @@ public class ProductController implements ProductControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<ProductModel>> list(
 			@RequestParam(value = "categories", required = false) UUID[] categories,
-			@RequestParam(value = "q", defaultValue = "") String name,
-			@PageableDefault(size = 10) Pageable pageable) {
+			@RequestParam(value = "q", defaultValue = "") String name, Pageable pageable) {
 		if (categories == null)
 			categories = new UUID[0];
 		Page<Product> products = service.list(Set.of(categories), name.trim(), pageable);

@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,7 +46,7 @@ public class UserController implements UserControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.User.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<UserModel>> list(@PageableDefault(size = 10) Pageable pageable) {
+	public ResponseEntity<Page<UserModel>> list(Pageable pageable) {
 		Page<User> userPage = service.list(pageable);
 		Page<UserModel> userModels = userPage.map(x -> mapper.toUserModel(x));
 		return ResponseEntity.ok(userModels);

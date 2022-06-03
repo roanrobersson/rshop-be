@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,7 +45,7 @@ public class RoleController implements RoleControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<RoleModel>> list(@PageableDefault(size = 10) Pageable pageable) {
+	public ResponseEntity<Page<RoleModel>> list(Pageable pageable) {
 		Page<Role> roles = service.list(pageable);
 		Page<RoleModel> roleModels = roles.map(role -> mapper.toRoleModel(role));
 		return ResponseEntity.ok().body(roleModels);
