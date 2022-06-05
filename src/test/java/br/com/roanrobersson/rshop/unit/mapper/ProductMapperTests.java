@@ -51,7 +51,7 @@ public class ProductMapperTests {
 		Product product = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		ProductModel expected = objectMapper.readValue(JSON_PRODUCT_MODEL, ProductModel.class);
 
-		ProductModel result = productMapper.toProductModel(product);
+		ProductModel result = productMapper.toModel(product);
 
 		assertEquals(result, expected);
 	}
@@ -61,7 +61,7 @@ public class ProductMapperTests {
 		Product product = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		ProductInput expected = objectMapper.readValue(JSON_PRODUCT_INPUT, ProductInput.class);
 
-		ProductInput result = productMapper.toProductInput(product);
+		ProductInput result = productMapper.toInput(product);
 
 		assertEquals(result, expected);
 	}

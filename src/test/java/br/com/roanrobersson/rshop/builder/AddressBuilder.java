@@ -65,10 +65,10 @@ public class AddressBuilder {
 	}
 
 	public AddressInput buildInput() {
-		return AddressMapper.INSTANCE.toAddressInput(build());
+		return AddressMapper.INSTANCE.toInput(build());
 	}
 
 	public AddressModel buildModel() {
-		return AddressMapper.INSTANCE.toAddressModel(build());
+		return AddressMapper.INSTANCE.toModel(build());
 	}
 }

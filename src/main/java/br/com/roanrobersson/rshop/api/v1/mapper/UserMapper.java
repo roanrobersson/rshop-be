@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import br.com.roanrobersson.rshop.api.v1.model.UserModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
@@ -25,14 +26,18 @@ public abstract class UserMapper {
 
 	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesIds")
 	@Mapping(source = "roles", target = "privileges", qualifiedByName = "rolesToPrivilegesIds")
-	public abstract UserModel toUserModel(User user);
+	public abstract UserModel toModel(User user);
 
-	public abstract UserInsert toUserInsert(User user);
+	public abstract UserInsert toInsert(User user);
 
-	public abstract UserUpdate toUserUpdate(User user);
+	public abstract UserUpdate toUpdate(User user);
 
 	@Mapping(target = "password", ignore = true)
 	public abstract User toUser(UserInsert userInsert);
+
+	public Page<UserModel> toModelPage(Page<User> users) {
+		return users.map(x -> this.toModel(x));
+	};
 
 	public abstract void update(UserUpdate userUpdate, @MappingTarget User user);
 

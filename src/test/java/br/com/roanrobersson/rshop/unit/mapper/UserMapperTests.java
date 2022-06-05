@@ -57,7 +57,7 @@ public class UserMapperTests {
 		User user = objectMapper.readValue(JSON_USER, User.class);
 		UserModel expected = objectMapper.readValue(JSON_USER_MODEL, UserModel.class);
 
-		UserModel result = userMapper.toUserModel(user);
+		UserModel result = userMapper.toModel(user);
 
 		assertEquals(result, expected);
 	}
@@ -68,7 +68,7 @@ public class UserMapperTests {
 		user.setPassword("12345678");
 		UserInsert expected = objectMapper.readValue(JSON_USER_INSERT, UserInsert.class);
 
-		UserInsert result = userMapper.toUserInsert(user);
+		UserInsert result = userMapper.toInsert(user);
 
 		assertEquals(result, expected);
 	}
@@ -78,7 +78,7 @@ public class UserMapperTests {
 		User user = objectMapper.readValue(JSON_USER, User.class);
 		UserUpdate expected = objectMapper.readValue(JSON_USER_UPDATE, UserUpdate.class);
 
-		UserUpdate result = userMapper.toUserUpdate(user);
+		UserUpdate result = userMapper.toUpdate(user);
 
 		assertEquals(result, expected);
 	}

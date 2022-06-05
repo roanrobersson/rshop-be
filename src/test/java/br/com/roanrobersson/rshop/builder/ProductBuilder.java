@@ -171,10 +171,10 @@ public class ProductBuilder {
 	}
 
 	public ProductInput buildInput() {
-		return ProductMapper.INSTANCE.toProductInput(build());
+		return ProductMapper.INSTANCE.toInput(build());
 	}
 
 	public ProductModel buildModel() {
-		return ProductMapper.INSTANCE.toProductModel(build());
+		return ProductMapper.INSTANCE.toModel(build());
 	}
 }

@@ -48,7 +48,7 @@ public class UserController implements UserControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<UserModel>> list(Pageable pageable) {
 		Page<User> userPage = service.list(pageable);
-		Page<UserModel> userModels = userPage.map(x -> mapper.toUserModel(x));
+		Page<UserModel> userModels = mapper.toModelPage(userPage);
 		return ResponseEntity.ok(userModels);
 	}
 
@@ -57,7 +57,7 @@ public class UserController implements UserControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<UserModel> findById(@PathVariable UUID userId) {
 		User user = service.findById(userId);
-		UserModel userModel = mapper.toUserModel(user);
+		UserModel userModel = mapper.toModel(user);
 		return ResponseEntity.ok(userModel);
 	}
 
@@ -66,7 +66,7 @@ public class UserController implements UserControllerOpenApi {
 	public ResponseEntity<UserModel> insert(@Valid @RequestBody UserInsert userInsert) {
 		User user = service.insert(userInsert);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(user.getId()).toUri();
-		UserModel userModel = mapper.toUserModel(user);
+		UserModel userModel = mapper.toModel(user);
 		return ResponseEntity.created(uri).body(userModel);
 	}
 
@@ -75,7 +75,7 @@ public class UserController implements UserControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<UserModel> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdate userUpdate) {
 		User user = service.update(userId, userUpdate);
-		UserModel userModel = mapper.toUserModel(user);
+		UserModel userModel = mapper.toModel(user);
 		return ResponseEntity.ok(userModel);
 	}
 

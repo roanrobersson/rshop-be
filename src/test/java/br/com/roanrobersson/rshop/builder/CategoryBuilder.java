@@ -92,10 +92,10 @@ public class CategoryBuilder {
 	}
 
 	public CategoryInput buildInput() {
-		return CategoryMapper.INSTANCE.toCategoryInput(build());
+		return CategoryMapper.INSTANCE.toInput(build());
 	}
 
 	public CategoryModel buildModel() {
-		return CategoryMapper.INSTANCE.toCategoryModel(build());
+		return CategoryMapper.INSTANCE.toModel(build());
 	}
 };

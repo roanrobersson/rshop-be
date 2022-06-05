@@ -115,6 +115,7 @@ INSERT INTO product_category (product_id, category_id) VALUES ('7c4125cc81164f11
 INSERT INTO product_category (product_id, category_id) VALUES ('ff9d39d5717f471496889e75797c0ec0', '753dad792a1f4f5cbbd1317a53587518');
 INSERT INTO product_category (product_id, category_id) VALUES ('ff9d39d5717f471496889e75797c0ec0', '5c2b2b987b7242dd8add9e97a2967e11');
 INSERT INTO product_category (product_id, category_id) VALUES ('c8a0c055030a4e478acacf4634b98be5', '5c2b2b987b7242dd8add9e97a2967e11');
+INSERT INTO product_category (product_id, category_id) VALUES ('c8a0c055030a4e478acacf4634b98be5', '431d856ecaf24367823a924ce46b2e02');
 INSERT INTO product_category (product_id, category_id) VALUES ('f758d7cf6005401293fc23afa45bf1ed', '5c2b2b987b7242dd8add9e97a2967e11');
 INSERT INTO product_category (product_id, category_id) VALUES ('e7310910eb104694854ac95fcc7255eb', '431d856ecaf24367823a924ce46b2e02');
 INSERT INTO product_category (product_id, category_id) VALUES ('c4c6609eb45e4821af0ca3f7bfd6f3a4', '5c2b2b987b7242dd8add9e97a2967e11');

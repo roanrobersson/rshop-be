@@ -93,10 +93,10 @@ public class PrivilegeBuilder {
 	}
 
 	public PrivilegeInput buildInput() {
-		return PrivilegeMapper.INSTANCE.toPrivilegeInput(build());
+		return PrivilegeMapper.INSTANCE.toInput(build());
 	}
 
 	public PrivilegeModel buildModel() {
-		return PrivilegeMapper.INSTANCE.toPrivilegeModel(build());
+		return PrivilegeMapper.INSTANCE.toModel(build());
 	}
 };

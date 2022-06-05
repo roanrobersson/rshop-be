@@ -47,7 +47,7 @@ public class RoleController implements RoleControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<RoleModel>> list(Pageable pageable) {
 		Page<Role> roles = service.list(pageable);
-		Page<RoleModel> roleModels = roles.map(role -> mapper.toRoleModel(role));
+		Page<RoleModel> roleModels = roles.map(role -> mapper.toModel(role));
 		return ResponseEntity.ok().body(roleModels);
 	}
 
@@ -56,7 +56,7 @@ public class RoleController implements RoleControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<RoleModel> findById(@PathVariable UUID roleId) {
 		Role role = service.findById(roleId);
-		RoleModel roleModel = mapper.toRoleModel(role);
+		RoleModel roleModel = mapper.toModel(role);
 		return ResponseEntity.ok().body(roleModel);
 	}
 
@@ -66,7 +66,7 @@ public class RoleController implements RoleControllerOpenApi {
 	public ResponseEntity<RoleModel> insert(@Valid @RequestBody RoleInput roleInput) {
 		try {
 			Role role = service.insert(roleInput);
-			RoleModel roleModel = mapper.toRoleModel(role);
+			RoleModel roleModel = mapper.toModel(role);
 			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(roleModel.getId())
 					.toUri();
 			return ResponseEntity.created(uri).body(roleModel);
@@ -81,7 +81,7 @@ public class RoleController implements RoleControllerOpenApi {
 	public ResponseEntity<RoleModel> update(@PathVariable UUID roleId, @Valid @RequestBody RoleInput roleInput) {
 		try {
 			Role role = service.update(roleId, roleInput);
-			RoleModel roleModel = mapper.toRoleModel(role);
+			RoleModel roleModel = mapper.toModel(role);
 			return ResponseEntity.ok().body(roleModel);
 		} catch (PrivilegeNotFoundException e) {
 			throw new BusinessException(e.getMessage(), e);

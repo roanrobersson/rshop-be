@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
 import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
@@ -26,11 +27,15 @@ public abstract class ProductMapper {
 	@Autowired
 	private CategoryService categoryService;
 
-	public abstract ProductModel toProductModel(Product product);
+	public abstract ProductModel toModel(Product product);
 
-	public abstract ProductInput toProductInput(Product product);
+	public abstract ProductInput toInput(Product product);
 
 	public abstract Product toProduct(ProductInput productInput);
+
+	public Page<ProductModel> toModelPage(Page<Product> products) {
+		return products.map(x -> this.toModel(x));
+	};
 
 	public abstract void update(ProductInput productInput, @MappingTarget Product product);
 

@@ -121,10 +121,10 @@ public class RoleBuilder {
 	}
 
 	public RoleInput buildInput() {
-		return RoleMapper.INSTANCE.toRoleInput(build());
+		return RoleMapper.INSTANCE.toInput(build());
 	}
 
 	public RoleModel buildModel() {
-		return RoleMapper.INSTANCE.toRoleModel(build());
+		return RoleMapper.INSTANCE.toModel(build());
 	}
 }

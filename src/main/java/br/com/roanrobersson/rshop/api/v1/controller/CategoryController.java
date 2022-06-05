@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.model.CategoryModel;
 import br.com.roanrobersson.rshop.api.v1.model.CountModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
@@ -38,14 +38,14 @@ public class CategoryController implements CategoryControllerOpenApi {
 	private CategoryService service;
 
 	@Autowired
-	private ModelMapper mapper;
+	private CategoryMapper mapper;
 
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<CategoryModel>> list(Pageable pageable) {
 		Page<Category> categories = service.list(pageable);
-		Page<CategoryModel> categoryModels = categories.map(x -> mapper.map(x, CategoryModel.class));
+		Page<CategoryModel> categoryModels = mapper.toModelPage(categories);
 		return ResponseEntity.ok().body(categoryModels);
 	}
 
@@ -54,7 +54,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<CategoryModel> findById(@PathVariable("categoryId") UUID categoryId) {
 		Category category = service.findById(categoryId);
-		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
+		CategoryModel categoryModel = mapper.toModel(category);
 		return ResponseEntity.ok().body(categoryModel);
 	}
 
@@ -63,7 +63,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<CategoryModel> insert(@Valid @RequestBody CategoryInput categoryInput) {
 		Category category = service.insert(categoryInput);
-		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
+		CategoryModel categoryModel = mapper.toModel(category);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoryModel.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(categoryModel);
@@ -75,7 +75,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	public ResponseEntity<CategoryModel> update(@PathVariable UUID categoryId,
 			@Valid @RequestBody CategoryInput categoryInput) {
 		Category category = service.update(categoryId, categoryInput);
-		CategoryModel categoryModel = mapper.map(category, CategoryModel.class);
+		CategoryModel categoryModel = mapper.toModel(category);
 		return ResponseEntity.ok().body(categoryModel);
 	}
 

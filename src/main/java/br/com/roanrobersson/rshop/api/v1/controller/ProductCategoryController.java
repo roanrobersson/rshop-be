@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.ProductCategoryControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
-import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 
 @RestController
@@ -27,13 +26,14 @@ public class ProductCategoryController implements ProductCategoryControllerOpenA
 	@Autowired
 	ProductService service;
 
+	@Autowired
+	CategoryMapper categoryMapper;
+
 	@GetMapping
 	@CheckSecurity.Product.CanConsult
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Set<UUID>> list(@PathVariable UUID productId) {
-		Set<UUID> categoriesIds = service.getCategories(productId).stream().map(Category::getId)
-				.collect(Collectors.toSet());
-		return ResponseEntity.ok().body(categoriesIds);
+		return ResponseEntity.ok().body(categoryMapper.toIdSet(service.getCategories(productId)));
 	}
 
 	@PutMapping(value = "/{categoryId}")

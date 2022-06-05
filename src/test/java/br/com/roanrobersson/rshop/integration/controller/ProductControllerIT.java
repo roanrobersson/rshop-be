@@ -66,21 +66,21 @@ class ProductControllerIT {
 	}
 
 	@Test
-	void findAll_ReturnProductPageWithCorrectProductData() throws Exception {
+	void findAll_ReturnProductPageWithCorrectProductData_ValidParameters() throws Exception {
 
-		ResultActions result = mockMvc.perform(get("/v1/products").accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc.perform(get("/v1/products?page=0&size=1&sort=name,asc").accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("$.content").exists());
 		result.andExpect(jsonPath("$.content").isArray());
-		result.andExpect(jsonPath("$.content[9].id").value("ff9d39d5-717f-4714-9688-9e75797c0ec0"));
-		result.andExpect(jsonPath("$.content[9].categories[0]").value("5c2b2b98-7b72-42dd-8add-9e97a2967e11"));
-		result.andExpect(jsonPath("$.content[9].categories[1]").value("753dad79-2a1f-4f5c-bbd1-317a53587518"));
-		result.andExpect(jsonPath("$.content[9].sku").value("TVLG32BL"));
-		result.andExpect(jsonPath("$.content[9].name").value("Smart TV"));
-		result.andExpect(jsonPath("$.content[9].description").isNotEmpty());
-		result.andExpect(jsonPath("$.content[9].price").value(2190.00));
-		result.andExpect(jsonPath("$.content[9].imgUrl").isNotEmpty());
+		result.andExpect(jsonPath("$.content[0].id").value("c8a0c055-030a-4e47-8aca-cf4634b98be5"));
+		result.andExpect(jsonPath("$.content[0].categories[0]").value("5c2b2b98-7b72-42dd-8add-9e97a2967e11"));
+		result.andExpect(jsonPath("$.content[0].categories[1]").value("431d856e-caf2-4367-823a-924ce46b2e02"));
+		result.andExpect(jsonPath("$.content[0].sku").value("NBAP14SI"));
+		result.andExpect(jsonPath("$.content[0].name").value("Macbook Pro"));
+		result.andExpect(jsonPath("$.content[0].description").isNotEmpty());
+		result.andExpect(jsonPath("$.content[0].price").value(1250.00));
+		result.andExpect(jsonPath("$.content[0].imgUrl").isNotEmpty());
 	}
 
 	@ParameterizedTest
@@ -141,14 +141,14 @@ class ProductControllerIT {
 	@Test
 	void findAllPaged_ReturnCorrectProductPageNumber_Page3() throws Exception {
 
-		ResultActions result = mockMvc.perform(get("/v1/products?page=3&size=3").accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc.perform(get("/v1/products?sort=name,asc&page=3&size=3").accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("$.content").exists());
 		result.andExpect(jsonPath("$.content").isNotEmpty());
-		result.andExpect(jsonPath("$.content[0].name").value("PC Gamer"));
-		result.andExpect(jsonPath("$.content[1].name").value("PC Gamer Y"));
-		result.andExpect(jsonPath("$.content[2].name").value("Smart TV"));
+		result.andExpect(jsonPath("$.content[0].name").value("PC Gamer Hera"));
+		result.andExpect(jsonPath("$.content[1].name").value("PC Gamer Hot"));
+		result.andExpect(jsonPath("$.content[2].name").value("PC Gamer Max"));
 		result.andExpect(jsonPath("$.pageable").exists());
 		result.andExpect(jsonPath("$.pageable.pageNumber").value(3));
 	}

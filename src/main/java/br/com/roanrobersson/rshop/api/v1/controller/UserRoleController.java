@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserRoleControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
 import br.com.roanrobersson.rshop.domain.model.Role;
@@ -27,11 +27,15 @@ public class UserRoleController implements UserRoleControllerOpenApi {
 	@Autowired
 	UserService service;
 
+	@Autowired
+	RoleMapper roleMapper;
+
 	@GetMapping
 	@CheckSecurity.UserRole.CanConsult
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Set<UUID>> list(@PathVariable UUID userId) {
-		Set<UUID> rolesIds = service.getRoles(userId).stream().map(Role::getId).collect(Collectors.toSet());
+		Set<Role> roles = service.listRoles(userId);
+		Set<UUID> rolesIds = roleMapper.toIdSet(roles);
 		return ResponseEntity.ok().body(rolesIds);
 	}
 

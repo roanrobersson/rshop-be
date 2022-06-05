@@ -51,7 +51,7 @@ public class RoleMapperTests {
 		Role role = objectMapper.readValue(JSON_ROLE, Role.class);
 		RoleModel expected = objectMapper.readValue(JSON_ROLE_MODEL, RoleModel.class);
 
-		RoleModel result = roleMapper.toRoleModel(role);
+		RoleModel result = roleMapper.toModel(role);
 
 		assertEquals(result, expected);
 	}
@@ -61,7 +61,7 @@ public class RoleMapperTests {
 		Role role = objectMapper.readValue(JSON_ROLE, Role.class);
 		RoleInput expected = objectMapper.readValue(JSON_ROLE_INPUT, RoleInput.class);
 
-		RoleInput result = roleMapper.toRoleInput(role);
+		RoleInput result = roleMapper.toInput(role);
 
 		assertEquals(result, expected);
 	}

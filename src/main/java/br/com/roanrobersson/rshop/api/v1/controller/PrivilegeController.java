@@ -36,7 +36,7 @@ public class PrivilegeController implements PrivilegeControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<PrivilegeModel>> list(Pageable pageable) {
 		Page<Privilege> privileges = service.list(pageable);
-		Page<PrivilegeModel> privilegeModels = privileges.map(privilege -> mapper.toPrivilegeModel(privilege));
+		Page<PrivilegeModel> privilegeModels = mapper.toModelPage(privileges);
 		return ResponseEntity.ok().body(privilegeModels);
 	}
 
@@ -45,7 +45,7 @@ public class PrivilegeController implements PrivilegeControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<PrivilegeModel> findById(@PathVariable("privilegeId") UUID id) {
 		Privilege privilege = service.findById(id);
-		PrivilegeModel privilegeModel = mapper.toPrivilegeModel(privilege);
+		PrivilegeModel privilegeModel = mapper.toModel(privilege);
 		return ResponseEntity.ok().body(privilegeModel);
 	}
 

@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,11 +48,12 @@ public class ProductController implements ProductControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<ProductModel>> list(
 			@RequestParam(value = "categories", required = false) UUID[] categories,
-			@RequestParam(value = "q", defaultValue = "") String name, Pageable pageable) {
+			@RequestParam(value = "q", defaultValue = "") String name,
+			@PageableDefault(sort = "name") Pageable pageable) {
 		if (categories == null)
 			categories = new UUID[0];
 		Page<Product> products = service.list(Set.of(categories), name.trim(), pageable);
-		Page<ProductModel> productModels = products.map(x -> mapper.toProductModel(x));
+		Page<ProductModel> productModels = mapper.toModelPage(products);
 		return ResponseEntity.ok().body(productModels);
 	}
 
@@ -59,7 +61,7 @@ public class ProductController implements ProductControllerOpenApi {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<ProductModel> findById(@PathVariable UUID productId) {
 		Product product = service.findById(productId);
-		ProductModel productModel = mapper.toProductModel(product);
+		ProductModel productModel = mapper.toModel(product);
 		return ResponseEntity.ok().body(productModel);
 	}
 
@@ -68,7 +70,7 @@ public class ProductController implements ProductControllerOpenApi {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<ProductModel> insert(@Valid @RequestBody ProductInput productInput) {
 		Product product = service.insert(productInput);
-		ProductModel productModel = mapper.toProductModel(product);
+		ProductModel productModel = mapper.toModel(product);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(productModel.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(productModel);
@@ -80,7 +82,7 @@ public class ProductController implements ProductControllerOpenApi {
 	public ResponseEntity<ProductModel> update(@PathVariable UUID productId,
 			@Valid @RequestBody ProductInput productInput) {
 		Product product = service.update(productId, productInput);
-		ProductModel productModel = mapper.toProductModel(product);
+		ProductModel productModel = mapper.toModel(product);
 		return ResponseEntity.ok().body(productModel);
 	}
 

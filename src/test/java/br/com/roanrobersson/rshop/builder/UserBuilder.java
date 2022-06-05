@@ -211,14 +211,14 @@ public class UserBuilder {
 	}
 
 	public UserInsert buildInsert() {
-		return UserMapper.INSTANCE.toUserInsert(build());
+		return UserMapper.INSTANCE.toInsert(build());
 	}
 
 	public UserUpdate buildUpdate() {
-		return UserMapper.INSTANCE.toUserUpdate(build());
+		return UserMapper.INSTANCE.toUpdate(build());
 	}
 
 	public UserModel buildModel() {
-		return UserMapper.INSTANCE.toUserModel(build());
+		return UserMapper.INSTANCE.toModel(build());
 	}
 }

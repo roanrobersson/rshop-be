@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
 import br.com.roanrobersson.rshop.api.v1.model.RoleModel;
 import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
@@ -26,13 +27,21 @@ public abstract class RoleMapper {
 	@Autowired
 	private PrivilegeService privilegeService;
 
-	public abstract RoleModel toRoleModel(Role role);
+	public abstract RoleModel toModel(Role role);
 
-	public abstract RoleInput toRoleInput(Role role);
+	public abstract RoleInput toInput(Role role);
 
 	public abstract Role toRole(RoleInput roleInput);
 
 	public abstract void update(RoleInput roleInput, @MappingTarget Role role);
+
+	public Page<RoleModel> toModelPage(Page<Role> roles) {
+		return roles.map(x -> this.toModel(x));
+	};
+
+	public Set<UUID> toIdSet(Set<Role> roles) {
+		return roles.stream().map(Role::getId).collect(Collectors.toSet());
+	}
 
 	protected String uuidToString(UUID uuid) {
 		return uuid.toString();
