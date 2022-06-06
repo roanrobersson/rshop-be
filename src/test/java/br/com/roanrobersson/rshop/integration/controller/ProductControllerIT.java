@@ -100,7 +100,20 @@ class ProductControllerIT {
 	}
 
 	@Test
-	void findAll_ReturnSortedProductPage_SortByNameAsc() throws Exception {
+	void findAll_ReturnSortedByNameAscProductPage_NoSortParameterInformmed() throws Exception {
+
+		ResultActions result = mockMvc.perform(get("/v1/products").accept(MediaType.APPLICATION_JSON));
+
+		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+		result.andExpect(jsonPath("$.content").exists());
+		result.andExpect(jsonPath("$.content").isArray());
+		result.andExpect(jsonPath("$.content[0].name").value("Macbook Pro"));
+		result.andExpect(jsonPath("$.content[1].name").value("PC Gamer"));
+		result.andExpect(jsonPath("$.content[2].name").value("PC Gamer Alfa"));
+	}
+	
+	@Test
+	void findAll_ReturnSortedByNameAscProductPage_SortByNameAsc() throws Exception {
 
 		ResultActions result = mockMvc.perform(get("/v1/products?sort=name,asc").accept(MediaType.APPLICATION_JSON));
 

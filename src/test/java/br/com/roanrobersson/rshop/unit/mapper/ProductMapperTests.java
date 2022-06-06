@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,32 +49,34 @@ public class ProductMapperTests {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final String JSON_PRODUCT = getContentFromResource("/json/correct/product.json");
+	private static final String JSON_PRODUCT_2 = getContentFromResource("/json/correct/product-2.json");
 	private static final String JSON_PRODUCT_INPUT = getContentFromResource("/json/correct/product-input.json");
 	private static final String JSON_PRODUCT_INPUT_2 = getContentFromResource("/json/correct/product-input-2.json");
 	private static final String JSON_PRODUCT_MODEL = getContentFromResource("/json/correct/product-model.json");
+	private static final String JSON_PRODUCT_MODEL_2 = getContentFromResource("/json/correct/product-model-2.json");
 
 	@Test
-	void toProductModel_returCompatibleProductModel() throws Exception {
+	void toModel_ReturnCompatibleProductModel_ProductAsArgument() throws Exception {
 		Product product = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		ProductModel expected = objectMapper.readValue(JSON_PRODUCT_MODEL, ProductModel.class);
 
-		ProductModel result = productMapper.toModel(product);
+		ProductModel actual = productMapper.toModel(product);
 
-		assertEquals(result, expected);
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	void toProductInput_returnCompatibleProductInput() throws Exception {
+	void toInput_ReturnCompatibleProductInput_ProductAsArgument() throws Exception {
 		Product product = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		ProductInput expected = objectMapper.readValue(JSON_PRODUCT_INPUT, ProductInput.class);
 
-		ProductInput result = productMapper.toInput(product);
+		ProductInput actual = productMapper.toInput(product);
 
-		assertEquals(result, expected);
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	void toProduct_returnProduct_ProductInputAsArgument() throws Exception {
+	void toProduct_ReturnCompatibleProduct_ProductInputAsArgument() throws Exception {
 		ProductInput input = objectMapper.readValue(JSON_PRODUCT_INPUT, ProductInput.class);
 		UUID[] categoriesIds = input.getCategories().stream().map(c -> UUID.fromString(c.getId())).toArray(UUID[]::new);
 		Category category1 = aCategory().withId(categoriesIds[0]).build();
@@ -75,27 +84,47 @@ public class ProductMapperTests {
 		when(categoryService.findById(category1.getId())).thenReturn(category1);
 		when(categoryService.findById(category2.getId())).thenReturn(category2);
 
-		Product result = productMapper.toProduct(input);
+		Product actual = productMapper.toProduct(input);
 
-		assertEquals(result.getName(), input.getName());
-		assertTrue(result.getCategories().stream().anyMatch(c -> c.getId().equals(category1.getId())));
-		assertTrue(result.getCategories().stream().anyMatch(c -> c.getId().equals(category2.getId())));
+		assertEquals(input.getName(), actual.getName());
+		assertTrue(actual.getCategories().stream().anyMatch(c -> c.getId().equals(category1.getId())));
+		assertTrue(actual.getCategories().stream().anyMatch(c -> c.getId().equals(category2.getId())));
 	}
 
 	@Test
-	void update_updateProduct() throws Exception {
+	void toModelPage_ReturnCompatibleProductModelPage_ProductPageAsArgument() throws Exception {
+		Product product1 = objectMapper.readValue(JSON_PRODUCT, Product.class);
+		Product product2 = objectMapper.readValue(JSON_PRODUCT_2, Product.class);
+		long anyTotalItems = 500L;
+		Pageable anyPageable = PageRequest.of(20, 15, Sort.by(Direction.ASC, "name"));
+		Page<Product> input = new PageImpl<>(List.of(product1, product2), anyPageable, anyTotalItems);
+		ProductModel expected1 = objectMapper.readValue(JSON_PRODUCT_MODEL, ProductModel.class);
+		ProductModel expected2 = objectMapper.readValue(JSON_PRODUCT_MODEL_2, ProductModel.class);
+
+		Page<ProductModel> actual = productMapper.toModelPage(input);
+
+		assertEquals(expected1, actual.getContent().toArray()[0]);
+		assertEquals(expected2, actual.getContent().toArray()[1]);
+		assertEquals(anyPageable.getPageNumber(), actual.getNumber());
+		assertEquals(anyPageable.getPageSize(), actual.getSize());
+		assertEquals(anyPageable.getSort(), actual.getSort());
+		assertEquals(anyTotalItems, actual.getTotalElements());
+	}
+
+	@Test
+	void update_CorrectUpdateProduct_ProductInputAndProductAsArgument() throws Exception {
 		ProductInput input = objectMapper.readValue(JSON_PRODUCT_INPUT_2, ProductInput.class);
 		UUID categoryId = UUID.fromString(input.getCategories().iterator().next().getId());
 		Category category = aCategory().withId(categoryId).build();
-		Product expected = objectMapper.readValue(JSON_PRODUCT, Product.class);
+		Product actual = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		when(categoryService.findById(categoryId)).thenReturn(category);
 
-		productMapper.update(input, expected);
+		productMapper.update(input, actual);
 
-		assertEquals(input.getName(), expected.getName());
-		assertEquals(input.getSku(), expected.getSku());
-		assertEquals(input.getPrice(), expected.getPrice());
-		assertEquals(1, expected.getCategories().size());
-		assertTrue(expected.getCategories().stream().anyMatch(c -> c.getId().equals(category.getId())));
+		assertEquals(actual.getName(), input.getName());
+		assertEquals(actual.getSku(), input.getSku());
+		assertEquals(actual.getPrice(), input.getPrice());
+		assertEquals(1, actual.getCategories().size());
+		assertTrue(actual.getCategories().stream().anyMatch(c -> c.getId().equals(category.getId())));
 	}
 }

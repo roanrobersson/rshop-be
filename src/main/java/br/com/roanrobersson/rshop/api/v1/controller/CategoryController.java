@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,7 +44,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<CategoryModel>> list(Pageable pageable) {
+	public ResponseEntity<Page<CategoryModel>> list(@PageableDefault(sort = "name") Pageable pageable) {
 		Page<Category> categories = service.list(pageable);
 		Page<CategoryModel> categoryModels = mapper.toModelPage(categories);
 		return ResponseEntity.ok().body(categoryModels);

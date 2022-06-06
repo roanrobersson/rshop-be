@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public class PrivilegeController implements PrivilegeControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<PrivilegeModel>> list(Pageable pageable) {
+	public ResponseEntity<Page<PrivilegeModel>> list(@PageableDefault(sort = "name") Pageable pageable) {
 		Page<Privilege> privileges = service.list(pageable);
 		Page<PrivilegeModel> privilegeModels = mapper.toModelPage(privileges);
 		return ResponseEntity.ok().body(privilegeModels);

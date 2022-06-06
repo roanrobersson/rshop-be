@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,12 +50,14 @@ public class RoleMapperTests {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final String JSON_ROLE = getContentFromResource("/json/correct/role.json");
+	private static final String JSON_ROLE_2 = getContentFromResource("/json/correct/role-2.json");
 	private static final String JSON_ROLE_INPUT = getContentFromResource("/json/correct/role-input.json");
 	private static final String JSON_ROLE_INPUT_2 = getContentFromResource("/json/correct/role-input-2.json");
 	private static final String JSON_ROLE_MODEL = getContentFromResource("/json/correct/role-model.json");
+	private static final String JSON_ROLE_MODEL_2 = getContentFromResource("/json/correct/role-model-2.json");
 
 	@Test
-	void toRoleModel_returCompatibleRoleModel() throws Exception {
+	void toModel_returCompatibleRoleModel_RoleAsArgument() throws Exception {
 		Role role = objectMapper.readValue(JSON_ROLE, Role.class);
 		RoleModel expected = objectMapper.readValue(JSON_ROLE_MODEL, RoleModel.class);
 
@@ -57,7 +67,7 @@ public class RoleMapperTests {
 	}
 
 	@Test
-	void toRoleInput_returnCompatibleRoleInput() throws Exception {
+	void toInput_ReturnCompatibleRoleInput_RoleAsArgument() throws Exception {
 		Role role = objectMapper.readValue(JSON_ROLE, Role.class);
 		RoleInput expected = objectMapper.readValue(JSON_ROLE_INPUT, RoleInput.class);
 
@@ -67,7 +77,7 @@ public class RoleMapperTests {
 	}
 
 	@Test
-	void toRole_returnRole_RoleInputAsArgument() throws Exception {
+	void toRole_ReturnCompatibleRole_RoleInputAsArgument() throws Exception {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT, RoleInput.class);
 		UUID[] privilegesIds = input.getPrivileges().stream().map(p -> UUID.fromString(p.getId())).toArray(UUID[]::new);
 		Privilege privilege1 = aPrivilege().withId(privilegesIds[0]).build();
@@ -83,7 +93,39 @@ public class RoleMapperTests {
 	}
 
 	@Test
-	void update_updateRole() throws Exception {
+	void toModelPage_ReturnCompatibleProductModelPage_ProductPageAsArgument() throws Exception {
+		Role role1 = objectMapper.readValue(JSON_ROLE, Role.class);
+		Role role2 = objectMapper.readValue(JSON_ROLE_2, Role.class);
+		long anyTotalItems = 500L;
+		Pageable anyPageable = PageRequest.of(20, 15, Sort.by(Direction.ASC, "name"));
+		Page<Role> input = new PageImpl<>(List.of(role1, role2), anyPageable, anyTotalItems);
+		RoleModel expected1 = objectMapper.readValue(JSON_ROLE_MODEL, RoleModel.class);
+		RoleModel expected2 = objectMapper.readValue(JSON_ROLE_MODEL_2, RoleModel.class);
+
+		Page<RoleModel> actual = roleMapper.toModelPage(input);
+
+		assertTrue(actual.stream().anyMatch((roleModel) -> roleModel.equals(expected1)));
+		assertTrue(actual.stream().anyMatch((roleModel) -> roleModel.equals(expected2)));
+		assertEquals(anyPageable.getPageNumber(), actual.getNumber());
+		assertEquals(anyPageable.getPageSize(), actual.getSize());
+		assertEquals(anyPageable.getSort(), actual.getSort());
+		assertEquals(anyTotalItems, actual.getTotalElements());
+	}
+
+	@Test
+	void toIdSet_ReturnCompatibleUUIDSet_RoleSetAsArgument() throws Exception {
+		Role role1 = objectMapper.readValue(JSON_ROLE, Role.class);
+		Role role2 = objectMapper.readValue(JSON_ROLE_2, Role.class);
+		Set<Role> input = Set.of(role1, role2);
+
+		Set<UUID> result = roleMapper.toIdSet(input);
+
+		assertTrue(result.stream().anyMatch((uuid) -> uuid.equals(role1.getId())));
+		assertTrue(result.stream().anyMatch((uuid) -> uuid.equals(role2.getId())));
+	}
+
+	@Test
+	void update_CorrectUpdateRole_RoleInputAndRoleAsArgument() throws Exception {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT_2, RoleInput.class);
 		UUID privilegeId = UUID.fromString(input.getPrivileges().iterator().next().getId());
 		Privilege privilege = aPrivilege().withId(privilegeId).build();
