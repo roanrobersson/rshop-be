@@ -1,15 +1,18 @@
 package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,26 +33,20 @@ public class ValueType implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(columnDefinition = "char(36)")
+	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
 	private UUID id;
 
 	@Column(nullable = false, unique = true, length = 15)
 	private String name;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
-	private Instant createdAt;
+	@CreationTimestamp
+	@Column(updatable = false)
+	private OffsetDateTime createdAt;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updatedAt;
-
-	@PrePersist
-	public void prePersist() {
-		createdAt = Instant.now();
-	}
-
-	@PreUpdate
-	public void preUpdate() {
-		updatedAt = Instant.now();
-	}
+	@UpdateTimestamp
+	private OffsetDateTime updatedAt;
 }

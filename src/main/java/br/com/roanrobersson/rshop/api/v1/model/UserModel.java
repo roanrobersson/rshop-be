@@ -1,7 +1,7 @@
 package br.com.roanrobersson.rshop.api.v1.model;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -65,8 +65,8 @@ public class UserModel {
 	private String secondaryTelephone;
 
 	@Schema(example = "2013-03-13 05:11:00")
-	private Instant verifiedAt;
+	private OffsetDateTime verifiedAt;
 
 	@Schema(example = "2013-03-13 05:11:00")
-	private Instant lastLoginAt;
+	private OffsetDateTime lastLoginAt;
 }

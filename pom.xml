@@ -23,6 +23,7 @@
 		<springdoc-openapi.version>1.6.6</springdoc-openapi.version>
 		<jacoco.version>0.8.6</jacoco.version>
 		<catch-exception.version>1.2.0</catch-exception.version>
+		<testcontainers.version>1.17.2</testcontainers.version>
 	</properties>
 
 	<dependencies>
@@ -43,8 +44,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -140,6 +141,11 @@
 		<dependency>
 			<groupId>com.sendgrid</groupId>
 			<artifactId>sendgrid-java</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
 		</dependency>
 
 	</dependencies>

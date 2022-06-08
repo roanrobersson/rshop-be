@@ -32,14 +32,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.integration.AbstractIT;
 import br.com.roanrobersson.rshop.util.Account;
 import br.com.roanrobersson.rshop.util.ResourceUtils;
 import br.com.roanrobersson.rshop.util.TokenUtil;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-class ProductControllerIT {
+class ProductControllerIT extends AbstractIT {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -68,7 +69,8 @@ class ProductControllerIT {
 	@Test
 	void findAll_ReturnProductPageWithCorrectProductData_ValidParameters() throws Exception {
 
-		ResultActions result = mockMvc.perform(get("/v1/products?page=0&size=1&sort=name,asc").accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc
+				.perform(get("/v1/products?page=0&size=1&sort=name,asc").accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("$.content").exists());
@@ -111,7 +113,7 @@ class ProductControllerIT {
 		result.andExpect(jsonPath("$.content[1].name").value("PC Gamer"));
 		result.andExpect(jsonPath("$.content[2].name").value("PC Gamer Alfa"));
 	}
-	
+
 	@Test
 	void findAll_ReturnSortedByNameAscProductPage_SortByNameAsc() throws Exception {
 
@@ -154,7 +156,8 @@ class ProductControllerIT {
 	@Test
 	void findAllPaged_ReturnCorrectProductPageNumber_Page3() throws Exception {
 
-		ResultActions result = mockMvc.perform(get("/v1/products?sort=name,asc&page=3&size=3").accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc
+				.perform(get("/v1/products?sort=name,asc&page=3&size=3").accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("$.content").exists());

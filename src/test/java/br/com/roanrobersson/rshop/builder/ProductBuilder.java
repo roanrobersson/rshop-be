@@ -4,7 +4,7 @@ import static br.com.roanrobersson.rshop.builder.CategoryBuilder.aNonExistingCat
 import static br.com.roanrobersson.rshop.builder.CategoryBuilder.anExistingCategory;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class ProductBuilder {
 	public static final String NON_EXISTING_SKU = "NEN12345";
 	public static final BigDecimal VALID_PRICE = BigDecimal.valueOf(800);
 	public static final BigDecimal INVALID_PRICE = BigDecimal.valueOf(-1);
-	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
+	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 	public static final String VALID_URL = "https://img.com/img.png";
 	public static final String VALID_DESCRIPTION = "Description";
 
@@ -166,8 +166,8 @@ public class ProductBuilder {
 	}
 
 	public Product build() {
-		return new Product(id, categories, sku, name, VALID_DESCRIPTION, price, VALID_URL, VALID_INSTANT,
-				VALID_INSTANT);
+		return new Product(id, categories, sku, name, VALID_DESCRIPTION, price, VALID_URL, VALID_DATETIME,
+				VALID_DATETIME);
 	}
 
 	public ProductInput buildInput() {

@@ -1,7 +1,7 @@
 package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,8 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,7 +36,10 @@ public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(columnDefinition = "char(36)")
+	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
 	private UUID id;
 
@@ -44,27 +50,18 @@ public class Category implements Serializable {
 	@Column(unique = true, nullable = false, length = 127)
 	private String name;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
-	private Instant createdAt;
+	@CreationTimestamp
+	@Column(updatable = false)
+	private OffsetDateTime createdAt;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updatedAt;
+	@UpdateTimestamp
+	private OffsetDateTime updatedAt;
 
 	@Builder
-	public Category(UUID id, String name, Instant createdAt, Instant updatedAt) {
+	public Category(UUID id, String name, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
 		this.id = id;
 		this.name = name;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-	}
-
-	@PrePersist
-	public void prePersist() {
-		createdAt = Instant.now();
-	}
-
-	@PreUpdate
-	public void preUpdate() {
-		updatedAt = Instant.now();
 	}
 }

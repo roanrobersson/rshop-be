@@ -1,6 +1,6 @@
 package br.com.roanrobersson.rshop.domain.listener;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class AuthenticationListener {
 			return;
 		}
 		User user = (User) event.getAuthentication().getPrincipal();
-		user.setLastLoginAt(Instant.now());
+		user.setLastLoginAt(OffsetDateTime.now());
 		repository.save(user);
 		LOGGER.info("User {} has been authenticated", user.getUsername());
 	}

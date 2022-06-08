@@ -1,7 +1,7 @@
 package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -11,10 +11,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +28,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = {"nick", "user_id"}) })
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "nick", "user_id" }) })
 @Getter
 @Setter
 @Builder
@@ -38,7 +41,10 @@ public class Address implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(columnDefinition = "char(36)")
+	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
 	private UUID id;
 
@@ -67,10 +73,10 @@ public class Address implements Serializable {
 	@Column(nullable = false, length = 75)
 	private String state;
 
-	@Column(columnDefinition = "CHAR(2) NOT NULL")
+	@Column(columnDefinition = "char(2) not null")
 	private String uf;
 
-	@Column(columnDefinition = "CHAR(8) NOT NULL")
+	@Column(columnDefinition = "char(8) not null")
 	private String postalCode;
 
 	@Column(length = 75)
@@ -82,19 +88,10 @@ public class Address implements Serializable {
 	@Column(nullable = false, length = 11)
 	private String telephone;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
-	private Instant createdAt;
+	@CreationTimestamp
+	@Column(updatable = false)
+	private OffsetDateTime createdAt;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updatedAt;
-
-	@PrePersist
-	public void prePersist() {
-		createdAt = Instant.now();
-	}
-
-	@PreUpdate
-	public void preUpdate() {
-		updatedAt = Instant.now();
-	}
+	@UpdateTimestamp
+	private OffsetDateTime updatedAt;
 }

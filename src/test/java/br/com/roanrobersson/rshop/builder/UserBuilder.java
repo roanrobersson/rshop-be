@@ -5,8 +5,8 @@ import static br.com.roanrobersson.rshop.builder.AddressBuilder.anExistingAddres
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.aNonExistingRole;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.anExistingRole;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +35,7 @@ public class UserBuilder {
 	public static final String EXISTING_EMAIL = "client@gmail.com";
 	public static final String ANOTHER_EXISTING_EMAIL = "operator@gmail.com";
 	public static final String NON_EXISTING_EMAIL = "nonexistingemail@gmail.com";
-	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
+	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
 	private UUID id = EXISTING_ID;
 	private Set<Role> roles = new HashSet<>();
@@ -49,7 +49,7 @@ public class UserBuilder {
 	private String password = passwordEncoder.encode("a3g&3Pd#");;
 	private String primaryTelephone = "54991200038";
 	private String secondaryTelephone = "54991200038";
-	private Instant verifiedAt = VALID_INSTANT;
+	private OffsetDateTime verifiedAt = VALID_DATETIME;
 
 	public static UserBuilder anUser() {
 		return new UserBuilder();
@@ -158,7 +158,7 @@ public class UserBuilder {
 		return this;
 	}
 
-	public UserBuilder withVerifiedAt(Instant verifiedAt) {
+	public UserBuilder withVerifiedAt(OffsetDateTime verifiedAt) {
 		this.verifiedAt = verifiedAt;
 		return this;
 	}
@@ -205,7 +205,7 @@ public class UserBuilder {
 
 	public User build() {
 		User user = new User(id, roles, addresses, firstName, name, birthDate, cpf, rg, email, password,
-				primaryTelephone, secondaryTelephone, VALID_INSTANT, VALID_INSTANT, verifiedAt, VALID_INSTANT);
+				primaryTelephone, secondaryTelephone, VALID_DATETIME, VALID_DATETIME, verifiedAt, VALID_DATETIME);
 		addresses.forEach(address -> address.setUser(user));
 		return user;
 	}

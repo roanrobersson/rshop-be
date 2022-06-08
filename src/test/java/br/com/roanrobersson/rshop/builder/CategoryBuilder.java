@@ -1,6 +1,6 @@
 package br.com.roanrobersson.rshop.builder;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
@@ -19,7 +19,7 @@ public class CategoryBuilder {
 	public static final String NON_EXISTING_NAME = "Non existing category name";
 	public static final String EXISTING_NAME = "Books";
 	public static final String ANOTHER_EXISTING_NAME = "Computers";
-	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
+	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
 	private UUID id = EXISTING_ID;
 	private String name = EXISTING_NAME;
@@ -88,7 +88,7 @@ public class CategoryBuilder {
 	}
 
 	public Category build() {
-		return new Category(id, name, VALID_INSTANT, VALID_INSTANT);
+		return new Category(id, name, VALID_DATETIME, VALID_DATETIME);
 	}
 
 	public CategoryInput buildInput() {

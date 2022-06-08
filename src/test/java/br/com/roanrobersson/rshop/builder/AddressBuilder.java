@@ -1,6 +1,6 @@
 package br.com.roanrobersson.rshop.builder;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.AddressMapper;
@@ -17,7 +17,7 @@ public class AddressBuilder {
 	public static final String EXISTING_NICK = "Home";
 	public static final String ANOTHER_EXISTING_NICK = "Work";
 	public static final String NON_EXISTING_NICK = "Non existing nick";
-	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
+	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
 	private UUID id = EXISTING_ID;
 	private User user = null;
@@ -61,7 +61,7 @@ public class AddressBuilder {
 
 	public Address build() {
 		return new Address(id, user, nick, main, addressLine, number, neighborhood, city, state, uf, postalCode, complement,
-				referencePoint, telephone, VALID_INSTANT, VALID_INSTANT);
+				referencePoint, telephone, VALID_DATETIME, VALID_DATETIME);
 	}
 
 	public AddressInput buildInput() {

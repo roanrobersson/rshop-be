@@ -2,7 +2,7 @@ package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -14,8 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,7 +39,10 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(columnDefinition = "char(36)")
+	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
 	private UUID id;
 
@@ -51,7 +57,7 @@ public class Product implements Serializable {
 	@Column(unique = true, nullable = false, length = 127)
 	private String name;
 
-	@Column(columnDefinition = "TEXT")
+	@Column(columnDefinition = "text")
 	private String description;
 
 	@Column(nullable = false, precision = 10, scale = 2)
@@ -60,15 +66,16 @@ public class Product implements Serializable {
 	@Column(nullable = false, length = 255)
 	private String imgUrl;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
-	private Instant createdAt;
+	@CreationTimestamp
+	@Column(updatable = false)
+	private OffsetDateTime createdAt;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updatedAt;
+	@UpdateTimestamp
+	private OffsetDateTime updatedAt;
 
 	@Builder
 	public Product(UUID id, Set<Category> categories, String sku, String name, String description, BigDecimal price,
-			String imgUrl, Instant createdAt, Instant updatedAt) {
+			String imgUrl, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
 		this.id = id;
 		this.sku = sku;
 		if (categories != null) {
@@ -80,15 +87,5 @@ public class Product implements Serializable {
 		this.imgUrl = imgUrl;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-	}
-
-	@PrePersist
-	public void prePersist() {
-		createdAt = Instant.now();
-	}
-
-	@PreUpdate
-	public void preUpdate() {
-		updatedAt = Instant.now();
 	}
 }

@@ -1,9 +1,9 @@
 package br.com.roanrobersson.rshop.builder;
 
-import static br.com.roanrobersson.rshop.builder.PrivilegeBuilder.anExistingPrivilege;
 import static br.com.roanrobersson.rshop.builder.PrivilegeBuilder.aNonExistingPrivilege;
+import static br.com.roanrobersson.rshop.builder.PrivilegeBuilder.anExistingPrivilege;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +25,7 @@ public class RoleBuilder {
 	public static final String NON_EXISTING_NAME = "NON EXISTING ROLE NAME";
 	public static final String EXISTING_NAME = "CLIENT";
 	public static final String ANOTHER_EXISTING_NAME = "OPERATOR";
-	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
+	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
 	private UUID id = EXISTING_ID;
 	private String name = EXISTING_NAME;
@@ -117,7 +117,7 @@ public class RoleBuilder {
 	}
 
 	public Role build() {
-		return new Role(id, privileges, name, VALID_INSTANT, VALID_INSTANT);
+		return new Role(id, privileges, name, VALID_DATETIME, VALID_DATETIME);
 	}
 
 	public RoleInput buildInput() {

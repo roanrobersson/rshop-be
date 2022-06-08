@@ -1,7 +1,7 @@
 package br.com.roanrobersson.rshop.domain.model;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,10 +18,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,7 +36,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "user", schema = "public")
+//@Table(name = "user", schema = "public") Necessary only for PostgreSQL database
 @Getter
 @Setter
 @NoArgsConstructor
@@ -46,7 +47,10 @@ public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(columnDefinition = "char(36)")
+	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
 	private UUID id;
 
@@ -68,7 +72,7 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private LocalDate birthDate;
 
-	@Column(columnDefinition = "CHAR(11) NOT NULL")
+	@Column(columnDefinition = "char(11) not null")
 	private String cpf;
 
 	@Column(nullable = false, length = 14)
@@ -86,22 +90,21 @@ public class User implements UserDetails {
 	@Column(nullable = false, length = 11)
 	private String secondaryTelephone;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant verifiedAt;
+	private OffsetDateTime verifiedAt;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE NOT NULL", updatable = false)
-	private Instant createdAt;
+	private OffsetDateTime lastLoginAt;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updatedAt;
+	@CreationTimestamp
+	@Column(updatable = false)
+	private OffsetDateTime createdAt;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant lastLoginAt;
+	@UpdateTimestamp
+	private OffsetDateTime updatedAt;
 
 	@Builder
 	public User(UUID id, Set<Role> roles, List<Address> addresses, String firstName, String name, LocalDate birthDate,
 			String cpf, String rg, String email, String password, String primaryTelephone, String secondaryTelephone,
-			Instant verifiedAt, Instant createdAt, Instant updatedAt, Instant lastLoginAt) {
+			OffsetDateTime verifiedAt, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime lastLoginAt) {
 		this.id = id;
 		if (roles != null) {
 			this.roles.addAll(roles);
@@ -122,16 +125,6 @@ public class User implements UserDetails {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.lastLoginAt = lastLoginAt;
-	}
-
-	@PrePersist
-	public void prePersist() {
-		createdAt = Instant.now();
-	}
-
-	@PreUpdate
-	public void preUpdate() {
-		updatedAt = Instant.now();
 	}
 
 	public boolean hasRole(String roleName) {

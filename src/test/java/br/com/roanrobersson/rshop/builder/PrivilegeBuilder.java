@@ -1,6 +1,6 @@
 package br.com.roanrobersson.rshop.builder;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import br.com.roanrobersson.rshop.api.v1.mapper.PrivilegeMapper;
@@ -19,7 +19,7 @@ public class PrivilegeBuilder {
 	public static final String NON_EXISTING_NAME = "NON_EXISTING_PRIVILEGE_NAME";
 	public static final String EXISTING_NAME = "CONSULT_CATEGORIES";
 	public static final String ANOTHER_EXISTING_NAME = "EDIT_ADDRESSES";
-	public static final Instant VALID_INSTANT = Instant.parse("2020-10-20T03:00:00Z");
+	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 	public static final String VALID_DESCRIPTION = "Description";
 
 	private UUID id = EXISTING_ID;
@@ -89,7 +89,7 @@ public class PrivilegeBuilder {
 	}
 
 	public Privilege build() {
-		return new Privilege(id, name, VALID_DESCRIPTION, VALID_INSTANT, VALID_INSTANT);
+		return new Privilege(id, name, VALID_DESCRIPTION, VALID_DATETIME, VALID_DATETIME);
 	}
 
 	public PrivilegeInput buildInput() {

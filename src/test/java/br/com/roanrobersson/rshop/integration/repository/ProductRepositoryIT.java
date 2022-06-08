@@ -1,7 +1,11 @@
-package br.com.roanrobersson.rshop.unit.repository;
+package br.com.roanrobersson.rshop.integration.repository;
 
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,26 +13,25 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
+import br.com.roanrobersson.rshop.integration.AbstractIT;
 import br.com.roanrobersson.rshop.util.StringToUUIDSetConverter;
 
 @DataJpaTest
-class ProductRepositoryTests {
+@AutoConfigureTestDatabase(replace = Replace.NONE)
+class ProductRepositoryITTests extends AbstractIT {
 
 	@Autowired
 	private ProductRepository repository;
