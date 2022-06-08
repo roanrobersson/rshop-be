@@ -21,7 +21,7 @@ import io.swagger.v3.oas.models.info.License;
 //    scheme = "bearer"
 //	),        		
 
-public class OpenApi {
+public class OpenApiConfig {
 
 	@Bean
 	public OpenAPI rShopOpenAPI() {
