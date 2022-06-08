@@ -1,18 +1,18 @@
-package br.com.roanrobersson.rshop.core.config;
+package br.com.roanrobersson.rshop.core.config.specific;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import br.com.roanrobersson.rshop.infrastructure.email.EmailService;
-import br.com.roanrobersson.rshop.infrastructure.email.MockEmailService;
+import br.com.roanrobersson.rshop.infrastructure.email.SendGridEmailService;
 
 @Configuration
-@Profile("test")
-public class TestConfig {
-
+@Profile("dev")
+public class DevConfig {
+	
 	@Bean
 	public EmailService emailService() {
-		return new MockEmailService();
+		return new SendGridEmailService();
 	}
 }
