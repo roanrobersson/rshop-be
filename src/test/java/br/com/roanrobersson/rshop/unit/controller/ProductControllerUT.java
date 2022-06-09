@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,13 +42,15 @@ import br.com.roanrobersson.rshop.builder.ProductBuilder;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
+import br.com.roanrobersson.rshop.unit.UT;
 import br.com.roanrobersson.rshop.util.Account;
 import br.com.roanrobersson.rshop.util.ResourceUtils;
 import br.com.roanrobersson.rshop.util.TokenUtil;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ProductControllerTests {
+@Disabled() // This class need authentication mocking
+class ProductControllerUT implements UT {
 
 	@Autowired
 	private MockMvc mockMvc;

@@ -42,7 +42,7 @@ import br.com.roanrobersson.rshop.domain.repository.CategoryRepository;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
 
 @ExtendWith(SpringExtension.class)
-class CategoryServiceTests {
+class CategoryServiceUT {
 
 	@InjectMocks
 	private CategoryService service;

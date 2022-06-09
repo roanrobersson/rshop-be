@@ -44,7 +44,7 @@ import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
 
 @ExtendWith(SpringExtension.class)
-class RoleServiceTests {
+class RoleServiceUT {
 
 	@InjectMocks
 	private RoleService service;

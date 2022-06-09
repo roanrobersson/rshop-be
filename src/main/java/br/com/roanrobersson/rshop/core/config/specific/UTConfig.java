@@ -8,8 +8,8 @@ import br.com.roanrobersson.rshop.infrastructure.email.EmailService;
 import br.com.roanrobersson.rshop.infrastructure.email.MockEmailService;
 
 @Configuration
-@Profile("test")
-public class TestConfig {
+@Profile("ut")
+public class UTConfig {
 
 	@Bean
 	public EmailService emailService() {

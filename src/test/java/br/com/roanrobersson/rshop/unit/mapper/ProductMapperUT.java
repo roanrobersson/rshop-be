@@ -38,7 +38,7 @@ import br.com.roanrobersson.rshop.domain.service.CategoryService;;
  */
 
 @ExtendWith(SpringExtension.class)
-public class ProductMapperTests {
+public class ProductMapperUT {
 
 	@InjectMocks
 	private ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);

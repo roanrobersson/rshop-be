@@ -39,7 +39,7 @@ import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
  */
 
 @ExtendWith(SpringExtension.class)
-public class RoleMapperTests {
+public class RoleMapperUT {
 
 	@InjectMocks
 	private RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);

@@ -36,12 +36,12 @@ import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
-import br.com.roanrobersson.rshop.integration.AbstractIT;
+import br.com.roanrobersson.rshop.integration.IT;
 import br.com.roanrobersson.rshop.util.StringToUUIDSetConverter;
 
 @SpringBootTest
 @Transactional
-class ProductServiceIT extends AbstractIT {
+class ProductServiceIT extends IT {
 
 	@Autowired
 	private ProductService service;

@@ -52,7 +52,7 @@ import br.com.roanrobersson.rshop.domain.service.RoleService;
 import br.com.roanrobersson.rshop.domain.service.UserService;
 
 @ExtendWith(SpringExtension.class)
-class UserServiceTests {
+class UserServiceUT {
 
 	@InjectMocks
 	private UserService service;

@@ -51,7 +51,7 @@ import br.com.roanrobersson.rshop.domain.service.CategoryService;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 
 @ExtendWith(SpringExtension.class)
-class ProductServiceTests {
+class ProductServiceUT {
 
 	@InjectMocks
 	private ProductService service;

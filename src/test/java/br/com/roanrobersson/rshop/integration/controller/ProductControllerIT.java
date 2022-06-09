@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
-import br.com.roanrobersson.rshop.integration.AbstractIT;
+import br.com.roanrobersson.rshop.integration.IT;
 import br.com.roanrobersson.rshop.util.Account;
 import br.com.roanrobersson.rshop.util.ResourceUtils;
 import br.com.roanrobersson.rshop.util.TokenUtil;
@@ -40,7 +40,7 @@ import br.com.roanrobersson.rshop.util.TokenUtil;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-class ProductControllerIT extends AbstractIT {
+class ProductControllerIT extends IT {
 
 	@Autowired
 	private MockMvc mockMvc;

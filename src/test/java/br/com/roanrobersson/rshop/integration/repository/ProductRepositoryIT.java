@@ -26,12 +26,12 @@ import org.springframework.data.domain.PageRequest;
 
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
-import br.com.roanrobersson.rshop.integration.AbstractIT;
+import br.com.roanrobersson.rshop.integration.IT;
 import br.com.roanrobersson.rshop.util.StringToUUIDSetConverter;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-class ProductRepositoryITTests extends AbstractIT {
+class ProductRepositoryITTests extends IT {
 
 	@Autowired
 	private ProductRepository repository;
