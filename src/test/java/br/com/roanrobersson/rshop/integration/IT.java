@@ -18,16 +18,19 @@ public abstract class IT {
 	private static final String DATABASE_NAME = "rshop_test";
 	private static final String USER_NAME = "any";
 	private static final String PASSWORD = "any";
+	private static final MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.29")
+			.withDatabaseName(DATABASE_NAME).withUsername(USER_NAME).withPassword(PASSWORD);
+	private static final boolean TESTCONTAINERS_ENABLED = Boolean
+			.valueOf(System.getenv().get("RSHOP_TESTCONTAINERS_ENABLED"));
 
-	@SuppressWarnings("resource")
 	@DynamicPropertySource
 	private static void checkRunWithTestcontainers(DynamicPropertyRegistry registry) throws IOException {
-		Boolean enabled = Boolean.valueOf(System.getenv().get("RSHOP_TESTCONTAINERS_ENABLED"));
-
-		if (enabled) {
-			MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.29").withDatabaseName(DATABASE_NAME)
-					.withUsername(USER_NAME).withPassword(PASSWORD);
+		if (!TESTCONTAINERS_ENABLED)
+			return;
+		if (!mySQLContainer.isCreated() && !mySQLContainer.isRunning()) {
 			mySQLContainer.start();
+		}
+		if (mySQLContainer.isCreated() && mySQLContainer.isRunning()) {
 			registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
 			registry.add("spring.datasource.password", mySQLContainer::getPassword);
 			registry.add("spring.datasource.username", mySQLContainer::getUsername);
