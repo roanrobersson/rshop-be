@@ -2,10 +2,7 @@ package br.com.roanrobersson.rshop.integration.repository;
 
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +28,7 @@ import br.com.roanrobersson.rshop.util.StringToUUIDSetConverter;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-class ProductRepositoryITTests extends IT {
+class ProductRepositoryIT extends IT {
 
 	@Autowired
 	private ProductRepository repository;
@@ -44,10 +41,9 @@ class ProductRepositoryITTests extends IT {
 			categories = null;
 		}
 
-		Page<Product> result = repository.search(categories, productName, PageRequest.of(0, 10));
+		Page<Product> actual = repository.search(categories, productName, PageRequest.of(0, 10));
 
-		assertNotNull(result);
-		assertEquals(expectedResultCount, result.getTotalElements());
+		assertThat(actual.getTotalElements()).isEqualTo(expectedResultCount);
 	}
 
 	@Test
@@ -55,20 +51,16 @@ class ProductRepositoryITTests extends IT {
 		Product product = aProduct().build();
 		List<Product> products = Arrays.asList(product);
 
-		List<Product> result = repository.findWithCategories(products);
+		List<Product> actual = repository.findWithCategories(products);
 
-		assertNotNull(result);
-		assertFalse(result.isEmpty());
-		assertEquals(2, result.get(0).getCategories().size());
+		assertThat(actual.get(0).getCategories().size()).isEqualTo(2);
 	}
 
 	@Test
 	void findByIdWithCategories_ReturnProduct() {
 
-		Optional<Product> optional = repository.findByIdWithCategories(EXISTING_ID);
+		Optional<Product> actual = repository.findByIdWithCategories(EXISTING_ID);
 
-		assertNotNull(optional);
-		assertTrue(optional.isPresent());
-		assertEquals(2, optional.get().getCategories().size());
+		assertThat(actual.get().getCategories().size()).isEqualTo(2);
 	}
 }

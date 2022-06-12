@@ -5,13 +5,9 @@ import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_NAME;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aNonExistingProduct;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
-import static br.com.roanrobersson.rshop.util.ExceptionUtils.ignoreThrows;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static br.com.roanrobersson.rshop.util.ExceptionUtils.ignoreThrowseExactly;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -59,107 +55,117 @@ class ProductServiceIT extends IT {
 			@ConvertWith(StringToUUIDSetConverter.class) Set<UUID> categories, long expectedResultCount)
 			throws Exception {
 
-		Page<Product> result = service.list(categories, productName, DEFAULT_PAGEABLE);
+		Page<Product> actual = service.list(categories, productName, DEFAULT_PAGEABLE);
 
-		assertEquals(expectedResultCount, result.getTotalElements());
+		assertThat(actual.getTotalElements()).isEqualTo(expectedResultCount);
 	}
 
 	@Test
 	void findAllPaged_ReturnSortedPage_SortByNameAsc() {
 		Pageable pageable = PageRequest.of(0, 10, Sort.by(Order.asc("name")));
 
-		Page<Product> result = service.list(EMPTY_SET, "", pageable);
+		Page<Product> actual = service.list(EMPTY_SET, "", pageable);
 
-		assertFalse(result.isEmpty());
-		assertEquals("Macbook Pro", result.getContent().get(0).getName());
-		assertEquals("PC Gamer", result.getContent().get(1).getName());
-		assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
+		assertThat(actual.getContent().get(0).getName()).isEqualTo("Macbook Pro");
+		assertThat(actual.getContent().get(1).getName()).isEqualTo("PC Gamer");
+		assertThat(actual.getContent().get(2).getName()).isEqualTo("PC Gamer Alfa");
 	}
 
 	@Test
 	void findAllPaged_ReturnPage_Page0Size10() {
 
-		Page<Product> result = service.list(EMPTY_SET, "", DEFAULT_PAGEABLE);
+		Page<Product> actual = service.list(EMPTY_SET, "", DEFAULT_PAGEABLE);
 
-		assertFalse(result.isEmpty());
-		assertEquals(0, result.getNumber());
-		assertEquals(10, result.getSize());
+		assertThat(actual.getNumber()).isEqualTo(0);
+		assertThat(actual.getSize()).isEqualTo(10);
 	}
 
 	@Test
 	void findAllPaged_ReturnEmptyPage_PageDoesNotExist() {
 
-		Page<Product> result = service.list(EMPTY_SET, "", PageRequest.of(50, 10));
+		Page<Product> actual = service.list(EMPTY_SET, "", PageRequest.of(50, 10));
 
-		assertTrue(result.isEmpty());
+		assertThat(actual).isEmpty();
 	}
 
 	@Test
 	void findAllPaged_DoesNotThrowsException_ValidParameters() {
 
-		assertDoesNotThrow(() -> service.list(EMPTY_SET, "", DEFAULT_PAGEABLE));
+		Throwable thrown = catchThrowable(() -> {
+			service.list(EMPTY_SET, "", DEFAULT_PAGEABLE);
+		});
+
+		assertThat(thrown).isNull();
 	}
 
 	@Test
 	void findById_ReturnProduct_IdExist() {
 
-		Product result = service.findById(EXISTING_ID);
+		Product actual = service.findById(EXISTING_ID);
 
-		assertNotNull(result);
-		assertEquals(EXISTING_NAME, result.getName());
+		assertThat(actual.getName()).isEqualTo(EXISTING_NAME);
 	}
 
 	@Test
 	void findById_DoesNotThrowsException_IdExist() {
 
-		assertDoesNotThrow(() -> service.findById(EXISTING_ID));
+		Throwable thrown = catchThrowable(() -> {
+			service.findById(EXISTING_ID);
+		});
+
+		assertThat(thrown).isNull();
 	}
-	
+
 	@Test
 	void findById_ThrowProductNotFoundException_IdDoesNotExist() {
 
-		assertThrowsExactly(ProductNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.findById(NON_EXISTING_ID);
 		});
+
+		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
 	}
 
 	@Test
 	void insert_SaveNewProduct_InputValid() {
 		ProductInput input = aNonExistingProduct().buildInput();
 
-		Product savedProduct = service.insert(input);
+		Product actual = service.insert(input);
 
-		Product product = repository.findById(savedProduct.getId()).get();
-		assertEquals(input.getName(), product.getName());
+		Product product = repository.findById(actual.getId()).get();
+		assertThat(actual.getName()).isEqualTo(product.getName());
 	}
 
 	@Test
 	void insert_ReturnProductModel_InputValid() {
 		ProductInput input = aNonExistingProduct().buildInput();
 
-		Product result = service.insert(input);
+		Product actual = service.insert(input);
 
-		assertNotNull(result);
-		assertNotNull(result.getId());
-		assertEquals(result.getName(), input.getName());
+		assertThat(actual.getId()).isNotNull();
+		assertThat(actual.getName()).isEqualTo(input.getName());
 	}
 
 	@Test
 	void insert_ThrowsUniqueException_NameAlreadyInUse() {
 		ProductInput input = aNonExistingProduct().withExistingName().buildInput();
 
-		assertThrowsExactly(UniqueException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.insert(input);
 		});
+
+		assertThat(thrown).isExactlyInstanceOf(UniqueException.class);
 	}
 
 	@Test
 	void insert_ThrowsUniqueException_CategoryNonExist() {
 		ProductInput input = aProduct().withNonExistingCategory().buildInput();
 
-		assertThrowsExactly(UniqueException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.insert(input);
 		});
+
+		assertThat(thrown).isExactlyInstanceOf(UniqueException.class);
 	}
 
 	@Test
@@ -169,59 +175,64 @@ class ProductServiceIT extends IT {
 		service.update(EXISTING_ID, input);
 
 		Product product = repository.findById(EXISTING_ID).get();
-		assertEquals(input.getName(), product.getName());
+		assertThat(product.getName()).isEqualTo(input.getName());
 	}
 
 	@Test
 	void update_ReturnUpdatedProduct_IdExist() {
 		ProductInput input = aNonExistingProduct().withExistingId().withNonExistingName().buildInput();
 
-		Product result = service.update(EXISTING_ID, input);
+		Product actual = service.update(EXISTING_ID, input);
 
-		assertNotNull(result);
-		assertEquals(EXISTING_ID, result.getId());
-		assertEquals(input.getName(), result.getName());
+		assertThat(actual.getId()).isEqualTo(EXISTING_ID);
+		assertThat(actual.getName()).isEqualTo(input.getName());
 	}
 
 	@Test
 	void update_ThrowProductNotFoundException_IdDoesNotExist() {
 		ProductInput input = aNonExistingProduct().buildInput();
 
-		assertThrowsExactly(ProductNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, input);
 		});
+
+		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
 	}
 
 	@Test
 	void delete_DeleteProduct_IdExists() {
 
 		service.delete(EXISTING_ID);
-		Optional<Product> optional = repository.findById(EXISTING_ID);
 
-		assertFalse(optional.isPresent());
+		Optional<Product> optional = repository.findById(EXISTING_ID);
+		assertThat(optional).isEmpty();
 	}
 
 	@Test
 	void delete_DoesNotThrowException_IdExists() {
 
-		assertDoesNotThrow(() -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(EXISTING_ID);
 		});
+
+		assertThat(thrown).isNull();
 	}
 
 	@Test
 	void delete_DoesNotDeleteProduct_IdDoesNotExist() throws Throwable {
 
-		ignoreThrows(() -> service.delete(NON_EXISTING_ID));
+		ignoreThrowseExactly(ProductNotFoundException.class, () -> service.delete(NON_EXISTING_ID));
 
-		assertEquals(COUNT_TOTAL_PRODUCTS, repository.count());
+		assertThat(repository.count()).isEqualTo(COUNT_TOTAL_PRODUCTS);
 	}
 
 	@Test
 	void delete_ThrowProductNotFoundException_IdDoesNotExist() {
 
-		assertThrowsExactly(ProductNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(NON_EXISTING_ID);
 		});
+
+		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
 	}
 }

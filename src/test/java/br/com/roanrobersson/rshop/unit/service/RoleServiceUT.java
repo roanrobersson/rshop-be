@@ -3,11 +3,8 @@ package br.com.roanrobersson.rshop.unit.service;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.aNonExistingRole;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.aRole;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.anExistingRole;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -63,20 +60,17 @@ class RoleServiceUT {
 	private final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
 	private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.by(Order.asc("id")));
 
-
 	@Test
 	void findAllPaged_ReturnRolePage() {
-		List<Role> roleList = List.of(anExistingRole().build());
+		Role role = anExistingRole().build();
+		List<Role> roleList = List.of(role);
 		Page<Role> roles = new PageImpl<Role>(roleList);
-
 		when(repository.findAll(DEFAULT_PAGEABLE)).thenReturn(roles);
 		when(repository.findRolesWithPrivileges(roleList)).thenReturn(roleList);
 
-		Page<Role> result = service.list(DEFAULT_PAGEABLE);
+		Page<Role> actual = service.list(DEFAULT_PAGEABLE);
 
-		assertNotNull(result);
-		assertFalse(result.isEmpty());
-		assertEquals(result, roles);
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(role).usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).findAll(DEFAULT_PAGEABLE);
 		verify(repository, times(1)).findRolesWithPrivileges(roleList);
 	}
@@ -87,21 +81,21 @@ class RoleServiceUT {
 		UUID id = role.getId();
 		when(repository.findByIdWithPrivileges(id)).thenReturn(Optional.of(role));
 
-		Role result = service.findById(id);
+		Role actual = service.findById(id);
 
-		assertNotNull(result);
-		assertEquals(result, role);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(role);
 		verify(repository, times(1)).findByIdWithPrivileges(id);
 	}
 
 	@Test
-	void findById_ThrowRoleNotFoundException_IdDoesNotExist() {
+	void findById_ThrowsRoleNotFoundException_IdDoesNotExist() {
 		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(RoleNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(RoleNotFoundException.class);
 		verify(repository, times(1)).findByIdWithPrivileges(NON_EXISTING_ID);
 	}
 
@@ -114,24 +108,24 @@ class RoleServiceUT {
 		when(mapper.toRole(input)).thenReturn(role);
 		when(repository.save(role)).thenReturn(role);
 
-		Role result = service.insert(input);
+		Role actual = service.insert(input);
 
-		assertNotNull(result);
-		assertEquals(result, role);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(role);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(mapper, times(1)).toRole(input);
 		verify(repository, times(1)).save(role);
 	}
 
 	@Test
-	void insert_UniqueException_NameAlreadyInUse() {
+	void insert_ThrowsUniqueException_NameAlreadyInUse() {
 		RoleInput input = aNonExistingRole().withExistingName().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(aRole().build()));
 
-		assertThrowsExactly(UniqueException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.insert(input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UniqueException.class);
 		verify(repository, times(1)).findByName(input.getName());
 	}
 
@@ -144,25 +138,25 @@ class RoleServiceUT {
 		when(repository.findByIdWithPrivileges(EXISTING_ID)).thenReturn(Optional.of(role));
 		when(repository.save(role)).thenReturn(role);
 
-		Role result = service.update(EXISTING_ID, input);
+		Role actual = service.update(EXISTING_ID, input);
 
-		assertNotNull(result);
-		assertEquals(result, role);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(role);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(repository, times(1)).findByIdWithPrivileges(EXISTING_ID);
 		verify(repository, times(1)).save(role);
 	}
 
 	@Test
-	void update_ThrowRoleNotFoundException_IdDoesNotExist() {
+	void update_ThrowsRoleNotFoundException_IdDoesNotExist() {
 		RoleInput input = aNonExistingRole().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(RoleNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(RoleNotFoundException.class);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(repository, times(1)).findByIdWithPrivileges(NON_EXISTING_ID);
 	}
@@ -172,10 +166,11 @@ class RoleServiceUT {
 		RoleInput input = aNonExistingRole().withExistingName().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(aRole().build()));
 
-		assertThrowsExactly(UniqueException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.update(EXISTING_ID, input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UniqueException.class);
 		verify(repository, times(1)).findByName(input.getName());
 	}
 
@@ -183,32 +178,35 @@ class RoleServiceUT {
 	void delete_DoNothingIdExists() {
 		doNothing().when(repository).deleteById(EXISTING_ID);
 
-		assertDoesNotThrow(() -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(EXISTING_ID);
 		});
 
+		assertThat(thrown).isNull();
 		verify(repository, times(1)).deleteById(EXISTING_ID);
 	}
 
 	@Test
-	void delete_ThrowRoleNotFoundException_IdDoesNotExist() {
+	void delete_ThrowsRoleNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrowsExactly(RoleNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(RoleNotFoundException.class);
 		verify(repository, times(1)).deleteById(NON_EXISTING_ID);
 	}
 
 	@Test
-	void delete_ThrowEntityInUseException_DependentId() {
+	void delete_ThrowsEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrowsExactly(EntityInUseException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(DEPENDENT_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(EntityInUseException.class);
 		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 }

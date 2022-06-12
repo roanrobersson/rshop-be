@@ -4,9 +4,8 @@ import static br.com.roanrobersson.rshop.builder.PrivilegeBuilder.aPrivilege;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.aRole;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.EXISTING_EMAIL;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.anUser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,14 +35,13 @@ public class AuthUserDetailsServiceUT {
 
 	@Test
 	void loadUserByUsername_ReturnUserDetails_IdExist() {
-		User user = anUser().withRole(aRole().withPrivilege(aPrivilege().build()).build()).build();
-		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.of(user));
+		User anyUser = anUser().withRole(aRole().withPrivilege(aPrivilege().build()).build()).build();
+		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.of(anyUser));
 
-		UserDetails result = service.loadUserByUsername(EXISTING_EMAIL);
+		UserDetails actual = service.loadUserByUsername(EXISTING_EMAIL);
 
-		assertNotNull(result);
-		assertEquals(user.getEmail(), result.getUsername());
-		assertEquals(user.getPassword(), result.getPassword());
+		assertThat(actual.getUsername()).isEqualTo(anyUser.getEmail());
+		assertThat(actual.getPassword()).isEqualTo(anyUser.getPassword());
 		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(EXISTING_EMAIL);
 	}
 
@@ -51,10 +49,11 @@ public class AuthUserDetailsServiceUT {
 	void loadUserByUsername_ThrowUsernameNotFoundException_EmailDoesNotExist() {
 		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(UsernameNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.loadUserByUsername(EXISTING_EMAIL);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UsernameNotFoundException.class);
 		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(EXISTING_EMAIL);
 	}
 }

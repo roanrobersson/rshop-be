@@ -1,7 +1,7 @@
 package br.com.roanrobersson.rshop.unit.mapper;
 
 import static br.com.roanrobersson.rshop.util.ResourceUtils.getContentFromResource;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -66,9 +66,9 @@ public class UserMapperUT {
 		User user = objectMapper.readValue(JSON_USER, User.class);
 		UserModel expected = objectMapper.readValue(JSON_USER_MODEL, UserModel.class);
 
-		UserModel result = userMapper.toModel(user);
+		UserModel actual = userMapper.toModel(user);
 
-		assertEquals(result, expected);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
@@ -77,9 +77,9 @@ public class UserMapperUT {
 		user.setPassword("12345678");
 		UserInsert expected = objectMapper.readValue(JSON_USER_INSERT, UserInsert.class);
 
-		UserInsert result = userMapper.toInsert(user);
+		UserInsert actual = userMapper.toInsert(user);
 
-		assertEquals(result, expected);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
@@ -87,52 +87,54 @@ public class UserMapperUT {
 		User user = objectMapper.readValue(JSON_USER, User.class);
 		UserUpdate expected = objectMapper.readValue(JSON_USER_UPDATE, UserUpdate.class);
 
-		UserUpdate result = userMapper.toUpdate(user);
+		UserUpdate actual = userMapper.toUpdate(user);
 
-		assertEquals(result, expected);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
 	void toUser_ReturnCompatibleUser_UserInsertAsArgument() throws Exception {
 		UserInsert input = objectMapper.readValue(JSON_USER_INSERT, UserInsert.class);
 		User expected = objectMapper.readValue(JSON_USER, User.class);
-		expected.setId(null);
-		expected.getAddresses().clear();
-		expected.getRoles().clear();
 
-		User result = userMapper.toUser(input);
+		User actual = userMapper.toUser(input);
 
-		assertEquals(result, expected);
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "addresses", "roles", "password")
+				.isEqualTo(expected);
+		assertThat(actual.getPassword()).isNull();
 	}
 
 	@Test
 	void toModelPage_ReturnCompatibleProductModelPage_ProductPageAsArgument() throws Exception {
+		long anyTotalItems = 500L;
+		int anyPage = 20;
+		int anySize = 15;
+		Sort anySort = Sort.by(Direction.ASC, "any");
+		Pageable anyPageable = PageRequest.of(anyPage, anySize, anySort);
 		User user1 = objectMapper.readValue(JSON_USER, User.class);
 		User user2 = objectMapper.readValue(JSON_USER_2, User.class);
-		long anyTotalItems = 500L;
-		Pageable anyPageable = PageRequest.of(20, 15, Sort.by(Direction.ASC, "name"));
 		Page<User> input = new PageImpl<>(List.of(user1, user2), anyPageable, anyTotalItems);
-		UserModel expected1 = objectMapper.readValue(JSON_USER_MODEL, UserModel.class);
-		UserModel expected2 = objectMapper.readValue(JSON_USER_MODEL_2, UserModel.class);
+		UserModel expectedUserModel1 = objectMapper.readValue(JSON_USER_MODEL, UserModel.class);
+		UserModel expectedUserModel2 = objectMapper.readValue(JSON_USER_MODEL_2, UserModel.class);
 
 		Page<UserModel> actual = userMapper.toModelPage(input);
 
-		assertEquals(expected1, actual.getContent().toArray()[0]);
-		assertEquals(expected2, actual.getContent().toArray()[1]);
-		assertEquals(anyPageable.getPageNumber(), actual.getNumber());
-		assertEquals(anyPageable.getPageSize(), actual.getSize());
-		assertEquals(anyPageable.getSort(), actual.getSort());
-		assertEquals(anyTotalItems, actual.getTotalElements());
+		assertThat(actual.getNumber()).isEqualTo(anyPage);
+		assertThat(actual.getSize()).isEqualTo(anySize);
+		assertThat(actual.getSort()).usingRecursiveComparison().isEqualTo(anySort);
+		assertThat(actual.getTotalElements()).isEqualTo(anyTotalItems);
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(expectedUserModel1, expectedUserModel2);
 	}
 
 	@Test
 	void update_CorrectUpdateUser_UserUpdateAndUserAsArgument() throws Exception {
 		UserUpdate input = objectMapper.readValue(JSON_USER_UPDATE_2, UserUpdate.class);
 		User result = objectMapper.readValue(JSON_USER, User.class);
-		User expected = objectMapper.readValue(JSON_USER_2, User.class);
+		User actual = objectMapper.readValue(JSON_USER_2, User.class);
 
 		userMapper.update(input, result);
 
-		assertEquals(result, expected);
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "addresses", "password", "email", "roles",
+				"lastLoginAt", "verifiedAt", "createdAt", "updatedAt").isEqualTo(input);
 	}
 }

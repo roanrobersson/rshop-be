@@ -2,8 +2,7 @@ package br.com.roanrobersson.rshop.unit.mapper;
 
 import static br.com.roanrobersson.rshop.builder.PrivilegeBuilder.aPrivilege;
 import static br.com.roanrobersson.rshop.util.ResourceUtils.getContentFromResource;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -61,9 +60,9 @@ public class RoleMapperUT {
 		Role role = objectMapper.readValue(JSON_ROLE, Role.class);
 		RoleModel expected = objectMapper.readValue(JSON_ROLE_MODEL, RoleModel.class);
 
-		RoleModel result = roleMapper.toModel(role);
+		RoleModel actual = roleMapper.toModel(role);
 
-		assertEquals(result, expected);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
@@ -71,45 +70,47 @@ public class RoleMapperUT {
 		Role role = objectMapper.readValue(JSON_ROLE, Role.class);
 		RoleInput expected = objectMapper.readValue(JSON_ROLE_INPUT, RoleInput.class);
 
-		RoleInput result = roleMapper.toInput(role);
+		RoleInput actual = roleMapper.toInput(role);
 
-		assertEquals(result, expected);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
 	void toRole_ReturnCompatibleRole_RoleInputAsArgument() throws Exception {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT, RoleInput.class);
+		Role expected = objectMapper.readValue(JSON_ROLE, Role.class);
 		UUID[] privilegesIds = input.getPrivileges().stream().map(p -> UUID.fromString(p.getId())).toArray(UUID[]::new);
 		Privilege privilege1 = aPrivilege().withId(privilegesIds[0]).build();
 		Privilege privilege2 = aPrivilege().withId(privilegesIds[1]).build();
 		when(privilegeService.findById(privilege1.getId())).thenReturn(privilege1);
 		when(privilegeService.findById(privilege2.getId())).thenReturn(privilege2);
 
-		Role result = roleMapper.toRole(input);
+		Role actual = roleMapper.toRole(input);
 
-		assertEquals(result.getName(), input.getName());
-		assertTrue(result.getPrivileges().stream().anyMatch(c -> c.getId().equals(privilege1.getId())));
-		assertTrue(result.getPrivileges().stream().anyMatch(c -> c.getId().equals(privilege2.getId())));
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "privileges").isEqualTo(expected);
+		assertThat(actual.getPrivileges()).containsExactlyInAnyOrderElementsOf(expected.getPrivileges());
 	}
 
 	@Test
 	void toModelPage_ReturnCompatibleProductModelPage_ProductPageAsArgument() throws Exception {
+		long anyTotalItems = 500L;
+		int anyPage = 20;
+		int anySize = 15;
+		Sort anySort = Sort.by(Direction.ASC, "any");
+		Pageable anyPageable = PageRequest.of(anyPage, anySize, anySort);
 		Role role1 = objectMapper.readValue(JSON_ROLE, Role.class);
 		Role role2 = objectMapper.readValue(JSON_ROLE_2, Role.class);
-		long anyTotalItems = 500L;
-		Pageable anyPageable = PageRequest.of(20, 15, Sort.by(Direction.ASC, "name"));
 		Page<Role> input = new PageImpl<>(List.of(role1, role2), anyPageable, anyTotalItems);
-		RoleModel expected1 = objectMapper.readValue(JSON_ROLE_MODEL, RoleModel.class);
-		RoleModel expected2 = objectMapper.readValue(JSON_ROLE_MODEL_2, RoleModel.class);
+		RoleModel expectedRoleModel1 = objectMapper.readValue(JSON_ROLE_MODEL, RoleModel.class);
+		RoleModel expectedRoleModel2 = objectMapper.readValue(JSON_ROLE_MODEL_2, RoleModel.class);
 
 		Page<RoleModel> actual = roleMapper.toModelPage(input);
 
-		assertTrue(actual.stream().anyMatch((roleModel) -> roleModel.equals(expected1)));
-		assertTrue(actual.stream().anyMatch((roleModel) -> roleModel.equals(expected2)));
-		assertEquals(anyPageable.getPageNumber(), actual.getNumber());
-		assertEquals(anyPageable.getPageSize(), actual.getSize());
-		assertEquals(anyPageable.getSort(), actual.getSort());
-		assertEquals(anyTotalItems, actual.getTotalElements());
+		assertThat(actual.getNumber()).isEqualTo(anyPage);
+		assertThat(actual.getSize()).isEqualTo(anySize);
+		assertThat(actual.getSort()).usingRecursiveComparison().isEqualTo(anySort);
+		assertThat(actual.getTotalElements()).isEqualTo(anyTotalItems);
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(expectedRoleModel1, expectedRoleModel2);
 	}
 
 	@Test
@@ -118,10 +119,9 @@ public class RoleMapperUT {
 		Role role2 = objectMapper.readValue(JSON_ROLE_2, Role.class);
 		Set<Role> input = Set.of(role1, role2);
 
-		Set<UUID> result = roleMapper.toIdSet(input);
+		Set<UUID> actual = roleMapper.toIdSet(input);
 
-		assertTrue(result.stream().anyMatch((uuid) -> uuid.equals(role1.getId())));
-		assertTrue(result.stream().anyMatch((uuid) -> uuid.equals(role2.getId())));
+		assertThat(actual).containsExactlyInAnyOrder(role1.getId(), role2.getId());
 	}
 
 	@Test
@@ -129,13 +129,13 @@ public class RoleMapperUT {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT_2, RoleInput.class);
 		UUID privilegeId = UUID.fromString(input.getPrivileges().iterator().next().getId());
 		Privilege privilege = aPrivilege().withId(privilegeId).build();
-		Role result = objectMapper.readValue(JSON_ROLE, Role.class);
+		Role actual = objectMapper.readValue(JSON_ROLE, Role.class);
 		when(privilegeService.findById(privilegeId)).thenReturn(privilege);
 
-		roleMapper.update(input, result);
+		roleMapper.update(input, actual);
 
-		assertEquals(input.getName(), result.getName());
-		assertEquals(1, result.getPrivileges().size());
-		assertTrue(result.getPrivileges().stream().anyMatch(c -> c.getId().equals(privilege.getId())));
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "privileges", "createdAt", "updatedAt")
+				.isEqualTo(input);
+		assertThat(actual.getPrivileges()).containsExactly(privilege);
 	}
 }

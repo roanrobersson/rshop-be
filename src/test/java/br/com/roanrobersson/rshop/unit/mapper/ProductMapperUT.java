@@ -2,11 +2,8 @@ package br.com.roanrobersson.rshop.unit.mapper;
 
 import static br.com.roanrobersson.rshop.builder.CategoryBuilder.aCategory;
 import static br.com.roanrobersson.rshop.util.ResourceUtils.getContentFromResource;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat; 
 
 import java.util.List;
 import java.util.UUID;
@@ -64,7 +61,7 @@ public class ProductMapperUT {
 
 		ProductModel actual = productMapper.toModel(product);
 
-		assertEquals(expected, actual);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
@@ -74,12 +71,13 @@ public class ProductMapperUT {
 
 		ProductInput actual = productMapper.toInput(product);
 
-		assertEquals(expected, actual);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	@Test
 	void toProduct_ReturnCompatibleProduct_ProductInputAsArgument() throws Exception {
 		ProductInput input = objectMapper.readValue(JSON_PRODUCT_INPUT, ProductInput.class);
+		Product expected = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		UUID[] categoriesIds = input.getCategories().stream().map(c -> UUID.fromString(c.getId())).toArray(UUID[]::new);
 		Category category1 = aCategory().withId(categoriesIds[0]).build();
 		Category category2 = aCategory().withId(categoriesIds[1]).build();
@@ -88,29 +86,30 @@ public class ProductMapperUT {
 
 		Product actual = productMapper.toProduct(input);
 
-		assertEquals(input.getName(), actual.getName());
-		assertTrue(actual.getCategories().stream().anyMatch(c -> c.getId().equals(category1.getId())));
-		assertTrue(actual.getCategories().stream().anyMatch(c -> c.getId().equals(category2.getId())));
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "categories").isEqualTo(expected);
+		assertThat(actual.getCategories()).containsExactlyInAnyOrderElementsOf(expected.getCategories());
 	}
 
 	@Test
 	void toModelPage_ReturnCompatibleProductModelPage_ProductPageAsArgument() throws Exception {
+		long anyTotalItems = 500L;
+		int anyPage = 20;
+		int anySize = 15;
+		Sort anySort = Sort.by(Direction.ASC, "any");
+		Pageable anyPageable = PageRequest.of(anyPage, anySize, anySort);
 		Product product1 = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		Product product2 = objectMapper.readValue(JSON_PRODUCT_2, Product.class);
-		long anyTotalItems = 500L;
-		Pageable anyPageable = PageRequest.of(20, 15, Sort.by(Direction.ASC, "name"));
 		Page<Product> input = new PageImpl<>(List.of(product1, product2), anyPageable, anyTotalItems);
-		ProductModel expected1 = objectMapper.readValue(JSON_PRODUCT_MODEL, ProductModel.class);
-		ProductModel expected2 = objectMapper.readValue(JSON_PRODUCT_MODEL_2, ProductModel.class);
+		ProductModel expectedProductModel1 = objectMapper.readValue(JSON_PRODUCT_MODEL, ProductModel.class);
+		ProductModel expectedProductModel2 = objectMapper.readValue(JSON_PRODUCT_MODEL_2, ProductModel.class);
 
 		Page<ProductModel> actual = productMapper.toModelPage(input);
 
-		assertEquals(expected1, actual.getContent().toArray()[0]);
-		assertEquals(expected2, actual.getContent().toArray()[1]);
-		assertEquals(anyPageable.getPageNumber(), actual.getNumber());
-		assertEquals(anyPageable.getPageSize(), actual.getSize());
-		assertEquals(anyPageable.getSort(), actual.getSort());
-		assertEquals(anyTotalItems, actual.getTotalElements());
+		assertThat(actual.getNumber()).isEqualTo(anyPage);
+		assertThat(actual.getSize()).isEqualTo(anySize);
+		assertThat(actual.getSort()).usingRecursiveComparison().isEqualTo(anySort);
+		assertThat(actual.getTotalElements()).isEqualTo(anyTotalItems);
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(expectedProductModel1, expectedProductModel2);
 	}
 
 	@Test
@@ -123,10 +122,8 @@ public class ProductMapperUT {
 
 		productMapper.update(input, actual);
 
-		assertEquals(actual.getName(), input.getName());
-		assertEquals(actual.getSku(), input.getSku());
-		assertEquals(actual.getPrice(), input.getPrice());
-		assertEquals(1, actual.getCategories().size());
-		assertTrue(actual.getCategories().stream().anyMatch(c -> c.getId().equals(category.getId())));
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "categories", "createdAt", "updatedAt")
+				.isEqualTo(input);
+		assertThat(actual.getCategories()).containsExactly(category);
 	}
 }

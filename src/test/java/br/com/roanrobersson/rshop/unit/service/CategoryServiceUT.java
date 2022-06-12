@@ -5,11 +5,8 @@ import static br.com.roanrobersson.rshop.builder.CategoryBuilder.EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.CategoryBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.CategoryBuilder.aNonExistingCategory;
 import static br.com.roanrobersson.rshop.builder.CategoryBuilder.anExistingCategory;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -60,11 +57,10 @@ class CategoryServiceUT {
 		Pageable pageable = PageRequest.of(0, 10);
 		when(repository.findAll(pageable)).thenReturn(categories);
 
-		Page<Category> result = service.list(pageable);
-
-		assertNotNull(result);
-		assertFalse(result.isEmpty());
-		assertEquals(result, categories);
+		Page<Category> actual = service.list(pageable);
+		
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(category)
+				.usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).findAll(pageable);
 	}
 
@@ -73,10 +69,9 @@ class CategoryServiceUT {
 		Category category = anExistingCategory().build();
 		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(category));
 
-		Category result = service.findById(EXISTING_ID);
+		Category actual = service.findById(EXISTING_ID);
 
-		assertNotNull(result);
-		assertEquals(result, category);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
 		verify(repository, times(1)).findById(EXISTING_ID);
 	}
 
@@ -84,15 +79,16 @@ class CategoryServiceUT {
 	void findById_ThrowCategoryNotFoundException_IdDoesNotExist() {
 		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(CategoryNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(CategoryNotFoundException.class);
 		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test
-	void insert_ReturnCategory_InputValid() {
+	void insert_ReturnInsertedCategory_InputValid() {
 		CategoryBuilder builder = aNonExistingCategory();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.build();
@@ -100,10 +96,9 @@ class CategoryServiceUT {
 		when(mapper.toCategory(input)).thenReturn(category);
 		when(repository.save(category)).thenReturn(category);
 
-		Category result = service.insert(input);
+		Category actual = service.insert(input);
 
-		assertNotNull(result);
-		assertEquals(result, category);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(mapper, times(1)).toCategory(input);
 		verify(repository, times(1)).save(category);
@@ -116,15 +111,16 @@ class CategoryServiceUT {
 		Category category = builder.build();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(category));
 
-		assertThrowsExactly(UniqueException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.insert(input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UniqueException.class);
 		verify(repository, times(1)).findByName(input.getName());
 	}
 
 	@Test
-	void update_ReturnCategory_IdExist() {
+	void update_ReturnUpdatedCategory_IdExist() {
 		CategoryBuilder builder = aNonExistingCategory();
 		CategoryInput input = builder.buildInput();
 		Category category = builder.withId(EXISTING_ID).build();
@@ -132,9 +128,9 @@ class CategoryServiceUT {
 		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(category));
 		when(repository.save(category)).thenReturn(category);
 
-		Category result = service.update(EXISTING_ID, input);
+		Category actual = service.update(EXISTING_ID, input);
 
-		assertNotNull(result);
+		assertThat(actual).isNotNull();
 		verify(repository, times(1)).findById(EXISTING_ID);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(mapper, times(1)).update(input, category);
@@ -147,10 +143,11 @@ class CategoryServiceUT {
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(CategoryNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(CategoryNotFoundException.class);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
@@ -159,10 +156,11 @@ class CategoryServiceUT {
 	void delete_DoNothing_IdExists() {
 		doNothing().when(repository).deleteById(EXISTING_ID);
 
-		assertDoesNotThrow(() -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(EXISTING_ID);
 		});
 
+		assertThat(thrown).isNull();
 		verify(repository, times(1)).deleteById(EXISTING_ID);
 	}
 
@@ -170,10 +168,11 @@ class CategoryServiceUT {
 	void delete_ThrowCategoryNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrowsExactly(CategoryNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(CategoryNotFoundException.class);
 		verify(repository, times(1)).deleteById(NON_EXISTING_ID);
 	}
 
@@ -181,10 +180,11 @@ class CategoryServiceUT {
 	void delete_ThrowEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrowsExactly(EntityInUseException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(DEPENDENT_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(EntityInUseException.class);
 		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 }

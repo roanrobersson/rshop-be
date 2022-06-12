@@ -6,11 +6,8 @@ import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aNonExistingProduct;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.anExistingProduct;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -70,15 +67,15 @@ class ProductServiceUT {
 	@Test
 	void findAllPaged_ReturnProductPage() {
 		Product product = anExistingProduct().build();
-		PageImpl<Product> products = new PageImpl<>(List.of(product));
+		List<Product> productList = List.of(product);
+		PageImpl<Product> products = new PageImpl<>(productList);
 		Set<UUID> categories = Set.of(CategoryBuilder.EXISTING_ID, CategoryBuilder.ANOTHER_EXISTING_ID);
 		when(repository.search(categories, "", DEFAULT_PAGEABLE)).thenReturn(products);
 
-		Page<Product> result = service.list(categories, "", DEFAULT_PAGEABLE);
+		Page<Product> actual = service.list(categories, "", DEFAULT_PAGEABLE);
 
-		assertNotNull(result);
-		assertFalse(result.isEmpty());
-		assertEquals(result, products);
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(product)
+				.usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).search(categories, "", DEFAULT_PAGEABLE);
 		verify(repository, times(1)).findWithCategories(products.toList());
 	}
@@ -89,21 +86,20 @@ class ProductServiceUT {
 		UUID id = product.getId();
 		when(repository.findByIdWithCategories(id)).thenReturn(Optional.of(product));
 
-		Product result = service.findById(id);
+		Product actual = service.findById(id);
 
-		assertNotNull(result);
-		assertEquals(result, product);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(product);
 		verify(repository, times(1)).findByIdWithCategories(id);
 	}
 
 	@Test
 	void findById_ThrowProductNotFoundException_IdDoesNotExist() {
-		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(ProductNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
 		verify(repository, times(1)).findByIdWithCategories(NON_EXISTING_ID);
 	}
 
@@ -116,10 +112,9 @@ class ProductServiceUT {
 		when(mapper.toProduct(input)).thenReturn(product);
 		when(repository.save(product)).thenReturn(product);
 
-		Product result = service.insert(input);
+		Product actual = service.insert(input);
 
-		assertNotNull(result);
-		assertEquals(result, product);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(mapper, times(1)).toProduct(input);
 		verify(repository, times(1)).save(product);
@@ -130,10 +125,11 @@ class ProductServiceUT {
 		ProductInput input = aNonExistingProduct().withExistingName().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.of(aProduct().build()));
 
-		assertThrowsExactly(UniqueException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.insert(input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UniqueException.class);
 		verify(repository, times(1)).findByName(input.getName());
 	}
 
@@ -143,10 +139,11 @@ class ProductServiceUT {
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(mapper.toProduct(input)).thenThrow(CategoryNotFoundException.class);
 
-		assertThrowsExactly(BusinessException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.insert(input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(BusinessException.class);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(mapper, times(1)).toProduct(input);
 	}
@@ -160,10 +157,9 @@ class ProductServiceUT {
 		when(repository.findByIdWithCategories(EXISTING_ID)).thenReturn(Optional.of(product));
 		when(repository.save(product)).thenReturn(product);
 
-		Product result = service.update(EXISTING_ID, input);
+		Product actual = service.update(EXISTING_ID, input);
 
-		assertNotNull(result);
-		assertEquals(result, product);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(repository, times(1)).findByIdWithCategories(EXISTING_ID);
 		verify(mapper, times(1)).update(input, product);
@@ -176,10 +172,11 @@ class ProductServiceUT {
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
 		when(repository.findByIdWithCategories(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(ProductNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, input);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
 		verify(repository, times(1)).findByName(input.getName());
 		verify(repository, times(1)).findByIdWithCategories(NON_EXISTING_ID);
 	}
@@ -188,10 +185,11 @@ class ProductServiceUT {
 	void delete_DoNothing_IdExists() {
 		doNothing().when(repository).deleteById(EXISTING_ID);
 
-		assertDoesNotThrow(() -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(EXISTING_ID);
 		});
 
+		assertThat(thrown).isNull();
 		verify(repository, times(1)).deleteById(EXISTING_ID);
 	}
 
@@ -199,10 +197,11 @@ class ProductServiceUT {
 	void delete_ThrowProductNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrowsExactly(ProductNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
 		verify(repository, times(1)).deleteById(NON_EXISTING_ID);
 	}
 
@@ -210,10 +209,11 @@ class ProductServiceUT {
 	void delete_ThrowEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrowsExactly(EntityInUseException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(DEPENDENT_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(EntityInUseException.class);
 		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 }

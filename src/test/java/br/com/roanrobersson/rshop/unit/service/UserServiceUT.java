@@ -6,11 +6,10 @@ import static br.com.roanrobersson.rshop.builder.UserBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.aNonExistingUser;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.anExistingUser;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.anUser;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -74,19 +73,18 @@ class UserServiceUT {
 
 	@Test
 	void findAllPaged_ReturnUserPage() {
+		User user = anExistingUser().build();
+		List<User> userList = List.of(user);
 		Pageable pageable = PageRequest.of(0, 10);
-		List<User> users = List.of(anExistingUser().build());
 		Page<User> page = new PageImpl<>(List.of(anExistingUser().build()));
 		when(repository.findAll(pageable)).thenReturn(page);
-		when(repository.findWithRolesAndPrivileges(users)).thenReturn(users);
+		when(repository.findWithRolesAndPrivileges(userList)).thenReturn(userList);
 
-		Page<User> result = service.list(pageable);
+		Page<User> actual = service.list(pageable);
 
-		assertNotNull(result);
-		assertFalse(result.isEmpty());
-		assertEquals(result, page);
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(user).usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).findAll(pageable);
-		verify(repository, times(1)).findWithRolesAndPrivileges(users);
+		verify(repository, times(1)).findWithRolesAndPrivileges(userList);
 	}
 
 	@Test
@@ -94,9 +92,9 @@ class UserServiceUT {
 		User user = anExistingUser().build();
 		when(repository.findByIdWithRolesAndPrivileges(EXISTING_ID)).thenReturn(Optional.of(user));
 
-		User result = service.findById(EXISTING_ID);
+		User actual = service.findById(EXISTING_ID);
 
-		assertNotNull(result);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(user);
 		verify(repository, times(1)).findByIdWithRolesAndPrivileges(EXISTING_ID);
 	}
 
@@ -104,10 +102,11 @@ class UserServiceUT {
 	void findById_ThrowUserNotFoundException_IdDoesNotExist() {
 		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(UserNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UserNotFoundException.class);
 		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 	}
 
@@ -137,10 +136,11 @@ class UserServiceUT {
 		UserInsert insert = aNonExistingUser().buildInsert();
 		when(repository.findByEmail(insert.getEmail())).thenReturn(Optional.of(anUser().build()));
 
-		assertThrowsExactly(UniqueException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.insert(insert);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UniqueException.class);
 		verify(repository, times(1)).findByEmail(insert.getEmail());
 	}
 
@@ -166,10 +166,11 @@ class UserServiceUT {
 		UserUpdate update = anExistingUser().buildUpdate();
 		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(UserNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, update);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UserNotFoundException.class);
 		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 	}
 
@@ -177,10 +178,11 @@ class UserServiceUT {
 	void delete_DoNothing_IdExists() {
 		doNothing().when(repository).deleteById(EXISTING_ID);
 
-		assertDoesNotThrow(() -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(EXISTING_ID);
 		});
 
+		assertThat(thrown).isNull();
 		verify(repository, times(1)).deleteById(EXISTING_ID);
 	}
 
@@ -188,10 +190,11 @@ class UserServiceUT {
 	void delete_ThrowUserNotFoundException_IdDoesNotExist() {
 		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(NON_EXISTING_ID);
 
-		assertThrowsExactly(UserNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(NON_EXISTING_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UserNotFoundException.class);
 		verify(repository, times(1)).deleteById(NON_EXISTING_ID);
 	}
 
@@ -199,10 +202,11 @@ class UserServiceUT {
 	void delete_ThrowEntityInUseException_DependentId() {
 		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
 
-		assertThrowsExactly(EntityInUseException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.delete(DEPENDENT_ID);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(EntityInUseException.class);
 		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 
@@ -213,10 +217,11 @@ class UserServiceUT {
 		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.of(user));
 		when(repository.save(user)).thenReturn(user);
 
-		assertDoesNotThrow(() -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.changePassword(NON_EXISTING_ID, passwordInput);
 		});
 
+		assertThat(thrown).isNull();
 		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 		verify(repository, times(1)).save(user);
 	}
@@ -226,10 +231,11 @@ class UserServiceUT {
 		UserChangePasswordInput passwordInput = new UserChangePasswordInput("a3g&3Pd#");
 		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
-		assertThrowsExactly(UserNotFoundException.class, () -> {
+		Throwable thrown = catchThrowable(() -> {
 			service.changePassword(NON_EXISTING_ID, passwordInput);
 		});
 
+		assertThat(thrown).isExactlyInstanceOf(UserNotFoundException.class);
 		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
 	}
 }
