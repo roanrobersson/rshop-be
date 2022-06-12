@@ -10,9 +10,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +32,7 @@ import br.com.roanrobersson.rshop.domain.repository.AddressRepository;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
 	private static final String MSG_USER_IN_USE = "User with ID %s cannot be removed, because it is in use";
 	private static final String MSG_USER_WITH_EMAIL_NOT_FOUND = "User with email %s not found";
@@ -213,15 +210,6 @@ public class UserService implements UserDetailsService {
 		Role role = roleService.findById(roleId);
 		user.getRoles().remove(role);
 		userRepository.save(user);
-	}
-
-	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		Optional<User> optional = userRepository.findByEmailWithRolesAndPrivileges(email);
-		if (optional.isEmpty()) {
-			throw new UsernameNotFoundException("Username not found");
-		}
-		return optional.get();
 	}
 
 	private void validateUniqueInsert(UserInsert userInsert) {

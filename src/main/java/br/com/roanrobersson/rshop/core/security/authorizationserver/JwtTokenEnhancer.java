@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.core.component;
+package br.com.roanrobersson.rshop.core.security.authorizationserver;
 
 import java.util.HashMap;
 import java.util.Map;

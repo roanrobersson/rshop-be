@@ -1,4 +1,4 @@
-package br.com.roanrobersson.rshop.core.config;
+package br.com.roanrobersson.rshop.core.security.authorizationserver;
 
 import java.util.Arrays;
 
@@ -16,8 +16,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-
-import br.com.roanrobersson.rshop.core.component.JwtTokenEnhancer;
 
 @Configuration
 @EnableAuthorizationServer

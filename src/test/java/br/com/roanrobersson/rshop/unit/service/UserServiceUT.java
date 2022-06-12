@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.unit.service;
 
 import static br.com.roanrobersson.rshop.builder.UserBuilder.DEPENDENT_ID;
-import static br.com.roanrobersson.rshop.builder.UserBuilder.EXISTING_EMAIL;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.UserBuilder.aNonExistingUser;
@@ -32,8 +31,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -234,28 +231,5 @@ class UserServiceUT {
 		});
 
 		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
-	}
-
-	@Test
-	void loadUserByUsername_ReturnUserDetails_IdExist() {
-		User user = anUser().build();
-		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.of(user));
-
-		UserDetails result = service.loadUserByUsername(EXISTING_EMAIL);
-
-		assertNotNull(result);
-		assertEquals(result, user);
-		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(EXISTING_EMAIL);
-	}
-
-	@Test
-	void loadUserByUsername_ThrowUsernameNotFoundException_EmailDoesNotExist() {
-		when(repository.findByEmailWithRolesAndPrivileges(EXISTING_EMAIL)).thenReturn(Optional.empty());
-
-		assertThrowsExactly(UsernameNotFoundException.class, () -> {
-			service.loadUserByUsername(EXISTING_EMAIL);
-		});
-
-		verify(repository, times(1)).findByEmailWithRolesAndPrivileges(EXISTING_EMAIL);
 	}
 }
