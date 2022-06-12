@@ -36,9 +36,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.builder.ProductBuilder;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;

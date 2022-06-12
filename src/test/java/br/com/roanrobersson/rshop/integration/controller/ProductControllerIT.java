@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
 import br.com.roanrobersson.rshop.integration.IT;
 import br.com.roanrobersson.rshop.util.Account;
 import br.com.roanrobersson.rshop.util.ResourceUtils;

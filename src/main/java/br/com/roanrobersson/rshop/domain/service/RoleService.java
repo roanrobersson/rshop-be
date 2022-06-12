@@ -12,11 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
-import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.UniqueException;
+import br.com.roanrobersson.rshop.domain.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;

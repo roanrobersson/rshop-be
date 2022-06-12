@@ -30,7 +30,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.model.Product;

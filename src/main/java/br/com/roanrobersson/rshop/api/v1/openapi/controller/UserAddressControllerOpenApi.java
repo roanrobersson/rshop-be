@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
-import br.com.roanrobersson.rshop.api.v1.model.AddressModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
+import br.com.roanrobersson.rshop.domain.dto.input.AddressInput;
+import br.com.roanrobersson.rshop.domain.dto.model.AddressModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

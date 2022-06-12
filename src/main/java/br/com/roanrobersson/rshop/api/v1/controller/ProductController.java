@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
-import br.com.roanrobersson.rshop.api.v1.model.CountModel;
-import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.ProductControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.model.CountModel;
+import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
+import br.com.roanrobersson.rshop.domain.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 

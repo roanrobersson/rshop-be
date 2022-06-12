@@ -36,15 +36,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
 import br.com.roanrobersson.rshop.builder.CategoryBuilder;
 import br.com.roanrobersson.rshop.builder.ProductBuilder;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.UniqueException;
+import br.com.roanrobersson.rshop.domain.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;

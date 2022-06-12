@@ -15,10 +15,10 @@ import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
-import br.com.roanrobersson.rshop.api.v1.model.UserModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
+import br.com.roanrobersson.rshop.domain.dto.input.UserInsert;
+import br.com.roanrobersson.rshop.domain.dto.input.UserUpdate;
+import br.com.roanrobersson.rshop.domain.dto.model.UserModel;
+import br.com.roanrobersson.rshop.domain.mapper.UserMapper;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;

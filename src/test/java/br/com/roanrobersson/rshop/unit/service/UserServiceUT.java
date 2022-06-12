@@ -34,14 +34,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.UserMapper;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
 import br.com.roanrobersson.rshop.builder.UserBuilder;
+import br.com.roanrobersson.rshop.domain.dto.input.UserChangePasswordInput;
+import br.com.roanrobersson.rshop.domain.dto.input.UserInsert;
+import br.com.roanrobersson.rshop.domain.dto.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.UniqueException;
 import br.com.roanrobersson.rshop.domain.exception.UserNotFoundException;
+import br.com.roanrobersson.rshop.domain.mapper.UserMapper;
 import br.com.roanrobersson.rshop.domain.model.User;
 import br.com.roanrobersson.rshop.domain.repository.UserRepository;
 import br.com.roanrobersson.rshop.domain.service.AuthService;

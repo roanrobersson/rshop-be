@@ -32,12 +32,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
-import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.builder.RoleBuilder;
+import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.RoleNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.UniqueException;
+import br.com.roanrobersson.rshop.domain.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.repository.RoleRepository;
 import br.com.roanrobersson.rshop.domain.service.PrivilegeService;

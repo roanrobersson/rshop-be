@@ -3,9 +3,9 @@ package br.com.roanrobersson.rshop.builder;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.PrivilegeMapper;
-import br.com.roanrobersson.rshop.api.v1.model.PrivilegeModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.PrivilegeInput;
+import br.com.roanrobersson.rshop.domain.dto.input.PrivilegeInput;
+import br.com.roanrobersson.rshop.domain.dto.model.PrivilegeModel;
+import br.com.roanrobersson.rshop.domain.mapper.PrivilegeMapper;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import lombok.Getter;
 

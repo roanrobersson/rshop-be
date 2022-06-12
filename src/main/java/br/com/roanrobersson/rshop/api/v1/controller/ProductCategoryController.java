@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.ProductCategoryControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 
 @RestController

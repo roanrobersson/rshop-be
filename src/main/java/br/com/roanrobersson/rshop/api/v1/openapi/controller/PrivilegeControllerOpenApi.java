@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
-import br.com.roanrobersson.rshop.api.v1.model.PrivilegeModel;
+import br.com.roanrobersson.rshop.domain.dto.model.PrivilegeModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

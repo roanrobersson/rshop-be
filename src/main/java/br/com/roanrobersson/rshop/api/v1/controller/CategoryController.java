@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.CategoryMapper;
-import br.com.roanrobersson.rshop.api.v1.model.CategoryModel;
-import br.com.roanrobersson.rshop.api.v1.model.CountModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.CategoryControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.dto.input.CategoryInput;
+import br.com.roanrobersson.rshop.domain.dto.model.CategoryModel;
+import br.com.roanrobersson.rshop.domain.dto.model.CountModel;
+import br.com.roanrobersson.rshop.domain.mapper.CategoryMapper;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
 

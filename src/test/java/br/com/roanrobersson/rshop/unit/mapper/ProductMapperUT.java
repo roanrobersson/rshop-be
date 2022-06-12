@@ -4,7 +4,9 @@ import static br.com.roanrobersson.rshop.builder.CategoryBuilder.aCategory;
 import static br.com.roanrobersson.rshop.util.ResourceUtils.getContentFromResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat; 
 
 import java.util.List;
 import java.util.UUID;
@@ -24,9 +26,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
-import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
+import br.com.roanrobersson.rshop.domain.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;;

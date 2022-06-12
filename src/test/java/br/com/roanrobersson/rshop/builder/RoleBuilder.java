@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
-import br.com.roanrobersson.rshop.api.v1.model.RoleModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
+import br.com.roanrobersson.rshop.domain.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import lombok.Getter;

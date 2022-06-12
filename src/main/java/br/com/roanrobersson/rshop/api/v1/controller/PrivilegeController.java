@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.PrivilegeMapper;
-import br.com.roanrobersson.rshop.api.v1.model.CountModel;
-import br.com.roanrobersson.rshop.api.v1.model.PrivilegeModel;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.PrivilegeControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.dto.model.CountModel;
+import br.com.roanrobersson.rshop.domain.dto.model.PrivilegeModel;
+import br.com.roanrobersson.rshop.domain.mapper.PrivilegeMapper;
 import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
 

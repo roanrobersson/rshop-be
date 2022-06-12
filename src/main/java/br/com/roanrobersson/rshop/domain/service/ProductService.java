@@ -12,13 +12,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.CategoryNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.EntityInUseException;
 import br.com.roanrobersson.rshop.domain.exception.ProductNotFoundException;
 import br.com.roanrobersson.rshop.domain.exception.UniqueException;
+import br.com.roanrobersson.rshop.domain.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;

@@ -3,8 +3,8 @@ package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
-import br.com.roanrobersson.rshop.api.v1.model.UriModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.ImageFileInput;
+import br.com.roanrobersson.rshop.domain.dto.input.ImageFileInput;
+import br.com.roanrobersson.rshop.domain.dto.model.UriModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

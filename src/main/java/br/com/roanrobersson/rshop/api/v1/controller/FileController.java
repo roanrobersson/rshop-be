@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.roanrobersson.rshop.api.v1.model.UriModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.ImageFileInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.FileControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.dto.input.ImageFileInput;
+import br.com.roanrobersson.rshop.domain.dto.model.UriModel;
 import br.com.roanrobersson.rshop.domain.service.FileService;
 
 @RestController

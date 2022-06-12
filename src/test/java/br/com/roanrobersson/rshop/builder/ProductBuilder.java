@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.ProductMapper;
-import br.com.roanrobersson.rshop.api.v1.model.ProductModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
+import br.com.roanrobersson.rshop.domain.mapper.ProductMapper;
 import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import lombok.Getter;

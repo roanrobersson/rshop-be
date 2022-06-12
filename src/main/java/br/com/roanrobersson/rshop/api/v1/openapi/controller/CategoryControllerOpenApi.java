@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
-import br.com.roanrobersson.rshop.api.v1.model.CategoryModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.CategoryInput;
+import br.com.roanrobersson.rshop.domain.dto.input.CategoryInput;
+import br.com.roanrobersson.rshop.domain.dto.model.CategoryModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

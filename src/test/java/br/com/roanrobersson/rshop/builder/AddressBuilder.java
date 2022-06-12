@@ -3,9 +3,9 @@ package br.com.roanrobersson.rshop.builder;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.AddressMapper;
-import br.com.roanrobersson.rshop.api.v1.model.AddressModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
+import br.com.roanrobersson.rshop.domain.dto.input.AddressInput;
+import br.com.roanrobersson.rshop.domain.dto.model.AddressModel;
+import br.com.roanrobersson.rshop.domain.mapper.AddressMapper;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.model.User;
 

@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.AddressMapper;
-import br.com.roanrobersson.rshop.api.v1.model.AddressModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.AddressInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserAddressControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.dto.input.AddressInput;
+import br.com.roanrobersson.rshop.domain.dto.model.AddressModel;
+import br.com.roanrobersson.rshop.domain.mapper.AddressMapper;
 import br.com.roanrobersson.rshop.domain.model.Address;
 import br.com.roanrobersson.rshop.domain.service.UserService;
 

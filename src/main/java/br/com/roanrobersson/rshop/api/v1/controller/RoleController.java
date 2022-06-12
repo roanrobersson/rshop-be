@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.roanrobersson.rshop.api.v1.mapper.RoleMapper;
-import br.com.roanrobersson.rshop.api.v1.model.CountModel;
-import br.com.roanrobersson.rshop.api.v1.model.RoleModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.RoleInput;
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.RoleControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.dto.model.CountModel;
+import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
 import br.com.roanrobersson.rshop.domain.exception.BusinessException;
 import br.com.roanrobersson.rshop.domain.exception.PrivilegeNotFoundException;
+import br.com.roanrobersson.rshop.domain.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.RoleService;
 

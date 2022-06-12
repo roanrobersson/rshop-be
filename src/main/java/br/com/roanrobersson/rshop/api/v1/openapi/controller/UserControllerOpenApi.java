@@ -8,10 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
-import br.com.roanrobersson.rshop.api.v1.model.UserModel;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserChangePasswordInput;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserInsert;
-import br.com.roanrobersson.rshop.api.v1.model.input.UserUpdate;
+import br.com.roanrobersson.rshop.domain.dto.input.UserChangePasswordInput;
+import br.com.roanrobersson.rshop.domain.dto.input.UserInsert;
+import br.com.roanrobersson.rshop.domain.dto.input.UserUpdate;
+import br.com.roanrobersson.rshop.domain.dto.model.UserModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
