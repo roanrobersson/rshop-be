@@ -89,7 +89,13 @@ public class PrivilegeBuilder {
 	}
 
 	public Privilege build() {
-		return new Privilege(id, name, VALID_DESCRIPTION, VALID_DATETIME, VALID_DATETIME);
+		Privilege privilege = new Privilege();
+		privilege.setId(id);
+		privilege.setName(name);
+		privilege.setDescription(VALID_DESCRIPTION);
+		privilege.setCreatedAt(VALID_DATETIME);
+		privilege.setUpdatedAt(VALID_DATETIME);
+		return privilege;
 	}
 
 	public PrivilegeInput buildInput() {

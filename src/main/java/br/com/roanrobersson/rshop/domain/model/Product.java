@@ -21,17 +21,20 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aProduct", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(of = { "id", "name", "categories" })
 public class Product implements Serializable {
@@ -39,8 +42,8 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36)")
 	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
@@ -49,6 +52,7 @@ public class Product implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	@Setter(value = AccessLevel.NONE)
+	@Singular
 	private Set<Category> categories = new HashSet<>();
 
 	@Column(unique = true, nullable = false, length = 12)
@@ -73,19 +77,11 @@ public class Product implements Serializable {
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
 
-	@Builder
-	public Product(UUID id, Set<Category> categories, String sku, String name, String description, BigDecimal price,
-			String imgUrl, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-		this.id = id;
-		this.sku = sku;
-		if (categories != null) {
-			this.categories.addAll(categories);
-		}
-		this.name = name;
-		this.description = description;
-		this.price = price;
-		this.imgUrl = imgUrl;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
+	public static ProductBuilder aProduct() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new ProductBuilder().id(uuid).name("Keyboard").description("A black keyboard for gaming")
+				.price(BigDecimal.valueOf(50.00)).imgUrl("http://www.ficticiousimagehost.com/image.png")
+				.createdAt(offsetDateTime).updatedAt(offsetDateTime);
 	}
 }

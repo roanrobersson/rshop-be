@@ -9,19 +9,18 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.core.validation.AgeValid;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "anUserUpdate", toBuilder = true)
 @EqualsAndHashCode
 @Schema(title = "UserUpdate")
 @ToString(of = { "firstName" })
@@ -61,4 +60,10 @@ public class UserUpdate {
 	@Size(min = 10, max = 11)
 	@Schema(example = "54991200038", required = false)
 	private String secondaryTelephone;
+
+	public static UserUpdateBuilder anUserUpdate() {
+		return new UserUpdateBuilder().firstName("Madalena").name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
+				.primaryTelephone("54998223654").secondaryTelephone("5433417898");
+	}
 }

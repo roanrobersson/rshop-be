@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
+import br.com.roanrobersson.rshop.core.config.MapStructConfig;
 import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.dto.input.id.CategoryIdInput;
 import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
@@ -19,7 +19,7 @@ import br.com.roanrobersson.rshop.domain.model.Category;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.service.CategoryService;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(config = MapStructConfig.class)
 public abstract class ProductMapper {
 
 	public static final ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);

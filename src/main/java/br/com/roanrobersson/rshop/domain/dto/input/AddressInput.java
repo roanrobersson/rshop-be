@@ -4,20 +4,19 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "anAddressInput", toBuilder = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "AddressInput")
 @ToString(of = { "nick" })
 public class AddressInput {
@@ -25,6 +24,7 @@ public class AddressInput {
 	@NotBlank
 	@Size(min = 1, max = 20)
 	@Schema(example = "Home", required = true)
+	@EqualsAndHashCode.Include
 	private String nick;
 
 	@NotBlank
@@ -35,7 +35,7 @@ public class AddressInput {
 	@NotBlank
 	@Size(min = 1, max = 75)
 	@Schema(example = "342 Lake St.", required = true)
-	private String address;
+	private String addressLine;
 
 	@NotBlank
 	@Size(min = 1, max = 6)
@@ -75,4 +75,11 @@ public class AddressInput {
 	@Size(min = 1, max = 75)
 	@Schema(example = "McDonald's", required = true)
 	private String referencePoint;
+
+	public static AddressInputBuilder anAddressInput() {
+		return new AddressInputBuilder().nick("Casa 2").addressLine("Rua Mazzoleni").number("999")
+				.neighborhood("Beira Lagoa").complement("Fundos").referencePoint("Próx mercado Zorzi")
+				.city("Porto Alegre").state("Rio Grande do Sul").uf("RS").postalCode("12345678")
+				.telephone("54981457832");
+	}
 }

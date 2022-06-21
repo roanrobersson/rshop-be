@@ -5,7 +5,7 @@ import static br.com.roanrobersson.rshop.builder.ProductBuilder.EXISTING_NAME;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aNonExistingProduct;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
-import static br.com.roanrobersson.rshop.util.ExceptionUtils.ignoreThrowseExactly;
+import static br.com.roanrobersson.rshop.util.ExceptionUtils.ignoreThrowsExactly;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -221,7 +221,7 @@ class ProductServiceIT extends IT {
 	@Test
 	void delete_DoesNotDeleteProduct_IdDoesNotExist() throws Throwable {
 
-		ignoreThrowseExactly(ProductNotFoundException.class, () -> service.delete(NON_EXISTING_ID));
+		ignoreThrowsExactly(ProductNotFoundException.class, () -> service.delete(NON_EXISTING_ID));
 
 		assertThat(repository.count()).isEqualTo(COUNT_TOTAL_PRODUCTS);
 	}

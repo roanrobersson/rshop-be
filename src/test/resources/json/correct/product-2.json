@@ -8,7 +8,11 @@
 	"categories": [
 		{
 			"id": "5227c10f-c81a-4885-b460-dbfee6dcc019",
-			"name": "Only for tests"
+			"name": "Only for tests",
+			"createdAt": "2020-10-20T03:00Z",
+			"updatedAt": "2020-10-20T03:00Z"
 		}
-	]
+	],
+	"createdAt": "2020-10-20T03:00Z",
+	"updatedAt": "2020-10-20T03:00Z"
 }

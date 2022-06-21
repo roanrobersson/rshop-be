@@ -28,18 +28,21 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
-@Entity
 //@Table(name = "user", schema = "public") Necessary only for PostgreSQL database
-@Getter
-@Setter
+@Entity
+@Data
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "anUser", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(of = { "id", "firstName" })
 public class User implements UserDetails {
@@ -47,8 +50,8 @@ public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36)")
 	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
@@ -57,10 +60,12 @@ public class User implements UserDetails {
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@Setter(value = AccessLevel.NONE)
+	@Singular
 	private Set<Role> roles = new HashSet<>();
 
 	@OneToMany(mappedBy = "user")
 	@Setter(value = AccessLevel.NONE)
+	@Singular
 	private List<Address> addresses = new ArrayList<>();
 
 	@Column(nullable = false, length = 50)
@@ -101,32 +106,6 @@ public class User implements UserDetails {
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
 
-	@Builder
-	public User(UUID id, Set<Role> roles, List<Address> addresses, String firstName, String name, LocalDate birthDate,
-			String cpf, String rg, String email, String password, String primaryTelephone, String secondaryTelephone,
-			OffsetDateTime verifiedAt, OffsetDateTime createdAt, OffsetDateTime updatedAt, OffsetDateTime lastLoginAt) {
-		this.id = id;
-		if (roles != null) {
-			this.roles.addAll(roles);
-		}
-		if (addresses != null) {
-			this.addresses.addAll(addresses);
-		}
-		this.firstName = firstName;
-		this.name = name;
-		this.birthDate = birthDate;
-		this.cpf = cpf;
-		this.rg = rg;
-		this.email = email;
-		this.password = password;
-		this.primaryTelephone = primaryTelephone;
-		this.secondaryTelephone = secondaryTelephone;
-		this.verifiedAt = verifiedAt;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.lastLoginAt = lastLoginAt;
-	}
-
 	public boolean hasRole(String roleName) {
 		for (Role role : roles) {
 			if (role.getName().equals(roleName)) {
@@ -166,5 +145,15 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return verifiedAt != null;
+	}
+
+	public static UserBuilder anUser() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new UserBuilder().id(uuid).firstName("Madalena").name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
+				.email("madalenabernardon@gmail.com").password("12345678").primaryTelephone("54998223654")
+				.secondaryTelephone("54334178").verifiedAt(offsetDateTime).lastLoginAt(offsetDateTime)
+				.createdAt(offsetDateTime).updatedAt(offsetDateTime);
 	}
 }

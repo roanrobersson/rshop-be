@@ -11,9 +11,9 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(builderMethodName = "aUriModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "Uri")
 @ToString
@@ -22,4 +22,8 @@ public class UriModel {
 	@EqualsAndHashCode.Include
 	@Schema(example = "http://www.ficticiousimagehost.com/image.png")
 	private String uri;
+
+	public static UriModelBuilder anCategoryModel() {
+		return new UriModelBuilder().uri("http://www.ficticiousimagehost.com/image.png");
+	}
 }

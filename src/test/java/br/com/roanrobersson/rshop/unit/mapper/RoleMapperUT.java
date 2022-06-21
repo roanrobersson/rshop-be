@@ -1,6 +1,6 @@
 package br.com.roanrobersson.rshop.unit.mapper;
 
-import static br.com.roanrobersson.rshop.builder.PrivilegeBuilder.aPrivilege;
+import static br.com.roanrobersson.rshop.domain.model.Privilege.aPrivilege;
 import static br.com.roanrobersson.rshop.util.ResourceUtils.getContentFromResource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
@@ -38,7 +39,7 @@ import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
  */
 
 @ExtendWith(SpringExtension.class)
-public class RoleMapperUT {
+class RoleMapperUT {
 
 	@InjectMocks
 	private RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);
@@ -46,7 +47,7 @@ public class RoleMapperUT {
 	@Mock
 	private PrivilegeService privilegeService;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
 	private static final String JSON_ROLE = getContentFromResource("/json/correct/role.json");
 	private static final String JSON_ROLE_2 = getContentFromResource("/json/correct/role-2.json");
@@ -80,14 +81,15 @@ public class RoleMapperUT {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT, RoleInput.class);
 		Role expected = objectMapper.readValue(JSON_ROLE, Role.class);
 		UUID[] privilegesIds = input.getPrivileges().stream().map(p -> UUID.fromString(p.getId())).toArray(UUID[]::new);
-		Privilege privilege1 = aPrivilege().withId(privilegesIds[0]).build();
-		Privilege privilege2 = aPrivilege().withId(privilegesIds[1]).build();
+		Privilege privilege1 = aPrivilege().id(privilegesIds[0]).build();
+		Privilege privilege2 = aPrivilege().id(privilegesIds[1]).build();
 		when(privilegeService.findById(privilege1.getId())).thenReturn(privilege1);
 		when(privilegeService.findById(privilege2.getId())).thenReturn(privilege2);
 
 		Role actual = roleMapper.toRole(input);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "privileges").isEqualTo(expected);
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "privileges", "createdAt", "updatedAt")
+				.isEqualTo(expected);
 		assertThat(actual.getPrivileges()).containsExactlyInAnyOrderElementsOf(expected.getPrivileges());
 	}
 
@@ -128,7 +130,7 @@ public class RoleMapperUT {
 	void update_CorrectUpdateRole_RoleInputAndRoleAsArgument() throws Exception {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT_2, RoleInput.class);
 		UUID privilegeId = UUID.fromString(input.getPrivileges().iterator().next().getId());
-		Privilege privilege = aPrivilege().withId(privilegeId).build();
+		Privilege privilege = aPrivilege().id(privilegeId).build();
 		Role actual = objectMapper.readValue(JSON_ROLE, Role.class);
 		when(privilegeService.findById(privilegeId)).thenReturn(privilege);
 

@@ -16,5 +16,7 @@
 	"rg": "355144724",
 	"email": "alex@gmail.com",
 	"primaryTelephone": "54991200038",
-	"secondaryTelephone": null
+	"secondaryTelephone": null,
+	"verifiedAt": "2020-10-20T03:00Z",
+	"lastLoginAt": "2020-10-20T03:00Z"
 }

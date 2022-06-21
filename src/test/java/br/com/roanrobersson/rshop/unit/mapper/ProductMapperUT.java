@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
@@ -37,7 +38,7 @@ import br.com.roanrobersson.rshop.domain.service.CategoryService;;
  */
 
 @ExtendWith(SpringExtension.class)
-public class ProductMapperUT {
+class ProductMapperUT {
 
 	@InjectMocks
 	private ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
@@ -45,7 +46,7 @@ public class ProductMapperUT {
 	@Mock
 	private CategoryService categoryService;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
 	private static final String JSON_PRODUCT = getContentFromResource("/json/correct/product.json");
 	private static final String JSON_PRODUCT_2 = getContentFromResource("/json/correct/product-2.json");
@@ -61,7 +62,7 @@ public class ProductMapperUT {
 
 		ProductModel actual = productMapper.toModel(product);
 
-		assertThat(actual).isEqualTo(expected);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
 	}
 
 	@Test
@@ -71,7 +72,7 @@ public class ProductMapperUT {
 
 		ProductInput actual = productMapper.toInput(product);
 
-		assertThat(actual).isEqualTo(expected);
+		assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
 	}
 
 	@Test
@@ -81,12 +82,13 @@ public class ProductMapperUT {
 		UUID[] categoriesIds = input.getCategories().stream().map(c -> UUID.fromString(c.getId())).toArray(UUID[]::new);
 		Category category1 = aCategory().withId(categoriesIds[0]).build();
 		Category category2 = aCategory().withId(categoriesIds[1]).build();
-		when(categoryService.findById(category1.getId())).thenReturn(category1);
-		when(categoryService.findById(category2.getId())).thenReturn(category2);
+		when(categoryService.findById(categoriesIds[0])).thenReturn(category1);
+		when(categoryService.findById(categoriesIds[1])).thenReturn(category2);
 
 		Product actual = productMapper.toProduct(input);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "categories").isEqualTo(expected);
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "categories", "createdAt", "updatedAt")
+				.isEqualTo(expected);
 		assertThat(actual.getCategories()).containsExactlyInAnyOrderElementsOf(expected.getCategories());
 	}
 

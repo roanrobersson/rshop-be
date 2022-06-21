@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
+import br.com.roanrobersson.rshop.core.config.MapStructConfig;
 import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.dto.input.id.PrivilegeIdInput;
 import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
@@ -19,7 +19,7 @@ import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.PrivilegeService;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(config = MapStructConfig.class)
 public abstract class RoleMapper {
 
 	public static final RoleMapper INSTANCE = Mappers.getMapper(RoleMapper.class);

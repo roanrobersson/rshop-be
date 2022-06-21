@@ -8,12 +8,16 @@
 				{
 					"id": "b7705487-51a1-4092-8b62-91dccd76a41a",
 					"name": "CONSULT_CATEGORIES",
-					"description": "Allow consult categories"
+					"description": "Allow consult categories",
+					"createdAt": "2020-10-20T03:00Z",
+					"updatedAt": "2020-10-20T03:00Z"
 				},
 				{
 					"id": "bafcfedf-8f1c-4f16-b474-351e347b13de",
 					"name": "EDIT_USERS",
-					"description": "Allow edit users"
+					"description": "Allow edit users",
+					"createdAt": "2020-10-20T03:00Z",
+					"updatedAt": "2020-10-20T03:00Z"
 				}
 			]
 		},
@@ -24,7 +28,9 @@
 				{
 					"id": "585a242f-1058-476c-8656-eafe1fed5812",
 					"name": "EDIT_USER_ROLES",
-					"description": "Allow edit user roles"
+					"description": "Allow edit user roles",
+					"createdAt": "2020-10-20T03:00Z",
+					"updatedAt": "2020-10-20T03:00Z"
 				}
 			]
 		}
@@ -38,5 +44,9 @@
 	"email": "alex@gmail.com",
 	"password": "$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq",
 	"primaryTelephone": "54991200038",
-	"secondaryTelephone": "54991200038"
+	"secondaryTelephone": "54991200038",
+	"createdAt": "2020-10-20T03:00Z",
+	"updatedAt": "2020-10-20T03:00Z",
+	"verifiedAt": "2020-10-20T03:00Z",
+	"lastLoginAt": "2020-10-20T03:00Z"
 }

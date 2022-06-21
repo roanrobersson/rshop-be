@@ -3,19 +3,18 @@ package br.com.roanrobersson.rshop.domain.dto.model;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "anCategoryModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "Category")
 @ToString
@@ -27,4 +26,9 @@ public class CategoryModel {
 
 	@Schema(example = "Cleaning")
 	private String name;
+
+	public static CategoryModelBuilder anCategoryModel() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		return new CategoryModelBuilder().id(uuid).name("Electronic");
+	}
 }

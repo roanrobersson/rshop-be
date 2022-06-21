@@ -9,17 +9,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aProductModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "Product")
 @ToString(of = { "id", "name", "categories" })
@@ -48,4 +47,10 @@ public class ProductModel {
 
 	@Schema(example = "http://www.ficticiousimagehost.com/image.png")
 	private String imgUrl;
+
+	public static ProductModelBuilder aProductModel() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		return new ProductModelBuilder().id(uuid).name("Keyboard").description("A black keyboard for gaming")
+				.price(BigDecimal.valueOf(50.00)).imgUrl("http://www.ficticiousimagehost.com/image.png");
+	}
 }

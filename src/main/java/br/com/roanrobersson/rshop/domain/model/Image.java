@@ -16,18 +16,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(builderMethodName = "anImage", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(of = { "id", "fileName" })
 public class Image implements Serializable {
@@ -35,8 +33,8 @@ public class Image implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36)")
 	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
@@ -60,4 +58,11 @@ public class Image implements Serializable {
 
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
+
+	public static ImageBuilder anImage() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new ImageBuilder().id(uuid).fileName("product").originalFileName("product.jpeg")
+				.contentType("image/jpeg").fileSize(1500000).createdAt(offsetDateTime).updatedAt(offsetDateTime);
+	}
 }

@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import br.com.roanrobersson.rshop.domain.dto.input.UserInsert;
@@ -37,7 +38,7 @@ import br.com.roanrobersson.rshop.domain.service.RoleService;
  */
 
 @ExtendWith(SpringExtension.class)
-public class UserMapperUT {
+class UserMapperUT {
 
 	@InjectMocks
 	private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
@@ -45,7 +46,7 @@ public class UserMapperUT {
 	@Mock
 	private RoleService roleService;
 
-	private static ObjectMapper objectMapper = new ObjectMapper();
+	private static ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
 	private static final String JSON_USER = getContentFromResource("/json/correct/user.json");
 	private static final String JSON_USER_2 = getContentFromResource("/json/correct/user-2.json");
@@ -99,8 +100,8 @@ public class UserMapperUT {
 
 		User actual = userMapper.toUser(input);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "addresses", "roles", "password")
-				.isEqualTo(expected);
+		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "addresses", "roles", "password",
+				"lastLoginAt", "verifiedAt", "createdAt", "updatedAt").isEqualTo(expected);
 		assertThat(actual.getPassword()).isNull();
 	}
 

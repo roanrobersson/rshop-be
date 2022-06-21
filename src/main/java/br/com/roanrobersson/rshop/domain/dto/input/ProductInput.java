@@ -16,37 +16,39 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aProductInput", toBuilder = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "ProductInput")
 @ToString(of = { "name", "categories" })
 public class ProductInput {
 
 	@Valid
 	@NotEmpty
-	@Builder.Default
 	@Setter(value = AccessLevel.NONE)
 	@Schema(example = "[\"753dad79-2a1f-4f5c-bbd1-317a53587518\", \"5227c10f-c81a-4885-b460-dbfee6dcc019\"]")
+	@Singular
 	private Set<CategoryIdInput> categories = new HashSet<>();
 
 	@NotBlank
 	@Size(min = 8, max = 12)
 	@Schema(example = "KS944RUR")
+	@EqualsAndHashCode.Include
 	private String sku;
 
 	@NotBlank
 	@Size(min = 3, max = 127)
 	@Schema(example = "Detergent", required = true)
+	@EqualsAndHashCode.Include
 	private String name;
 
 	@NotBlank
@@ -62,4 +64,9 @@ public class ProductInput {
 	@NotBlank
 	@Schema(example = "http://www.ficticiousimagehost.com/image.png", required = true)
 	private String imgUrl;
+
+	public static ProductInputBuilder aProductInput() {
+		return new ProductInputBuilder().name("Keyboard").description("A black keyboard for gaming")
+				.price(BigDecimal.valueOf(50.00)).imgUrl("http://www.ficticiousimagehost.com/image.png");
+	}
 }

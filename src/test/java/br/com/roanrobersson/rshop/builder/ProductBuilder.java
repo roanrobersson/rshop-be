@@ -166,8 +166,17 @@ public class ProductBuilder {
 	}
 
 	public Product build() {
-		return new Product(id, categories, sku, name, VALID_DESCRIPTION, price, VALID_URL, VALID_DATETIME,
-				VALID_DATETIME);
+		Product product = new Product();
+		product.setId(id);
+		product.getCategories().addAll(categories);
+		product.setSku(sku);
+		product.setName(name);
+		product.setDescription(VALID_DESCRIPTION);
+		product.setPrice(price);
+		product.setImgUrl(VALID_URL);
+		product.setCreatedAt(VALID_DATETIME);
+		product.setUpdatedAt(VALID_DATETIME);
+		return product;
 	}
 
 	public ProductInput buildInput() {

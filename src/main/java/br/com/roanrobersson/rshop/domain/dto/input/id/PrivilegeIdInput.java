@@ -8,14 +8,12 @@ import br.com.roanrobersson.rshop.core.validation.UUIDValid;
 import br.com.roanrobersson.rshop.domain.dto.input.id.serializer.PrivilegeIdInputSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

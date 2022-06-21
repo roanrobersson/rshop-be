@@ -60,8 +60,24 @@ public class AddressBuilder {
 	}
 
 	public Address build() {
-		return new Address(id, user, nick, main, addressLine, number, neighborhood, city, state, uf, postalCode, complement,
-				referencePoint, telephone, VALID_DATETIME, VALID_DATETIME);
+		Address address = new Address();
+		address.setId(id);
+		address.setUser(user);
+		address.setNick(nick);
+		address.setMain(main);
+		address.setAddressLine(addressLine);
+		address.setNumber(number);
+		address.setNeighborhood(neighborhood);
+		address.setCity(city);
+		address.setState(state);
+		address.setUf(uf);
+		address.setPostalCode(postalCode);
+		address.setComplement(complement);
+		address.setReferencePoint(referencePoint);
+		address.setTelephone(telephone);
+		address.setUpdatedAt(VALID_DATETIME);
+		address.setCreatedAt(VALID_DATETIME);
+		return address;
 	}
 
 	public AddressInput buildInput() {

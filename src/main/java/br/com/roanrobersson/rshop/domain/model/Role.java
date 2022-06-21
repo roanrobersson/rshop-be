@@ -20,17 +20,20 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aRole", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(of = { "id", "name", "privileges" })
 public class Role implements Serializable {
@@ -46,8 +49,8 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36)")
 	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
@@ -56,6 +59,7 @@ public class Role implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "role_privilege", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id"))
 	@Setter(value = AccessLevel.NONE)
+	@Singular
 	private Set<Privilege> privileges = new HashSet<>();
 
 	@Column(unique = true, nullable = false, length = 30)
@@ -68,14 +72,10 @@ public class Role implements Serializable {
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
 
-	@Builder
-	public Role(UUID id, Set<Privilege> privileges, String name, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-		this.id = id;
-		if (privileges != null) {
-			this.privileges.addAll(privileges);
-		}
-		this.name = name;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
+	public static RoleBuilder aRole() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new RoleBuilder().id(uuid).name("ROLE_ADMIN").createdAt(offsetDateTime).updatedAt(offsetDateTime);
+
 	}
 }

@@ -10,17 +10,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "anUserModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "User")
 @ToString(of = { "id", "firstName" })
@@ -69,4 +68,13 @@ public class UserModel {
 
 	@Schema(example = "2013-03-13 05:11:00")
 	private OffsetDateTime lastLoginAt;
+
+	public static UserModelBuilder anUserModel() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new UserModelBuilder().id(uuid).firstName("Madalena").name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
+				.email("madalenabernardon@gmail.com").primaryTelephone("54998223654").secondaryTelephone("5433417898")
+				.verifiedAt(offsetDateTime).lastLoginAt(offsetDateTime);
+	}
 }

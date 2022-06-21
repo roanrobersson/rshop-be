@@ -19,21 +19,20 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "nick", "user_id" }) })
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "anAddress", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(of = { "id", "nick", "main" })
 public class Address implements Serializable {
@@ -41,8 +40,8 @@ public class Address implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36)")
 	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
@@ -94,4 +93,13 @@ public class Address implements Serializable {
 
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
+
+	public static AddressBuilder anAddress() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new AddressBuilder().id(uuid).nick("Casa 2").addressLine("Rua Mazzoleni").number("999")
+				.neighborhood("Beira Lagoa").complement("Fundos").referencePoint("Próx mercado Zorzi")
+				.city("Porto Alegre").state("Rio Grande do Sul").uf("RS").postalCode("12345678")
+				.telephone("54981457832").createdAt(offsetDateTime).updatedAt(offsetDateTime);
+	}
 }

@@ -117,7 +117,13 @@ public class RoleBuilder {
 	}
 
 	public Role build() {
-		return new Role(id, privileges, name, VALID_DATETIME, VALID_DATETIME);
+		Role role = new Role();
+		role.setId(id);
+		role.getPrivileges().addAll(privileges);
+		role.setName(name);
+		role.setCreatedAt(VALID_DATETIME);
+		role.setUpdatedAt(VALID_DATETIME);
+		return role;
 	}
 
 	public RoleInput buildInput() {

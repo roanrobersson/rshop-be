@@ -11,7 +11,7 @@ public final class ExceptionUtils {
 		}
 	}
 
-	public static <T extends Throwable> void ignoreThrowseExactly(Class<T> expectedType, Executable executable)
+	public static <T extends Throwable> void ignoreThrowsExactly(Class<T> expectedType, Executable executable)
 			throws Throwable {
 		try {
 			executable.execute();

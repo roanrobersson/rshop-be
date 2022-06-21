@@ -204,9 +204,23 @@ public class UserBuilder {
 	}
 
 	public User build() {
-		User user = new User(id, roles, addresses, firstName, name, birthDate, cpf, rg, email, password,
-				primaryTelephone, secondaryTelephone, VALID_DATETIME, VALID_DATETIME, verifiedAt, VALID_DATETIME);
-		addresses.forEach(address -> address.setUser(user));
+		User user = new User();
+		user.setId(id);
+		user.getRoles().addAll(roles);
+		user.getAddresses().addAll(addresses);
+		user.setFirstName(firstName);
+		user.setName(name);
+		user.setBirthDate(birthDate);
+		user.setCpf(cpf);
+		user.setRg(rg);
+		user.setEmail(email);
+		user.setPassword(password);
+		user.setPrimaryTelephone(primaryTelephone);
+		user.setSecondaryTelephone(secondaryTelephone);
+		user.setVerifiedAt(verifiedAt);
+		user.setLastLoginAt(VALID_DATETIME);
+		user.setCreatedAt(VALID_DATETIME);
+		user.setUpdatedAt(VALID_DATETIME);
 		return user;
 	}
 

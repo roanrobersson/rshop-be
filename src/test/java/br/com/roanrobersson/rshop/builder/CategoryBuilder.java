@@ -88,7 +88,12 @@ public class CategoryBuilder {
 	}
 
 	public Category build() {
-		return new Category(id, name, VALID_DATETIME, VALID_DATETIME);
+		Category category = new Category();
+		category.setId(id);
+		category.setName(name);
+		category.setCreatedAt(VALID_DATETIME);
+		category.setUpdatedAt(VALID_DATETIME);
+		return category;
 	}
 
 	public CategoryInput buildInput() {

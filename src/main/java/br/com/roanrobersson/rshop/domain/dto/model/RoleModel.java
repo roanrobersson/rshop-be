@@ -8,17 +8,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aRoleModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "Role")
 @ToString
@@ -36,4 +35,9 @@ public class RoleModel {
 
 	@Schema(example = "ADMIN")
 	private String name;
+
+	public static RoleModelBuilder aRoleModel() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		return new RoleModelBuilder().id(uuid).name("ROLE_ADMIN");
+	}
 }

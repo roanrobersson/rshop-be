@@ -10,19 +10,18 @@ import javax.validation.constraints.Size;
 
 import br.com.roanrobersson.rshop.core.validation.AgeValid;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "anUserInsert", toBuilder = true)
 @EqualsAndHashCode
 @Schema(title = "UserInsert")
 @ToString(of = { "firstName" })
@@ -58,6 +57,7 @@ public class UserInsert {
 	@NotBlank
 	@Size(min = 3, max = 50)
 	@Schema(example = "kevinbrown@gmail.com", required = true)
+	@EqualsAndHashCode.Include
 	private String email;
 
 	@NotBlank
@@ -73,4 +73,11 @@ public class UserInsert {
 	@Size(min = 10, max = 11)
 	@Schema(example = "54991200038", required = false)
 	private String secondaryTelephone;
+
+	public static UserInsertBuilder anUserInsert() {
+		return new UserInsertBuilder().firstName("Madalena").name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
+				.email("madalenabernardon@gmail.com").password("12345678").primaryTelephone("54998223654")
+				.secondaryTelephone("5433417898");
+	}
 }

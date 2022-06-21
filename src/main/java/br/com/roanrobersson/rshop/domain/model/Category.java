@@ -18,17 +18,20 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aCategory", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(of = { "id", "name" })
 public class Category implements Serializable {
@@ -36,8 +39,8 @@ public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36)")
 	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
@@ -45,6 +48,7 @@ public class Category implements Serializable {
 
 	@ManyToMany(mappedBy = "categories")
 	@Setter(value = AccessLevel.NONE)
+	@Singular
 	private List<Product> products = new ArrayList<>();
 
 	@Column(unique = true, nullable = false, length = 127)
@@ -57,11 +61,9 @@ public class Category implements Serializable {
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
 
-	@Builder
-	public Category(UUID id, String name, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-		this.id = id;
-		this.name = name;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
+	public static CategoryBuilder aCategory() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new CategoryBuilder().id(uuid).name("Electronic").createdAt(offsetDateTime).updatedAt(offsetDateTime);
 	}
 }

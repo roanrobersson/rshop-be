@@ -13,18 +13,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aRoleInput", toBuilder = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Schema(title = "RoleInput")
 @ToString
 public class RoleInput {
@@ -39,5 +38,10 @@ public class RoleInput {
 	@NotBlank
 	@Size(min = 3, max = 30)
 	@Schema(example = "ADMIN", required = true)
+	@EqualsAndHashCode.Include
 	private String name;
+
+	public static RoleInputBuilder aRoleInput() {
+		return new RoleInputBuilder().name("ROLE_ADMIN");
+	}
 }

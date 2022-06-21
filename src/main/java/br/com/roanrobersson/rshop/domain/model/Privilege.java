@@ -14,17 +14,19 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "aPrivilege", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(of = { "id", "name" })
 public class Privilege implements Serializable {
@@ -32,8 +34,8 @@ public class Privilege implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(columnDefinition = "char(36)")
 	@Type(type = "uuid-char")
 	@EqualsAndHashCode.Include
@@ -52,12 +54,10 @@ public class Privilege implements Serializable {
 	@UpdateTimestamp
 	private OffsetDateTime updatedAt;
 
-	@Builder
-	public Privilege(UUID id, String name, String description, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
+	public static PrivilegeBuilder aPrivilege() {
+		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new PrivilegeBuilder().id(uuid).name("EDIT_CATEGORIES").description("Allow edit categories")
+				.createdAt(offsetDateTime).updatedAt(offsetDateTime);
 	}
 }

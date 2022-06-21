@@ -38,5 +38,7 @@
 	"email": "alex@gmail.com",
 	"password": "$2a$10$IsIgcBqRUf46ovyutI0wIuCZshtYAtrhO3JFutBkVKTIcTRNqY7kq",
 	"primaryTelephone": "54991200038",
-	"secondaryTelephone": null
+	"secondaryTelephone": null,
+	"createdAt": "2020-10-20T03:00Z",
+	"updatedAt": "2020-10-20T03:00Z"
 }

@@ -8,10 +8,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
+import br.com.roanrobersson.rshop.core.config.MapStructConfig;
 import br.com.roanrobersson.rshop.domain.dto.input.UserInsert;
 import br.com.roanrobersson.rshop.domain.dto.input.UserUpdate;
 import br.com.roanrobersson.rshop.domain.dto.model.UserModel;
@@ -19,7 +19,7 @@ import br.com.roanrobersson.rshop.domain.model.Privilege;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.model.User;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(config = MapStructConfig.class)
 public abstract class UserMapper {
 
 	public static final UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
