@@ -1,0 +1,1369 @@
+{
+	"info": {
+		"_postman_id": "2ba7d419-c7af-406d-a970-8525bf1a615e",
+		"name": "rShop v1 - dev",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15985346"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login - Refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code >= 200 && responseCode.code < 300) {\r",
+									"\tvar json = JSON.parse(responseBody);\r",
+									"\tpostman.setEnvironmentVariable('token', json.access_token);\r",
+									"    postman.setEnvironmentVariable('refresh_token', json.refresh_token);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{client-id}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{client-secret}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/auth",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code >= 200 && responseCode.code < 300) {\r",
+									"\tvar json = JSON.parse(responseBody);\r",
+									"\tpostman.setEnvironmentVariable('token', json.access_token);\r",
+									"    postman.setEnvironmentVariable('refresh_token', json.refresh_token);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{client-id}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{client-secret}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/auth",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Categories - Paged",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/categories?page=0&size=15&sort=name,asc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "15"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category - By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"categories",
+								"753dad79-2a1f-4f5c-bbd1-317a53587518"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category - New",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Garden\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/categories",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category - Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"New name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"categories",
+								"753dad79-2a1f-4f5c-bbd1-317a53587518"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category - Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"categories",
+								"753dad79-2a1f-4f5c-bbd1-317a53587518"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category - Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/categories/count",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"categories",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Privilege",
+					"item": [
+						{
+							"name": "Role - Privileges Paged",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/roles/5e0b121c-9f12-4fd3-a7e6-179b5007149a/privileges?page=0&size=15&sort=name,asc",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"roles",
+										"5e0b121c-9f12-4fd3-a7e6-179b5007149a",
+										"privileges"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "15"
+										},
+										{
+											"key": "sort",
+											"value": "name,asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Role - Link Privilege",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/roles/5e0b121c-9f12-4fd3-a7e6-179b5007149a/privileges/585a242f-1058-476c-8656-eafe1fed5812",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"roles",
+										"5e0b121c-9f12-4fd3-a7e6-179b5007149a",
+										"privileges",
+										"585a242f-1058-476c-8656-eafe1fed5812"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Role - Unlink Privilege",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/roles/5e0b121c-9f12-4fd3-a7e6-179b5007149a/privileges/585a242f-1058-476c-8656-eafe1fed5812",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"roles",
+										"5e0b121c-9f12-4fd3-a7e6-179b5007149a",
+										"privileges",
+										"585a242f-1058-476c-8656-eafe1fed5812"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Roles - Paged",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/roles?page=0&size=15&sort=name,asc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "15"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Role - By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Role - New",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ROLE_NEW\",\r\n    \"privileges\": [\r\n        \"b7705487-51a1-4092-8b62-91dccd76a41a\", \r\n        \"91f550d9-548f-4d09-ac9c-1a95219033f7\", \r\n        \"ab7fab73-0464-4f7c-bc18-069ff63a3dc9\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/roles",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Role - Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ROLE_UPDATED\",\r\n    \"privileges\": [\r\n        \"b7705487-51a1-4092-8b62-91dccd76a41a\", \r\n        \"91f550d9-548f-4d09-ac9c-1a95219033f7\", \r\n        \"ab7fab73-0464-4f7c-bc18-069ff63a3dc9\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Role - Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/roles/650861b5-a749-4ed1-964b-c72a1d4c5f0e",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"650861b5-a749-4ed1-964b-c72a1d4c5f0e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Role - Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/roles/count",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"roles",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Privilege",
+			"item": [
+				{
+					"name": "Privileges - Paged",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/privileges?sort=name,asc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"privileges"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Privilege - By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/privileges/b7e8b3c9-d426-42f0-8594-5c46cd112aae",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"privileges",
+								"b7e8b3c9-d426-42f0-8594-5c46cd112aae"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Privilege - Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/privileges/count",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"privileges",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Category",
+					"item": [
+						{
+							"name": "Product - Category list",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5/categories",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"products",
+										"c8a0c055-030a-4e47-8aca-cf4634b98be5",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Product - Link Category",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"products",
+										"c8a0c055-030a-4e47-8aca-cf4634b98be5",
+										"categories",
+										"753dad79-2a1f-4f5c-bbd1-317a53587518"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Product - Unlink Category",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"products",
+										"c8a0c055-030a-4e47-8aca-cf4634b98be5",
+										"categories",
+										"753dad79-2a1f-4f5c-bbd1-317a53587518"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Product - Paged",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/products?page=0&size=15&sort=name,asc&q=tv&categories=753dad79-2a1f-4f5c-bbd1-317a53587518, 431d856e-caf2-4367-823a-924ce46b2e02",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "15"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								},
+								{
+									"key": "q",
+									"value": "tv"
+								},
+								{
+									"key": "categories",
+									"value": "753dad79-2a1f-4f5c-bbd1-317a53587518, 431d856e-caf2-4367-823a-924ce46b2e02"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product - By ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"c8a0c055-030a-4e47-8aca-cf4634b98be5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product - New",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"The new generation Xbox video game\",\r\n    \"name\": \"Xbox Series X\",\r\n    \"sku\": \"XBSO0200\",\r\n    \"imgUrl\": \"url of image\",\r\n    \"price\": 900.0,\r\n    \"categories\": [\r\n        \"753dad79-2a1f-4f5c-bbd1-317a53587518\", \r\n        \"5c2b2b98-7b72-42dd-8add-9e97a2967e11\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product - Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Updated product name\",\r\n    \"description\": \"Updated product description\",\r\n    \"sku\": \"NESK0100\",\r\n    \"price\": 600.0,\r\n    \"imgUrl\": \"new url\",\r\n    \"categories\": [\r\n        \"5c2b2b98-7b72-42dd-8add-9e97a2967e11\",\r\n        \"753dad79-2a1f-4f5c-bbd1-317a53587518\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/products/7c4125cc-8116-4f11-8fc3-f40a0775aec7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"7c4125cc-8116-4f11-8fc3-f40a0775aec7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product - Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/products/638a3d4c-095f-48dc-ae7f-16ca3d3b4751",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"638a3d4c-095f-48dc-ae7f-16ca3d3b4751"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product - Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/products/count",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Address",
+					"item": [
+						{
+							"name": "User - Address list",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses?page=0&size=15&sort=nick,asc",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "15"
+										},
+										{
+											"key": "sort",
+											"value": "nick,asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Address by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/6353293a-d2b6-400f-997d-d6935032a52f",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses",
+										"6353293a-d2b6-400f-997d-d6935032a52f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Main Address",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/main",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses",
+										"main"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - New Address",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nick\": \"Casa 2\",\r\n    \"addressLine\": \"Rua Mazzoleni\",\r\n    \"number\": \"999\",\r\n    \"neighborhood\": \"Beira Lagoa\", \r\n    \"complement\": \"Fundos\",\r\n    \"referencePoint\": \"Próx mercado Zorzi\",\r\n    \"city\": \"Porto Alegre\", \r\n    \"state\": \"Rio Grande do Sul\", \r\n    \"uf\": \"RS\", \r\n    \"postalCode\": \"12345678\",\r\n    \"telephone\": \"54981457832\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Update Address",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nick\": \"Atualizado\",\r\n    \"addressLine\": \"Rua nova\",\r\n    \"number\": \"000000\",\r\n    \"neighborhood\": \"Bairro novo\", \r\n    \"complement\": \"Novo complemento\",\r\n    \"referencePoint\": \"Novo ponto referência\",\r\n    \"city\": \"Nova Cidade\", \r\n    \"state\": \"Novo Estado\", \r\n    \"uf\": \"XX\", \r\n    \"postalCode\": \"87654321\",\r\n    \"telephone\": \"54981457832\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/0209f0c1-c596-4672-8bfb-c385626c73fb",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses",
+										"0209f0c1-c596-4672-8bfb-c385626c73fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Delete Address",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/6353293a-d2b6-400f-997d-d6935032a52f",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses",
+										"6353293a-d2b6-400f-997d-d6935032a52f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Set main Address",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/6353293a-d2b6-400f-997d-d6935032a52f/main",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses",
+										"6353293a-d2b6-400f-997d-d6935032a52f",
+										"main"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Unset main Address",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/main",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"addresses",
+										"main"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Role",
+					"item": [
+						{
+							"name": "User - Role list",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/roles",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"roles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Grant",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"roles",
+										"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User - Revoke",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"roles",
+										"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Users - Paged",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/users?page=0&size=15&sort=name,asc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "15"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/users/821e3c67-7f22-46af-978c-b6269cb15387",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"821e3c67-7f22-46af-978c-b6269cb15387"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - New",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Madalena\",\r\n    \"name\": \"Madalena Bernardon\",\r\n    \"birthDate\": \"1993-01-16\",\r\n\t\"rg\":  \"222182428\",\r\n    \"cpf\": \"67709960065\",\r\n    \"email\": \"madalenabernardon@gmail.com\",\r\n    \"password\": \"12345678\",\r\n    \"primaryTelephone\": \"54998223654\",\r\n    \"secondaryTelephone\": \"5433417898\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Felipe\",\r\n    \"name\": \"Felipe Tognon\",\r\n    \"birthDate\": \"1998-06-20\",\r\n\t\"rg\":  \"222182428\",\r\n    \"cpf\": \"67709960065\",\r\n    \"primaryTelephone\": \"54998223654\",\r\n    \"secondaryTelephone\": \"5433417898\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Change password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"newPassword\": \"00000000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/users/d16c83fe-3a2e-42b6-97b4-503b203647f6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"d16c83fe-3a2e-42b6-97b4-503b203647f6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/users/count",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File",
+			"item": [
+				{
+					"name": "Image - Upload",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/2.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/v1/files/images",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"files",
+								"images"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
