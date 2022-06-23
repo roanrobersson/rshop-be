@@ -1,5 +1,7 @@
 # rShop REST API :gear: <a name="top"></a>
 
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/roanrobersson/rshop-be/blob/master/LICENSE) 
+
 rShop is a REST API being built essentially with [Spring Boot](https://spring.io/guides/gs/spring-boot), with the purpose of learning some of the [Spring ecosystem projects](https://spring.io/projects) and others related to the development of REST APIs, as well as maintaining a reference repository of problem solutions, organization and good development practices. I plan to convert it to microservices architecture soon.
 
 The project still doesn't have a concrete idea of its scope, requirements and business rules, so at the moment it only has a few features close to an E-commerce, but it can evolve into anything else.
