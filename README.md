@@ -11,7 +11,7 @@ Initially I had plans to simultaneously build a React application to consume thi
 ## Technologies used :dna:
 - [Java 11](https://www.java.com)
 - [Maven 3.8.1](https://maven.apache.org)
-- [Spring Boot 2.6.4](https://spring.io/projects/spring-boot)
+- [Spring Boot 2.7.0](https://spring.io/projects/spring-boot)
 - [SonarQube 8.9.9-community](https://www.sonarqube.org)
 - [Docker 4.9.0](https://www.docker.com)
 - [MySQL server 8.0.29](https://www.mysql.com)
