@@ -62,7 +62,13 @@ public class Image implements Serializable {
 	public static ImageBuilder anImage() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new ImageBuilder().id(uuid).fileName("product").originalFileName("product.jpeg")
-				.contentType("image/jpeg").fileSize(1500000).createdAt(offsetDateTime).updatedAt(offsetDateTime);
+		return new ImageBuilder()
+				.id(uuid)
+				.fileName("product")
+				.originalFileName("product.jpeg")
+				.contentType("image/jpeg")
+				.fileSize(1500000)
+				.createdAt(offsetDateTime)
+				.updatedAt(offsetDateTime);
 	}
 }

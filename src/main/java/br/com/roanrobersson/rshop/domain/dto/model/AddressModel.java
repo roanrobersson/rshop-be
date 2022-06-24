@@ -62,8 +62,19 @@ public class AddressModel {
 
 	public static AddressModelBuilder anAddressModel() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
-		return new AddressModelBuilder().id(uuid).nick("Casa 2").telephone("54981457832").addressLine("Rua Mazzoleni")
-				.number("999").neighborhood("Beira Lagoa").city("Porto Alegre").state("Rio Grande do Sul").uf("RS")
-				.postalCode("12345678").complement("Fundos").referencePoint("Próx mercado Zorzi").main(true);
+		return new AddressModelBuilder()
+				.id(uuid)
+				.nick("Casa 2")
+				.telephone("54981457832")
+				.addressLine("Rua Mazzoleni")
+				.number("999")
+				.neighborhood("Beira Lagoa")
+				.city("Porto Alegre")
+				.state("Rio Grande do Sul")
+				.uf("RS")
+				.postalCode("12345678")
+				.complement("Fundos")
+				.referencePoint("Próx mercado Zorzi")
+				.main(true);
 	}
 }

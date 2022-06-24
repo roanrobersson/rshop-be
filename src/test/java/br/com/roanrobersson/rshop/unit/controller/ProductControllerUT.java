@@ -116,8 +116,10 @@ class ProductControllerUT implements UT {
 	void findById_ReturnBadRequest_InvalidId() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 
-		ResultActions actual = mockMvc.perform(get("/v1/products/{productId}", INVALID_ID)
-				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(get("/v1/products/{productId}", INVALID_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -125,14 +127,21 @@ class ProductControllerUT implements UT {
 	@Test
 	void insert_ReturnInsertedProductModel_ValidInput() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
-		ProductBuilder builder = aProduct().withExistingId().withNonExistingName().withNonExistingSKU()
+		ProductBuilder builder = aProduct()
+				.withExistingId()
+				.withNonExistingName()
+				.withNonExistingSKU()
 				.withExistingCategory();
 		String jsonBody = objectMapper.writeValueAsString(builder.buildInput());
 		String expectedJsonBody = objectMapper.writeValueAsString(builder.buildModel());
 		when(service.insert(any(ProductInput.class))).thenReturn(builder.build());
 
-		ResultActions actual = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
-				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(post("/v1/products")
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isCreated());
 		actual.andExpect(content().json(expectedJsonBody));
@@ -142,9 +151,12 @@ class ProductControllerUT implements UT {
 	void insert_ReturnBadRequest_InputWithoutNameProperty() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 
-		ResultActions actual = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
-				.content(JSON_PRODUCT_WITHOUT_NAME_PROPERTY).contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(post("/v1/products")
+						.header("Authorization", "Bearer " + accessToken)
+						.content(JSON_PRODUCT_WITHOUT_NAME_PROPERTY)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -155,8 +167,12 @@ class ProductControllerUT implements UT {
 		ProductInput inputWithNegativePrice = aNonExistingProduct().withInvalidPrice().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(inputWithNegativePrice);
 
-		ResultActions actual = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
-				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(post("/v1/products")
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -167,8 +183,12 @@ class ProductControllerUT implements UT {
 		ProductInput inputWithoutCategories = aProduct().withoutCategories().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(inputWithoutCategories);
 
-		ResultActions actual = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
-				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(post("/v1/products")
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -179,8 +199,12 @@ class ProductControllerUT implements UT {
 		ProductInput inputWithNonExistingCategory = aProduct().withNonExistingCategory().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(inputWithNonExistingCategory);
 
-		ResultActions actual = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
-				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(post("/v1/products")
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -188,15 +212,21 @@ class ProductControllerUT implements UT {
 	@Test
 	void update_ReturnUpdatedProductModel_IdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
-		ProductBuilder builder = aProduct().withId(EXISTING_ID).withNonExistingName().withNonExistingSKU()
+		ProductBuilder builder = aProduct()
+				.withId(EXISTING_ID)
+				.withNonExistingName()
+				.withNonExistingSKU()
 				.withExistingCategory();
 		String jsonBody = objectMapper.writeValueAsString(builder.buildInput());
 		String expectedJsonBody = objectMapper.writeValueAsString(builder.buildModel());
 		when(service.update(any(UUID.class), any(ProductInput.class))).thenReturn(builder.build());
 
 		ResultActions actual = mockMvc
-				.perform(put("/v1/products/{productId}", EXISTING_ID).header("Authorization", "Bearer " + accessToken)
-						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+				.perform(put("/v1/products/{productId}", EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isOk());
 		actual.andExpect(content().json(expectedJsonBody));
@@ -209,9 +239,12 @@ class ProductControllerUT implements UT {
 		String jsonBody = objectMapper.writeValueAsString(input);
 		when(service.update(any(UUID.class), any(ProductInput.class))).thenThrow(ProductNotFoundException.class);
 
-		ResultActions actual = mockMvc.perform(
-				put("/v1/products/{productId}", NON_EXISTING_ID).header("Authorization", "Bearer " + accessToken)
-						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(put("/v1/products/{productId}", NON_EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isNotFound());
 	}
@@ -222,8 +255,11 @@ class ProductControllerUT implements UT {
 		String jsonBody = objectMapper.writeValueAsString(aNonExistingProduct().buildInput());
 
 		ResultActions actual = mockMvc
-				.perform(put("/v1/products/{productId}", INVALID_ID).header("Authorization", "Bearer " + accessToken)
-						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+				.perform(put("/v1/products/{productId}", INVALID_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -232,9 +268,12 @@ class ProductControllerUT implements UT {
 	void update_ReturnBadRequest_InputWithoutNameProperty() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 
-		ResultActions actual = mockMvc.perform(put("/v1/products/{productId}", EXISTING_ID)
-				.header("Authorization", "Bearer " + accessToken).content(JSON_PRODUCT_WITHOUT_NAME_PROPERTY)
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(put("/v1/products/{productId}", EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(JSON_PRODUCT_WITHOUT_NAME_PROPERTY)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -246,8 +285,11 @@ class ProductControllerUT implements UT {
 		String jsonBody = objectMapper.writeValueAsString(inputWithNonExistingCategory);
 
 		ResultActions actual = mockMvc
-				.perform(put("/v1/products/{productId}", EXISTING_ID).header("Authorization", "Bearer " + accessToken)
-						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+				.perform(put("/v1/products/{productId}", EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -259,8 +301,11 @@ class ProductControllerUT implements UT {
 		String jsonBody = objectMapper.writeValueAsString(inputWithoutCategories);
 
 		ResultActions actual = mockMvc
-				.perform(put("/v1/products/{productId}", EXISTING_ID).header("Authorization", "Bearer " + accessToken)
-						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+				.perform(put("/v1/products/{productId}", EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isBadRequest());
 	}
@@ -270,8 +315,10 @@ class ProductControllerUT implements UT {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		doNothing().when(service).delete(EXISTING_ID);
 
-		ResultActions actual = mockMvc.perform(delete("/v1/products/{productId}", EXISTING_ID)
-				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(delete("/v1/products/{productId}", EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isNoContent());
 	}
@@ -281,8 +328,10 @@ class ProductControllerUT implements UT {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		doThrow(ProductNotFoundException.class).when(service).delete(NON_EXISTING_ID);
 
-		ResultActions actual = mockMvc.perform(delete("/v1/products/{productId}", NON_EXISTING_ID)
-				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
+		ResultActions actual = mockMvc
+				.perform(delete("/v1/products/{productId}", NON_EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.accept(MediaType.APPLICATION_JSON));
 
 		actual.andExpect(status().isNotFound());
 	}

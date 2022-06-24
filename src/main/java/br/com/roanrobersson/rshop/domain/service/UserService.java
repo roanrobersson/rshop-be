@@ -73,13 +73,15 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public User findById(UUID userId) {
-		return userRepository.findByIdWithRolesAndPrivileges(userId)
+		return userRepository
+				.findByIdWithRolesAndPrivileges(userId)
 				.orElseThrow(() -> new UserNotFoundException(userId));
 	}
 
 	@Transactional(readOnly = true)
 	public User findByEmail(String email) {
-		return userRepository.findByEmailWithRolesAndPrivileges(email)
+		return userRepository
+				.findByEmailWithRolesAndPrivileges(email)
 				.orElseThrow(() -> new UserNotFoundException(String.format(MSG_USER_WITH_EMAIL_NOT_FOUND, email)));
 	}
 
@@ -131,7 +133,8 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public Address findAddressById(UUID userId, UUID addressId) {
-		return addressRepository.findByUserIdAndId(userId, addressId)
+		return addressRepository
+				.findByUserIdAndId(userId, addressId)
 				.orElseThrow(() -> new AddressNotFoundException(addressId));
 	}
 

@@ -21,9 +21,9 @@ public @interface FileSize {
 
 	String message() default "The file must have a maximum size of {max}";
 
-	Class<?>[] groups() default { };
+	Class<?>[] groups() default {};
 
-	Class<? extends Payload>[] payload() default { };
-	
+	Class<? extends Payload>[] payload() default {};
+
 	String max();
 }

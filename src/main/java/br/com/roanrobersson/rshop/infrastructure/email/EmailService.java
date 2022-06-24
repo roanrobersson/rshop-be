@@ -11,20 +11,20 @@ import lombok.Singular;
 public interface EmailService {
 
 	void sendEmail(Message message);
-	
+
 	@Getter
 	@Builder
 	class Message {
-		
+
 		@Singular
 		private Set<String> recipients;
-		
+
 		@NonNull
 		private String subject;
-		
+
 		@NonNull
 		private String body;
-		
+
 		@Singular("variable")
 		private Map<String, Object> variables;
 	}

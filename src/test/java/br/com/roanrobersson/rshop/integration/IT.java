@@ -16,10 +16,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class IT {
 
 	private static final String DATABASE_NAME = "rshop_test";
+
 	private static final String USER_NAME = "any";
+
 	private static final String PASSWORD = "any";
+
 	private static final MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.29")
-			.withDatabaseName(DATABASE_NAME).withUsername(USER_NAME).withPassword(PASSWORD);
+			.withDatabaseName(DATABASE_NAME)
+			.withUsername(USER_NAME)
+			.withPassword(PASSWORD);
+
 	private static final boolean TESTCONTAINERS_ENABLED = Boolean
 			.valueOf(System.getenv().get("RSHOP_TESTCONTAINERS_ENABLED"));
 

@@ -26,9 +26,13 @@ public class OpenApiConfig {
 	@Bean
 	public OpenAPI rShopOpenAPI() {
 		return new OpenAPI()
-				.info(new Info().title("rShop API").description("Project in development").version("v0.0.1")
+				.info(new Info()
+						.title("rShop API")
+						.description("Project in development")
+						.version("v0.0.1")
 						.license(new License().name("MIT").url("https://mit-license.org/")))
-				.externalDocs(new ExternalDocumentation().description("Roan Oliveira")
+				.externalDocs(new ExternalDocumentation()
+						.description("Roan Oliveira")
 						.url("https://www.linkedin.com/in/roanoliveira"));
 	}
 }

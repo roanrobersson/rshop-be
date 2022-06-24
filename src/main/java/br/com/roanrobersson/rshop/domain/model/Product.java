@@ -80,8 +80,13 @@ public class Product implements Serializable {
 	public static ProductBuilder aProduct() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new ProductBuilder().id(uuid).name("Keyboard").description("A black keyboard for gaming")
-				.price(BigDecimal.valueOf(50.00)).imgUrl("http://www.ficticiousimagehost.com/image.png")
-				.createdAt(offsetDateTime).updatedAt(offsetDateTime);
+		return new ProductBuilder()
+				.id(uuid)
+				.name("Keyboard")
+				.description("A black keyboard for gaming")
+				.price(BigDecimal.valueOf(50.00))
+				.imgUrl("http://www.ficticiousimagehost.com/image.png")
+				.createdAt(offsetDateTime)
+				.updatedAt(offsetDateTime);
 	}
 }

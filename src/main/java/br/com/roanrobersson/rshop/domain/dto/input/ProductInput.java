@@ -66,7 +66,10 @@ public class ProductInput {
 	private String imgUrl;
 
 	public static ProductInputBuilder aProductInput() {
-		return new ProductInputBuilder().name("Keyboard").description("A black keyboard for gaming")
-				.price(BigDecimal.valueOf(50.00)).imgUrl("http://www.ficticiousimagehost.com/image.png");
+		return new ProductInputBuilder()
+				.name("Keyboard")
+				.description("A black keyboard for gaming")
+				.price(BigDecimal.valueOf(50.00))
+				.imgUrl("http://www.ficticiousimagehost.com/image.png");
 	}
 }

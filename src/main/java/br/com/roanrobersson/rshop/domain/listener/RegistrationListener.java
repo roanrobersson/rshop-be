@@ -25,7 +25,8 @@ public class RegistrationListener {
 		User user = event.getUser();
 		String appUrl = request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
 		AccountCreatedTemplateVariables variables = new AccountCreatedTemplateVariables(user.getName(), appUrl);
-		var msg = EmailService.Message.builder()
+		var msg = EmailService.Message
+				.builder()
 				.subject("Welcome to rShop!")
 				.body("emails/account-created.html")
 				.variable("variables", variables)

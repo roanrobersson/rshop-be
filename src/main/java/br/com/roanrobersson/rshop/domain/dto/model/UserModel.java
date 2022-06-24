@@ -72,9 +72,17 @@ public class UserModel {
 	public static UserModelBuilder anUserModel() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new UserModelBuilder().id(uuid).firstName("Madalena").name("Madalena Bernardon")
-				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
-				.email("madalenabernardon@gmail.com").primaryTelephone("54998223654").secondaryTelephone("5433417898")
-				.verifiedAt(offsetDateTime).lastLoginAt(offsetDateTime);
+		return new UserModelBuilder()
+				.id(uuid)
+				.firstName("Madalena")
+				.name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16"))
+				.rg("222182428")
+				.cpf("67709960065")
+				.email("madalenabernardon@gmail.com")
+				.primaryTelephone("54998223654")
+				.secondaryTelephone("5433417898")
+				.verifiedAt(offsetDateTime)
+				.lastLoginAt(offsetDateTime);
 	}
 }

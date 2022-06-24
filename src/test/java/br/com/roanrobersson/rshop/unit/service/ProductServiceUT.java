@@ -74,7 +74,8 @@ class ProductServiceUT {
 
 		Page<Product> actual = service.list(categories, "", DEFAULT_PAGEABLE);
 
-		assertThat(actual.getContent()).containsExactlyInAnyOrder(product)
+		assertThat(actual.getContent())
+				.containsExactlyInAnyOrder(product)
 				.usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).search(categories, "", DEFAULT_PAGEABLE);
 		verify(repository, times(1)).findWithCategories(products.toList());

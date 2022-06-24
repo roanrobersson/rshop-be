@@ -117,8 +117,11 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return roles.stream().flatMap(role -> role.getPrivileges().stream())
-				.map(privilege -> new SimpleGrantedAuthority(privilege.getName())).collect(Collectors.toSet());
+		return roles
+				.stream()
+				.flatMap(role -> role.getPrivileges().stream())
+				.map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
+				.collect(Collectors.toSet());
 
 	}
 
@@ -150,10 +153,20 @@ public class User implements UserDetails {
 	public static UserBuilder anUser() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new UserBuilder().id(uuid).firstName("Madalena").name("Madalena Bernardon")
-				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
-				.email("madalenabernardon@gmail.com").password("12345678").primaryTelephone("54998223654")
-				.secondaryTelephone("54334178").verifiedAt(offsetDateTime).lastLoginAt(offsetDateTime)
-				.createdAt(offsetDateTime).updatedAt(offsetDateTime);
+		return new UserBuilder()
+				.id(uuid)
+				.firstName("Madalena")
+				.name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16"))
+				.rg("222182428")
+				.cpf("67709960065")
+				.email("madalenabernardon@gmail.com")
+				.password("12345678")
+				.primaryTelephone("54998223654")
+				.secondaryTelephone("54334178")
+				.verifiedAt(offsetDateTime)
+				.lastLoginAt(offsetDateTime)
+				.createdAt(offsetDateTime)
+				.updatedAt(offsetDateTime);
 	}
 }

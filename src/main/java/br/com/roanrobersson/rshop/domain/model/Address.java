@@ -97,9 +97,20 @@ public class Address implements Serializable {
 	public static AddressBuilder anAddress() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new AddressBuilder().id(uuid).nick("Casa 2").addressLine("Rua Mazzoleni").number("999")
-				.neighborhood("Beira Lagoa").complement("Fundos").referencePoint("Próx mercado Zorzi")
-				.city("Porto Alegre").state("Rio Grande do Sul").uf("RS").postalCode("12345678")
-				.telephone("54981457832").createdAt(offsetDateTime).updatedAt(offsetDateTime);
+		return new AddressBuilder()
+				.id(uuid)
+				.nick("Casa 2")
+				.addressLine("Rua Mazzoleni")
+				.number("999")
+				.neighborhood("Beira Lagoa")
+				.complement("Fundos")
+				.referencePoint("Próx mercado Zorzi")
+				.city("Porto Alegre")
+				.state("Rio Grande do Sul")
+				.uf("RS")
+				.postalCode("12345678")
+				.telephone("54981457832")
+				.createdAt(offsetDateTime)
+				.updatedAt(offsetDateTime);
 	}
 }

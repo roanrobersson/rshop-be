@@ -71,7 +71,10 @@ public class ProductController implements ProductControllerOpenApi {
 	public ResponseEntity<ProductModel> insert(@Valid @RequestBody ProductInput productInput) {
 		Product product = service.insert(productInput);
 		ProductModel productModel = mapper.toModel(product);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(productModel.getId())
+		URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(productModel.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(productModel);
 	}

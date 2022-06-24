@@ -20,6 +20,6 @@ public class UserChangePasswordInput {
 
 	@NotEmpty
 	@Size(min = 8, max = 50)
-	@Schema(example = "a3g&3Pd#", required = true) 
+	@Schema(example = "a3g&3Pd#", required = true)
 	private String newPassword;
 }

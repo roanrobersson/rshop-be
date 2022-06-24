@@ -22,8 +22,10 @@ public class AuthService {
 	public UUID getUserId() {
 		try {
 			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-			User user = repository.findByEmail(email).orElseThrow(
-					() -> new UserNotFoundException(String.format("There is no user with the email %s", email)));
+			User user = repository
+					.findByEmail(email)
+					.orElseThrow(() -> new UserNotFoundException(
+							String.format("There is no user with the email %s", email)));
 			return user.getId();
 		} catch (Exception e) {
 			throw new UnauthorizedException("Invalid user");
@@ -34,8 +36,10 @@ public class AuthService {
 	public User getAuthenticatedUser() {
 		try {
 			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-			return repository.findByEmail(email).orElseThrow(
-					() -> new UserNotFoundException(String.format("There is no user with the email %s", email)));
+			return repository
+					.findByEmail(email)
+					.orElseThrow(() -> new UserNotFoundException(
+							String.format("There is no user with the email %s", email)));
 		} catch (Exception e) {
 			throw new UnauthorizedException("Invalid user");
 		}

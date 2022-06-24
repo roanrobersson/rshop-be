@@ -31,15 +31,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationEventPublisher(new DefaultAuthenticationEventPublisher(applicationEventPublisher))
-				.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+		auth
+				.authenticationEventPublisher(new DefaultAuthenticationEventPublisher(applicationEventPublisher))
+				.userDetailsService(userDetailsService)
+				.passwordEncoder(passwordEncoder);
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/actuator/**");
-		web.ignoring().antMatchers("/v3/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
-				"/swagger-ui.html/", "/webjars/**");
+		web
+				.ignoring()
+				.antMatchers("/v3/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
+						"/swagger-ui.html/", "/webjars/**");
 	}
 
 	@Override

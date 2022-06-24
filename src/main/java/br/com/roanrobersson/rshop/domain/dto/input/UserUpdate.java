@@ -62,8 +62,13 @@ public class UserUpdate {
 	private String secondaryTelephone;
 
 	public static UserUpdateBuilder anUserUpdate() {
-		return new UserUpdateBuilder().firstName("Madalena").name("Madalena Bernardon")
-				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
-				.primaryTelephone("54998223654").secondaryTelephone("5433417898");
+		return new UserUpdateBuilder()
+				.firstName("Madalena")
+				.name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16"))
+				.rg("222182428")
+				.cpf("67709960065")
+				.primaryTelephone("54998223654")
+				.secondaryTelephone("5433417898");
 	}
 }

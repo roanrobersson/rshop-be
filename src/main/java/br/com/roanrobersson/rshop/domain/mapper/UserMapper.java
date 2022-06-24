@@ -48,7 +48,10 @@ public abstract class UserMapper {
 
 	@Named("rolesToPrivilegesIds")
 	protected Set<UUID> rolesToPrivilegesIds(Set<Role> roles) {
-		return roles.stream().flatMap(r -> r.getPrivileges().stream()).map(Privilege::getId)
+		return roles
+				.stream()
+				.flatMap(r -> r.getPrivileges().stream())
+				.map(Privilege::getId)
 				.collect(Collectors.toSet());
 	}
 }

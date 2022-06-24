@@ -21,10 +21,10 @@ public @interface FileContentType {
 
 	String message() default "The file must be in one of the following formats: {allowed}";
 
-	Class<?>[] groups() default { };
+	Class<?>[] groups() default {};
 
-	Class<? extends Payload>[] payload() default { };
-	
+	Class<? extends Payload>[] payload() default {};
+
 	String[] allowed();
-	
+
 }

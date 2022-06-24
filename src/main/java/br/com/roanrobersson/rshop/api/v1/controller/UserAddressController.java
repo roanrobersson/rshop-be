@@ -73,7 +73,10 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 			@Valid @RequestBody AddressInput addressInput) {
 		Address address = service.insertAddress(userId, addressInput);
 		AddressModel addressModel = mapper.toModel(address);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(addressModel.getId())
+		URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("{/id}")
+				.buildAndExpand(addressModel.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(addressModel);
 	}

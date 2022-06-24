@@ -77,9 +77,17 @@ public class AddressInput {
 	private String referencePoint;
 
 	public static AddressInputBuilder anAddressInput() {
-		return new AddressInputBuilder().nick("Casa 2").addressLine("Rua Mazzoleni").number("999")
-				.neighborhood("Beira Lagoa").complement("Fundos").referencePoint("Próx mercado Zorzi")
-				.city("Porto Alegre").state("Rio Grande do Sul").uf("RS").postalCode("12345678")
+		return new AddressInputBuilder()
+				.nick("Casa 2")
+				.addressLine("Rua Mazzoleni")
+				.number("999")
+				.neighborhood("Beira Lagoa")
+				.complement("Fundos")
+				.referencePoint("Próx mercado Zorzi")
+				.city("Porto Alegre")
+				.state("Rio Grande do Sul")
+				.uf("RS")
+				.postalCode("12345678")
 				.telephone("54981457832");
 	}
 }

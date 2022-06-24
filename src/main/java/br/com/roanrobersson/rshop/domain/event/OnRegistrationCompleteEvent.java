@@ -11,9 +11,9 @@ import lombok.ToString;
 @Setter
 @ToString(of = { "user" })
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private User user;
 
 	public OnRegistrationCompleteEvent(User user) {

@@ -88,7 +88,9 @@ class RoleMapperUT {
 
 		Role actual = roleMapper.toRole(input);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "privileges", "createdAt", "updatedAt")
+		assertThat(actual)
+				.usingRecursiveComparison()
+				.ignoringFields("id", "privileges", "createdAt", "updatedAt")
 				.isEqualTo(expected);
 		assertThat(actual.getPrivileges()).containsExactlyInAnyOrderElementsOf(expected.getPrivileges());
 	}
@@ -136,7 +138,9 @@ class RoleMapperUT {
 
 		roleMapper.update(input, actual);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "privileges", "createdAt", "updatedAt")
+		assertThat(actual)
+				.usingRecursiveComparison()
+				.ignoringFields("id", "privileges", "createdAt", "updatedAt")
 				.isEqualTo(input);
 		assertThat(actual.getPrivileges()).containsExactly(privilege);
 	}

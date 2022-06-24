@@ -24,13 +24,17 @@ public class AuthUserDetailsService implements UserDetailsService {
 	@Transactional(readOnly = true)
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		User user = repository.findByEmailWithRolesAndPrivileges(email)
+		User user = repository
+				.findByEmailWithRolesAndPrivileges(email)
 				.orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 		return new AuthUser(user, getAuthorities(user));
 	}
 
 	private Collection<GrantedAuthority> getAuthorities(User user) {
-		return user.getRoles().stream().flatMap(role -> role.getPrivileges().stream())
+		return user
+				.getRoles()
+				.stream()
+				.flatMap(role -> role.getPrivileges().stream())
 				.map(privilege -> new SimpleGrantedAuthority(privilege.getName().toUpperCase()))
 				.collect(Collectors.toSet());
 	}

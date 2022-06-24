@@ -75,9 +75,15 @@ public class UserInsert {
 	private String secondaryTelephone;
 
 	public static UserInsertBuilder anUserInsert() {
-		return new UserInsertBuilder().firstName("Madalena").name("Madalena Bernardon")
-				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
-				.email("madalenabernardon@gmail.com").password("12345678").primaryTelephone("54998223654")
+		return new UserInsertBuilder()
+				.firstName("Madalena")
+				.name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16"))
+				.rg("222182428")
+				.cpf("67709960065")
+				.email("madalenabernardon@gmail.com")
+				.password("12345678")
+				.primaryTelephone("54998223654")
 				.secondaryTelephone("5433417898");
 	}
 }

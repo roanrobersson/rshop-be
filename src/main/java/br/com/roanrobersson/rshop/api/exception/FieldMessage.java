@@ -16,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString(of = { "fieldName", "message" })
 public class FieldMessage implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private String fieldName;

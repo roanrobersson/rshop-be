@@ -19,7 +19,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public interface ProductCategoryControllerOpenApi {
 
 	@Operation(summary = "Retrives the product category list")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Product categories retrived with success"),
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Product categories retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Set<UUID>> list(

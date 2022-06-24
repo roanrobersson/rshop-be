@@ -68,7 +68,10 @@ public class RoleController implements RoleControllerOpenApi {
 		try {
 			Role role = service.insert(roleInput);
 			RoleModel roleModel = mapper.toModel(role);
-			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(roleModel.getId())
+			URI uri = ServletUriComponentsBuilder
+					.fromCurrentRequest()
+					.path("/{id}")
+					.buildAndExpand(roleModel.getId())
 					.toUri();
 			return ResponseEntity.created(uri).body(roleModel);
 		} catch (PrivilegeNotFoundException e) {

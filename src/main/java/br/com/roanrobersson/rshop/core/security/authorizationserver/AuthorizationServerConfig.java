@@ -29,7 +29,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Value("${jwt.token.duration}")
 	private Integer jwtTokenDuration;
-	
+
 	@Value("${jwt.refresh-token.duration}")
 	private Integer jwtRefreshTokenDuration;
 
@@ -42,7 +42,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private JwtTokenStore tokenStore;
 
-	@Autowired 
+	@Autowired
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
@@ -58,26 +58,28 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory()
-		.withClient(clientId)
-		.secret(passwordEncoder.encode(clientSecret))
-		.scopes("read", "write")
-		.authorizedGrantTypes("password", "refresh_token")
-		.accessTokenValiditySeconds(jwtTokenDuration)
-		.refreshTokenValiditySeconds(jwtRefreshTokenDuration);
+		clients
+				.inMemory()
+				.withClient(clientId)
+				.secret(passwordEncoder.encode(clientSecret))
+				.scopes("read", "write")
+				.authorizedGrantTypes("password", "refresh_token")
+				.accessTokenValiditySeconds(jwtTokenDuration)
+				.refreshTokenValiditySeconds(jwtRefreshTokenDuration);
 	}
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		
+
 		TokenEnhancerChain chain = new TokenEnhancerChain();
 		chain.setTokenEnhancers(Arrays.asList(acessTokenConverter, tokenEnhancer));
-		
-		endpoints.authenticationManager(authenticationManager)
-		.tokenStore(tokenStore)
-		.accessTokenConverter(acessTokenConverter)
-		.tokenEnhancer(chain)
-		.userDetailsService(userDetailsService)
-		.pathMapping("/oauth/token", "/auth");
+
+		endpoints
+				.authenticationManager(authenticationManager)
+				.tokenStore(tokenStore)
+				.accessTokenConverter(acessTokenConverter)
+				.tokenEnhancer(chain)
+				.userDetailsService(userDetailsService)
+				.pathMapping("/oauth/token", "/auth");
 	}
 }

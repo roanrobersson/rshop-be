@@ -65,19 +65,19 @@ public class CategoryService {
 			throw new EntityInUseException(String.format(MSG_CATEGORY_IN_USE, categoryId));
 		}
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Long count() {
 		return repository.count();
 	}
-	
+
 	private void validateUniqueInsert(CategoryInput categoryInput) {
 		Optional<Category> optional = repository.findByName(categoryInput.getName());
 		if (optional.isPresent()) {
 			throw new UniqueException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));
 		}
 	}
-	
+
 	private void validateUniqueUpdate(UUID categoryId, CategoryInput categoryInput) {
 		Optional<Category> optional = repository.findByName(categoryInput.getName());
 		if (optional.isPresent() && !optional.get().getId().equals(categoryId)) {

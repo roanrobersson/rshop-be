@@ -31,7 +31,10 @@ public class RolePrivilegeController implements RolePrivilegeControllerOpenApi {
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Set<UUID>> list(@PathVariable UUID roleId) {
-		Set<UUID> privilegesIds = service.getPrivileges(roleId).stream().map(Privilege::getId)
+		Set<UUID> privilegesIds = service
+				.getPrivileges(roleId)
+				.stream()
+				.map(Privilege::getId)
 				.collect(Collectors.toSet());
 		return ResponseEntity.ok().body(privilegesIds);
 	}

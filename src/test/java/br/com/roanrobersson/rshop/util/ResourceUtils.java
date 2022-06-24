@@ -19,5 +19,5 @@ public final class ResourceUtils {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

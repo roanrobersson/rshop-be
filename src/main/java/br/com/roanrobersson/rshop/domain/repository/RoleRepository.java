@@ -12,19 +12,13 @@ import br.com.roanrobersson.rshop.domain.model.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, UUID> {
-		
-	@Query("SELECT obj " 
-			+ "FROM Role obj " 
-			+ "LEFT JOIN FETCH obj.privileges " 
-			+ "WHERE obj IN :roles")
+
+	@Query("SELECT obj " + "FROM Role obj " + "LEFT JOIN FETCH obj.privileges " + "WHERE obj IN :roles")
 	List<Role> findRolesWithPrivileges(List<Role> roles);
-	
-	@Query("SELECT obj " 
-			+ "FROM Role obj " 
-			+ "LEFT JOIN FETCH obj.privileges " 
-			+ "WHERE obj.id = :id")
+
+	@Query("SELECT obj " + "FROM Role obj " + "LEFT JOIN FETCH obj.privileges " + "WHERE obj.id = :id")
 	Optional<Role> findByIdWithPrivileges(UUID id);
-	
+
 	Optional<Role> findByName(String name);
 
 	void deleteById(UUID roleId);

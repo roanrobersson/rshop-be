@@ -184,8 +184,10 @@ class ProductControllerIT extends IT {
 	void findById_ReturnProductModelWithCorrectData_IdExists() throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR_ACCOUNT);
 
-		ResultActions result = mockMvc.perform(get("/v1/products/{productId}", EXISTING_ID)
-				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc
+				.perform(get("/v1/products/{productId}", EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("id").value("ff9d39d5-717f-4714-9688-9e75797c0ec0"));
@@ -199,9 +201,10 @@ class ProductControllerIT extends IT {
 	}
 
 	private static Stream<Arguments> findByIdReturnSpecificHttpStatusArgumentSource() {
-		return Stream.of(Arguments.of(EXISTING_ID.toString(), HttpStatus.OK),
-				Arguments.of(NON_EXISTING_ID.toString(), HttpStatus.NOT_FOUND),
-				Arguments.of(INVALID_ID, HttpStatus.BAD_REQUEST));
+		return Stream
+				.of(Arguments.of(EXISTING_ID.toString(), HttpStatus.OK),
+						Arguments.of(NON_EXISTING_ID.toString(), HttpStatus.NOT_FOUND),
+						Arguments.of(INVALID_ID, HttpStatus.BAD_REQUEST));
 	}
 
 	@ParameterizedTest
@@ -209,8 +212,10 @@ class ProductControllerIT extends IT {
 	void findById_ReturnSpecificHttpStatus(String id, HttpStatus status) throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR_ACCOUNT);
 
-		ResultActions result = mockMvc.perform(get("/v1/products/{productId}", id)
-				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc
+				.perform(get("/v1/products/{productId}", id)
+						.header("Authorization", "Bearer " + accessToken)
+						.accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(status().is(status.value()));
 	}
@@ -221,8 +226,12 @@ class ProductControllerIT extends IT {
 		ProductInput validInput = aNonExistingProduct().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(validInput);
 
-		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
-				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc
+				.perform(post("/v1/products")
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(jsonPath("name", is("Non existing name")));
 	}
@@ -234,10 +243,11 @@ class ProductControllerIT extends IT {
 				.writeValueAsString(aNonExistingProduct().withInvalidPrice().buildInput());
 		String inputWithoutCategory = mapper.writeValueAsString(aProduct().withoutCategories().buildInput());
 
-		return Stream.of(Arguments.of(validInput, HttpStatus.CREATED),
-				Arguments.of(JSON_PRODUCT_WITHOUT_NAME_PROPERTY, HttpStatus.BAD_REQUEST),
-				Arguments.of(inputWithNegativePrice, HttpStatus.BAD_REQUEST),
-				Arguments.of(inputWithoutCategory, HttpStatus.BAD_REQUEST));
+		return Stream
+				.of(Arguments.of(validInput, HttpStatus.CREATED),
+						Arguments.of(JSON_PRODUCT_WITHOUT_NAME_PROPERTY, HttpStatus.BAD_REQUEST),
+						Arguments.of(inputWithNegativePrice, HttpStatus.BAD_REQUEST),
+						Arguments.of(inputWithoutCategory, HttpStatus.BAD_REQUEST));
 	}
 
 	@ParameterizedTest
@@ -245,8 +255,12 @@ class ProductControllerIT extends IT {
 	void insert_ReturnSpecificHttpStatus(String jsonBody, HttpStatus status) throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR_ACCOUNT);
 
-		ResultActions result = mockMvc.perform(post("/v1/products").header("Authorization", "Bearer " + accessToken)
-				.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc
+				.perform(post("/v1/products")
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(status().is(status.value()));
 	}
@@ -257,8 +271,11 @@ class ProductControllerIT extends IT {
 		String jsonBody = objectMapper.writeValueAsString(aNonExistingProduct().buildInput());
 
 		ResultActions result = mockMvc
-				.perform(put("/v1/products/{productId}", EXISTING_ID).header("Authorization", "Bearer " + accessToken)
-						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+				.perform(put("/v1/products/{productId}", EXISTING_ID)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("name", is("Non existing name")));
@@ -272,11 +289,12 @@ class ProductControllerIT extends IT {
 		String inputWithNonExistingCagtegory = mapper
 				.writeValueAsString(aProduct().withNonExistingCategory().buildInput());
 		String inputWithoutCategory = mapper.writeValueAsString(aProduct().withoutCategories().buildInput());
-		return Stream.of(Arguments.of(validInput, EXISTING_ID.toString(), HttpStatus.OK),
-				Arguments.of(JSON_PRODUCT_WITHOUT_NAME_PROPERTY, NON_EXISTING_ID.toString(), HttpStatus.BAD_REQUEST),
-				Arguments.of(inputWithNegativePrice, INVALID_ID.toString(), HttpStatus.BAD_REQUEST),
-				Arguments.of(inputWithNonExistingCagtegory, EXISTING_ID.toString(), HttpStatus.BAD_REQUEST),
-				Arguments.of(inputWithoutCategory, EXISTING_ID.toString(), HttpStatus.BAD_REQUEST));
+		return Stream
+				.of(Arguments.of(validInput, EXISTING_ID.toString(), HttpStatus.OK), Arguments
+						.of(JSON_PRODUCT_WITHOUT_NAME_PROPERTY, NON_EXISTING_ID.toString(), HttpStatus.BAD_REQUEST),
+						Arguments.of(inputWithNegativePrice, INVALID_ID.toString(), HttpStatus.BAD_REQUEST),
+						Arguments.of(inputWithNonExistingCagtegory, EXISTING_ID.toString(), HttpStatus.BAD_REQUEST),
+						Arguments.of(inputWithoutCategory, EXISTING_ID.toString(), HttpStatus.BAD_REQUEST));
 	}
 
 	@ParameterizedTest
@@ -285,16 +303,20 @@ class ProductControllerIT extends IT {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR_ACCOUNT);
 
 		ResultActions result = mockMvc
-				.perform(put("/v1/products/{productId}", id).header("Authorization", "Bearer " + accessToken)
-						.content(jsonBody).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+				.perform(put("/v1/products/{productId}", id)
+						.header("Authorization", "Bearer " + accessToken)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(status().is(status.value()));
 	}
 
 	private static Stream<Arguments> deleteReturnSpecificHttpStatusArgumentSource() throws Exception {
-		return Stream.of(Arguments.of(EXISTING_ID.toString(), HttpStatus.NO_CONTENT),
-				Arguments.of(NON_EXISTING_ID.toString(), HttpStatus.NOT_FOUND),
-				Arguments.of(INVALID_ID.toString(), HttpStatus.BAD_REQUEST));
+		return Stream
+				.of(Arguments.of(EXISTING_ID.toString(), HttpStatus.NO_CONTENT),
+						Arguments.of(NON_EXISTING_ID.toString(), HttpStatus.NOT_FOUND),
+						Arguments.of(INVALID_ID.toString(), HttpStatus.BAD_REQUEST));
 	}
 
 	@ParameterizedTest
@@ -302,8 +324,10 @@ class ProductControllerIT extends IT {
 	void delete_ReturnSpecificHttpStatus(String id, HttpStatus status) throws Exception {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR_ACCOUNT);
 
-		ResultActions result = mockMvc.perform(delete("/v1/products/{productId}", id)
-				.header("Authorization", "Bearer " + accessToken).accept(MediaType.APPLICATION_JSON));
+		ResultActions result = mockMvc
+				.perform(delete("/v1/products/{productId}", id)
+						.header("Authorization", "Bearer " + accessToken)
+						.accept(MediaType.APPLICATION_JSON));
 
 		result.andExpect(status().is(status.value()));
 	}

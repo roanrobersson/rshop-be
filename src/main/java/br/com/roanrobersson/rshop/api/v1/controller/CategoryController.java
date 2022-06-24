@@ -65,7 +65,10 @@ public class CategoryController implements CategoryControllerOpenApi {
 	public ResponseEntity<CategoryModel> insert(@Valid @RequestBody CategoryInput categoryInput) {
 		Category category = service.insert(categoryInput);
 		CategoryModel categoryModel = mapper.toModel(category);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoryModel.getId())
+		URI uri = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(categoryModel.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(categoryModel);
 	}

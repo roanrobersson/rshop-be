@@ -87,7 +87,9 @@ class ProductMapperUT {
 
 		Product actual = productMapper.toProduct(input);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "categories", "createdAt", "updatedAt")
+		assertThat(actual)
+				.usingRecursiveComparison()
+				.ignoringFields("id", "categories", "createdAt", "updatedAt")
 				.isEqualTo(expected);
 		assertThat(actual.getCategories()).containsExactlyInAnyOrderElementsOf(expected.getCategories());
 	}
@@ -124,7 +126,9 @@ class ProductMapperUT {
 
 		productMapper.update(input, actual);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "categories", "createdAt", "updatedAt")
+		assertThat(actual)
+				.usingRecursiveComparison()
+				.ignoringFields("id", "categories", "createdAt", "updatedAt")
 				.isEqualTo(input);
 		assertThat(actual.getCategories()).containsExactly(category);
 	}

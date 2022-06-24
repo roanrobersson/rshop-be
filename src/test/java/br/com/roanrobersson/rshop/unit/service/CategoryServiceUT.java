@@ -58,8 +58,9 @@ class CategoryServiceUT {
 		when(repository.findAll(pageable)).thenReturn(categories);
 
 		Page<Category> actual = service.list(pageable);
-		
-		assertThat(actual.getContent()).containsExactlyInAnyOrder(category)
+
+		assertThat(actual.getContent())
+				.containsExactlyInAnyOrder(category)
 				.usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).findAll(pageable);
 	}

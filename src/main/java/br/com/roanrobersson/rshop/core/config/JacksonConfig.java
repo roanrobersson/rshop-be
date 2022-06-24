@@ -10,13 +10,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 public class JacksonConfig {
-	
+
 	@Bean
 	@Primary
 	public ObjectMapper objectMapper() {
-	    JavaTimeModule module = new JavaTimeModule();
-	    return new ObjectMapper()
-	      .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-	      .registerModule(module);
+		JavaTimeModule module = new JavaTimeModule();
+		return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).registerModule(module);
 	}
 }

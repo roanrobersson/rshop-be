@@ -100,8 +100,11 @@ class UserMapperUT {
 
 		User actual = userMapper.toUser(input);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "addresses", "roles", "password",
-				"lastLoginAt", "verifiedAt", "createdAt", "updatedAt").isEqualTo(expected);
+		assertThat(actual)
+				.usingRecursiveComparison()
+				.ignoringFields("id", "addresses", "roles", "password", "lastLoginAt", "verifiedAt", "createdAt",
+						"updatedAt")
+				.isEqualTo(expected);
 		assertThat(actual.getPassword()).isNull();
 	}
 
@@ -135,7 +138,10 @@ class UserMapperUT {
 
 		userMapper.update(input, result);
 
-		assertThat(actual).usingRecursiveComparison().ignoringFields("id", "addresses", "password", "email", "roles",
-				"lastLoginAt", "verifiedAt", "createdAt", "updatedAt").isEqualTo(input);
+		assertThat(actual)
+				.usingRecursiveComparison()
+				.ignoringFields("id", "addresses", "password", "email", "roles", "lastLoginAt", "verifiedAt",
+						"createdAt", "updatedAt")
+				.isEqualTo(input);
 	}
 }
