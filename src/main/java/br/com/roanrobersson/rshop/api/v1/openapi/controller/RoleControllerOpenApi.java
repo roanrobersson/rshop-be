@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
 import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
+import br.com.roanrobersson.rshop.domain.dto.model.CountModel;
 import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,4 +64,11 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Void> delete(
 			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId);
+
+	@Operation(summary = "Returns the role count", security = @SecurityRequirement(name = "OAuth2"))
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Role count retrived with success"),
+			@ApiResponse(responseCode = "400", description = "Invalid role ID", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "404", description = "Role not found", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
+	public ResponseEntity<CountModel> count();
 }

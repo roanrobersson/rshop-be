@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
 import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
+import br.com.roanrobersson.rshop.domain.dto.model.CountModel;
 import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,4 +67,11 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Void> delete(
 			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId);
+
+	@Operation(summary = "Returns the product count", security = @SecurityRequirement(name = "OAuth2"))
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Product count retrived with success"),
+			@ApiResponse(responseCode = "400", description = "Invalid product ID", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "404", description = "Product not found", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
+	public ResponseEntity<CountModel> count();
 }

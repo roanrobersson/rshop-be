@@ -11,6 +11,7 @@ import br.com.roanrobersson.rshop.api.exception.Problem;
 import br.com.roanrobersson.rshop.domain.dto.input.UserChangePasswordInput;
 import br.com.roanrobersson.rshop.domain.dto.input.UserInsert;
 import br.com.roanrobersson.rshop.domain.dto.input.UserUpdate;
+import br.com.roanrobersson.rshop.domain.dto.model.CountModel;
 import br.com.roanrobersson.rshop.domain.dto.model.UserModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -74,4 +75,11 @@ public interface UserControllerOpenApi {
 	public ResponseEntity<Void> changePassword(
 			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
 			@Parameter(description = "Representation of user new password") UserChangePasswordInput userChangePasswordDTO);
+
+	@Operation(summary = "Returns the user count", security = @SecurityRequirement(name = "OAuth2"))
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "User count retrived with success"),
+			@ApiResponse(responseCode = "400", description = "Invalid user ID", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
+	public ResponseEntity<CountModel> count();
 }
