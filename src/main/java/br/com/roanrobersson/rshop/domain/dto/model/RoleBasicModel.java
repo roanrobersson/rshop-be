@@ -15,17 +15,17 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(builderMethodName = "anCategoryModel", toBuilder = true)
+@Builder(builderMethodName = "aRoleBasicModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Category")
+@Schema(title = "Role")
 @ToString
-public class CategoryModel {
+public class RoleBasicModel {
 
 	@EqualsAndHashCode.Include
 	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
-
-	@Schema(example = "Cleaning")
+	
+	@Schema(example = "ADMIN")
 	private String name;
 
 	@Schema(example = "1656178570.000000000")
@@ -34,13 +34,9 @@ public class CategoryModel {
 	@Schema(example = "1656178570.000000000")
 	private OffsetDateTime updatedAt;
 
-	public static CategoryModelBuilder anCategoryModel() {
+	public static RoleBasicModelBuilder aRoleBasicModel() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new CategoryModelBuilder()
-				.id(uuid)
-				.name("Electronic")
-				.createdAt(offsetDateTime)
-				.updatedAt(offsetDateTime);
+		return new RoleBasicModelBuilder().id(uuid).name("ROLE_ADMIN").createdAt(offsetDateTime).updatedAt(offsetDateTime);
 	}
 }

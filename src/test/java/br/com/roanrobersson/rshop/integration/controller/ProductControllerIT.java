@@ -5,6 +5,7 @@ import static br.com.roanrobersson.rshop.builder.ProductBuilder.NON_EXISTING_ID;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aNonExistingProduct;
 import static br.com.roanrobersson.rshop.builder.ProductBuilder.aProduct;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -76,8 +77,9 @@ class ProductControllerIT extends IT {
 		result.andExpect(jsonPath("$.content").exists());
 		result.andExpect(jsonPath("$.content").isArray());
 		result.andExpect(jsonPath("$.content[0].id").value("c8a0c055-030a-4e47-8aca-cf4634b98be5"));
-		result.andExpect(jsonPath("$.content[0].categories[0]").value("5c2b2b98-7b72-42dd-8add-9e97a2967e11"));
-		result.andExpect(jsonPath("$.content[0].categories[1]").value("431d856e-caf2-4367-823a-924ce46b2e02"));
+		result
+				.andExpect(jsonPath("$.content[0].categories[*].id", containsInAnyOrder(
+						"5c2b2b98-7b72-42dd-8add-9e97a2967e11", "431d856e-caf2-4367-823a-924ce46b2e02")));
 		result.andExpect(jsonPath("$.content[0].sku").value("NBAP14SI"));
 		result.andExpect(jsonPath("$.content[0].name").value("Macbook Pro"));
 		result.andExpect(jsonPath("$.content[0].description").isNotEmpty());
@@ -191,8 +193,9 @@ class ProductControllerIT extends IT {
 
 		result.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 		result.andExpect(jsonPath("id").value("ff9d39d5-717f-4714-9688-9e75797c0ec0"));
-		result.andExpect(jsonPath("categories[0]").value("5c2b2b98-7b72-42dd-8add-9e97a2967e11"));
-		result.andExpect(jsonPath("categories[1]").value("753dad79-2a1f-4f5c-bbd1-317a53587518"));
+		result
+				.andExpect(jsonPath("categories[*].id", containsInAnyOrder("5c2b2b98-7b72-42dd-8add-9e97a2967e11",
+						"753dad79-2a1f-4f5c-bbd1-317a53587518")));
 		result.andExpect(jsonPath("sku").value("TVLG32BL"));
 		result.andExpect(jsonPath("name").value("Smart TV"));
 		result.andExpect(jsonPath("description").isNotEmpty());

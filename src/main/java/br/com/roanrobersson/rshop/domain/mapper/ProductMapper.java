@@ -3,7 +3,6 @@ package br.com.roanrobersson.rshop.domain.mapper;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -38,14 +37,6 @@ public abstract class ProductMapper {
 	};
 
 	public abstract void update(ProductInput productInput, @MappingTarget Product product);
-
-	protected String uuidToString(UUID uuid) {
-		return uuid.toString();
-	}
-
-	protected Set<UUID> categoriesToCategoriesIds(Set<Category> categories) {
-		return categories.stream().map(Category::getId).collect(Collectors.toSet());
-	}
 
 	protected Set<Category> categoriesIdsToCategories(Set<CategoryIdInput> categoriesIds) {
 		Set<Category> categories = new HashSet<>();

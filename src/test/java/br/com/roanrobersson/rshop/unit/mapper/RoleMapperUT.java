@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ class RoleMapperUT {
 	private static final String JSON_ROLE_MODEL_2 = getContentFromResource("/json/correct/role-model-2.json");
 
 	@Test
-	void toModel_returCompatibleRoleModel_RoleAsArgument() throws Exception {
+	void toModel_returnCompatibleRoleModel_RoleAsArgument() throws Exception {
 		Role role = objectMapper.readValue(JSON_ROLE, Role.class);
 		RoleModel expected = objectMapper.readValue(JSON_ROLE_MODEL, RoleModel.class);
 
@@ -115,17 +114,6 @@ class RoleMapperUT {
 		assertThat(actual.getSort()).usingRecursiveComparison().isEqualTo(anySort);
 		assertThat(actual.getTotalElements()).isEqualTo(anyTotalItems);
 		assertThat(actual.getContent()).containsExactlyInAnyOrder(expectedRoleModel1, expectedRoleModel2);
-	}
-
-	@Test
-	void toIdSet_ReturnCompatibleUUIDSet_RoleSetAsArgument() throws Exception {
-		Role role1 = objectMapper.readValue(JSON_ROLE, Role.class);
-		Role role2 = objectMapper.readValue(JSON_ROLE_2, Role.class);
-		Set<Role> input = Set.of(role1, role2);
-
-		Set<UUID> actual = roleMapper.toIdSet(input);
-
-		assertThat(actual).containsExactlyInAnyOrder(role1.getId(), role2.getId());
 	}
 
 	@Test

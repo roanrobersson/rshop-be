@@ -2,6 +2,14 @@
 	"id": "5e0b121c-9f12-4fd3-a7e6-179b5007149a",
 	"name": "ADMIN",
 	"privileges": [
-		"a24dfd96-2b06-45d1-a4bb-f3a2ed9e3539"
-	]
+		{
+			"id": "a24dfd96-2b06-45d1-a4bb-f3a2ed9e3539",
+			"name": "EDIT_ADDRESSES",
+			"description": "Allow edit addresses",
+			"createdAt": "2020-10-20T03:00Z",
+			"updatedAt": "2020-10-20T03:00Z"
+		}
+	],
+	"createdAt": "2020-10-20T03:00Z",
+	"updatedAt": "2020-10-20T03:00Z"
 }

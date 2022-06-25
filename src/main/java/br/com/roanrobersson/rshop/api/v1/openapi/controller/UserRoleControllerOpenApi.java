@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 
 import br.com.roanrobersson.rshop.api.exception.Problem;
+import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +23,7 @@ public interface UserRoleControllerOpenApi {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "User roles retrived with success"),
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	public ResponseEntity<Set<UUID>> list(
+	public ResponseEntity<Set<RoleModel>> list(
 			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
 
 	@Operation(summary = "Grants a role to a user", security = @SecurityRequirement(name = "OAuth2"))

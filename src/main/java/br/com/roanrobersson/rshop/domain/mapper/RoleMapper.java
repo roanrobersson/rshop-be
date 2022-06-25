@@ -3,7 +3,6 @@ package br.com.roanrobersson.rshop.domain.mapper;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -35,21 +34,11 @@ public abstract class RoleMapper {
 
 	public abstract void update(RoleInput roleInput, @MappingTarget Role role);
 
+	public abstract Set<RoleModel> toModelSet(Set<Role> roles);
+
 	public Page<RoleModel> toModelPage(Page<Role> roles) {
 		return roles.map(x -> this.toModel(x));
 	};
-
-	public Set<UUID> toIdSet(Set<Role> roles) {
-		return roles.stream().map(Role::getId).collect(Collectors.toSet());
-	}
-
-	protected String uuidToString(UUID uuid) {
-		return uuid.toString();
-	}
-
-	protected Set<UUID> privilegesToPrivilegesIds(Set<Privilege> privileges) {
-		return privileges.stream().map(Privilege::getId).collect(Collectors.toSet());
-	}
 
 	protected Set<Privilege> privilegesIdsToPrivileges(Set<PrivilegeIdInput> privilegesIds) {
 		Set<Privilege> privileges = new HashSet<>();

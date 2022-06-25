@@ -1,6 +1,7 @@
 package br.com.roanrobersson.rshop.domain.dto.model;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
 
 @Data
@@ -27,11 +29,10 @@ public class ProductModel {
 	@EqualsAndHashCode.Include
 	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
 	private UUID id;
-
-	@Builder.Default
+	
 	@Setter(value = AccessLevel.NONE)
-	@Schema(example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]")
-	private Set<UUID> categories = new HashSet<>();
+	@Singular
+	private Set<CategoryModel> categories = new HashSet<>();
 
 	@Schema(example = "KS944RUR")
 	private String sku;
@@ -48,13 +49,22 @@ public class ProductModel {
 	@Schema(example = "http://www.ficticiousimagehost.com/image.png")
 	private String imgUrl;
 
+	@Schema(example = "1656178570.000000000")
+	private OffsetDateTime createdAt;
+
+	@Schema(example = "1656178570.000000000")
+	private OffsetDateTime updatedAt;
+
 	public static ProductModelBuilder aProductModel() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 		return new ProductModelBuilder()
 				.id(uuid)
 				.name("Keyboard")
 				.description("A black keyboard for gaming")
 				.price(BigDecimal.valueOf(50.00))
-				.imgUrl("http://www.ficticiousimagehost.com/image.png");
+				.imgUrl("http://www.ficticiousimagehost.com/image.png")
+				.createdAt(offsetDateTime)
+				.updatedAt(offsetDateTime);
 	}
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.roanrobersson.rshop.api.v1.openapi.controller.UserRoleControllerOpenApi;
 import br.com.roanrobersson.rshop.core.security.CheckSecurity;
+import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
 import br.com.roanrobersson.rshop.domain.mapper.RoleMapper;
 import br.com.roanrobersson.rshop.domain.model.Role;
 import br.com.roanrobersson.rshop.domain.service.UserService;
@@ -33,10 +34,10 @@ public class UserRoleController implements UserRoleControllerOpenApi {
 	@GetMapping
 	@CheckSecurity.UserRole.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Set<UUID>> list(@PathVariable UUID userId) {
+	public ResponseEntity<Set<RoleModel>> list(@PathVariable UUID userId) {
 		Set<Role> roles = service.listRoles(userId);
-		Set<UUID> rolesIds = roleMapper.toIdSet(roles);
-		return ResponseEntity.ok().body(rolesIds);
+		Set<RoleModel> roleModels = roleMapper.toModelSet(roles);
+		return ResponseEntity.ok().body(roleModels);
 	}
 
 	@PutMapping(value = "/{roleId}")

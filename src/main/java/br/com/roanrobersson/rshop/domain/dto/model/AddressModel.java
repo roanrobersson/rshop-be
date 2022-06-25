@@ -1,5 +1,6 @@
 package br.com.roanrobersson.rshop.domain.dto.model;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,8 +61,15 @@ public class AddressModel {
 	@Schema(example = "true")
 	private Boolean main;
 
+	@Schema(example = "1656178570.000000000")
+	private OffsetDateTime createdAt;
+
+	@Schema(example = "1656178570.000000000")
+	private OffsetDateTime updatedAt;
+	
 	public static AddressModelBuilder anAddressModel() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 		return new AddressModelBuilder()
 				.id(uuid)
 				.nick("Casa 2")
@@ -75,6 +83,8 @@ public class AddressModel {
 				.postalCode("12345678")
 				.complement("Fundos")
 				.referencePoint("Próx mercado Zorzi")
+				.createdAt(offsetDateTime)
+				.updatedAt(offsetDateTime)
 				.main(true);
 	}
 }

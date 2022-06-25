@@ -1,5 +1,6 @@
 package br.com.roanrobersson.rshop.domain.dto.model;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import javax.validation.constraints.Size;
@@ -34,8 +35,20 @@ public class PrivilegeModel {
 	@Schema(example = "Allow edit categories")
 	private String description;
 
+	@Schema(example = "1656178570.000000000")
+	private OffsetDateTime createdAt;
+
+	@Schema(example = "1656178570.000000000")
+	private OffsetDateTime updatedAt;
+
 	public static PrivilegeModelBuilder aPrivilegeModel() {
 		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
-		return new PrivilegeModelBuilder().id(uuid).name("EDIT_CATEGORIES").description("Allow edit categories");
+		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
+		return new PrivilegeModelBuilder()
+				.id(uuid)
+				.name("EDIT_CATEGORIES")
+				.description("Allow edit categories")
+				.createdAt(offsetDateTime)
+				.updatedAt(offsetDateTime);
 	}
 }
