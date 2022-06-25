@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -63,7 +64,7 @@ public class User implements UserDetails {
 	@Singular
 	private Set<Role> roles = new HashSet<>();
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	@Setter(value = AccessLevel.NONE)
 	@Singular
 	private List<Address> addresses = new ArrayList<>();

@@ -100,6 +100,7 @@ public class Address implements Serializable {
 		return new AddressBuilder()
 				.id(uuid)
 				.nick("Casa 2")
+				.main(false)
 				.addressLine("Rua Mazzoleni")
 				.number("999")
 				.neighborhood("Beira Lagoa")
