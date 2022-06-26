@@ -23,8 +23,8 @@ public class CategoryInput {
 
 	@NotBlank
 	@Size(min = 3, max = 127)
-	@Schema(example = "Cleaning", required = true)
 	@EqualsAndHashCode.Include
+	@Schema(example = "Cleaning", required = true)
 	private String name;
 
 	public static CategoryInputBuilder aCategoryInput() {

@@ -14,8 +14,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Schema(title = "UserChangePasswordInput")
 @ToString
+@Schema(title = "UserChangePasswordInput")
 public class UserChangePasswordInput {
 
 	@NotEmpty

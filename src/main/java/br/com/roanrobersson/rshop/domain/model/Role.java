@@ -59,7 +59,7 @@ public class Role implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "role_privilege", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id"))
 	@Setter(value = AccessLevel.NONE)
-	@Singular
+	@Singular(ignoreNullCollections = true)
 	private Set<Privilege> privileges = new HashSet<>();
 
 	@Column(unique = true, nullable = false, length = 30)

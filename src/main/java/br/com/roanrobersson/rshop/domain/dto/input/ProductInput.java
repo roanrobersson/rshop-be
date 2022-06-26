@@ -28,27 +28,27 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "aProductInput", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "ProductInput")
 @ToString(of = { "name", "categories" })
+@Schema(title = "ProductInput")
 public class ProductInput {
 
 	@Valid
 	@NotEmpty
 	@Setter(value = AccessLevel.NONE)
 	@Schema(example = "[\"753dad79-2a1f-4f5c-bbd1-317a53587518\", \"5227c10f-c81a-4885-b460-dbfee6dcc019\"]")
-	@Singular
+	@Singular(ignoreNullCollections = true)
 	private Set<CategoryIdInput> categories = new HashSet<>();
 
 	@NotBlank
 	@Size(min = 8, max = 12)
-	@Schema(example = "KS944RUR")
 	@EqualsAndHashCode.Include
+	@Schema(example = "KS944RUR")
 	private String sku;
 
 	@NotBlank
 	@Size(min = 3, max = 127)
-	@Schema(example = "Detergent", required = true)
 	@EqualsAndHashCode.Include
+	@Schema(example = "Detergent", required = true)
 	private String name;
 
 	@NotBlank

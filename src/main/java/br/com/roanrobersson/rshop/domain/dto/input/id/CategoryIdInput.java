@@ -8,6 +8,7 @@ import br.com.roanrobersson.rshop.core.validation.UUIDValid;
 import br.com.roanrobersson.rshop.domain.dto.input.id.serializer.CategoryIdInputSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(builderMethodName = "anCategoryIdInput", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 @JsonSerialize(using = CategoryIdInputSerializer.class)

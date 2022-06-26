@@ -16,7 +16,7 @@ public interface EmailService {
 	@Builder
 	class Message {
 
-		@Singular
+		@Singular(ignoreNullCollections = true)
 		private Set<String> recipients;
 
 		@NonNull
@@ -25,7 +25,7 @@ public interface EmailService {
 		@NonNull
 		private String body;
 
-		@Singular("variable")
+		@Singular(ignoreNullCollections = true, value = "variable")
 		private Map<String, Object> variables;
 	}
 }

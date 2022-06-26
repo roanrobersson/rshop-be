@@ -19,8 +19,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "aPrivilegeModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Privilege")
 @ToString(of = { "id", "name" })
+@Schema(title = "Privilege")
 public class PrivilegeModel {
 
 	@EqualsAndHashCode.Include

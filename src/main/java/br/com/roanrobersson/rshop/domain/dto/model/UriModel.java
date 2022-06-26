@@ -15,8 +15,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder(builderMethodName = "aUriModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Uri")
 @ToString
+@Schema(title = "Uri")
 public class UriModel {
 
 	@EqualsAndHashCode.Include

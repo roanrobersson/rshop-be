@@ -17,8 +17,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "anAddressModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Address")
 @ToString(of = { "id", "nick", "main" })
+@Schema(title = "Address")
 public class AddressModel {
 
 	@EqualsAndHashCode.Include

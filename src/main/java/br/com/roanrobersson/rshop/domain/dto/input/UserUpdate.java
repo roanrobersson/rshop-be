@@ -22,8 +22,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "anUserUpdate", toBuilder = true)
 @EqualsAndHashCode
-@Schema(title = "UserUpdate")
 @ToString(of = { "firstName" })
+@Schema(title = "UserUpdate")
 public class UserUpdate {
 
 	@NotBlank

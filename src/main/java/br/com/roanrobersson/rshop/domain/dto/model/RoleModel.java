@@ -21,8 +21,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "aRoleBasicModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Role")
 @ToString
+@Schema(title = "Role")
 public class RoleModel {
 
 	@EqualsAndHashCode.Include
@@ -30,7 +30,7 @@ public class RoleModel {
 	private UUID id;
 
 	@Setter(value = AccessLevel.NONE)
-	@Singular
+	@Singular(ignoreNullCollections = true)
 	private Set<PrivilegeModel> privileges = new HashSet<>();
 
 	@Schema(example = "ADMIN")

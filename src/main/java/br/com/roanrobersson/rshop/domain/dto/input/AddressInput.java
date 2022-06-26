@@ -17,8 +17,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "anAddressInput", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "AddressInput")
 @ToString(of = { "nick" })
+@Schema(title = "AddressInput")
 public class AddressInput {
 
 	@NotBlank

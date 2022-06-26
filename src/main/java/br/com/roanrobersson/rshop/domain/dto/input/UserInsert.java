@@ -23,8 +23,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "anUserInsert", toBuilder = true)
 @EqualsAndHashCode
-@Schema(title = "UserInsert")
 @ToString(of = { "firstName" })
+@Schema(title = "UserInsert")
 public class UserInsert {
 
 	@NotBlank
@@ -56,8 +56,8 @@ public class UserInsert {
 	@Email
 	@NotBlank
 	@Size(min = 3, max = 50)
-	@Schema(example = "kevinbrown@gmail.com", required = true)
 	@EqualsAndHashCode.Include
+	@Schema(example = "kevinbrown@gmail.com", required = true)
 	private String email;
 
 	@NotBlank

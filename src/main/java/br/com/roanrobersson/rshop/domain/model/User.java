@@ -62,12 +62,12 @@ public class User implements UserDetails {
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@Setter(value = AccessLevel.NONE)
-	@Singular
+	@Singular(ignoreNullCollections = true)
 	private Set<Role> roles = new HashSet<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Setter(value = AccessLevel.NONE)
-	@Singular
+	@Singular(ignoreNullCollections = true)
 	private List<Address> addresses = new ArrayList<>();
 
 	@Column(nullable = false, length = 50)

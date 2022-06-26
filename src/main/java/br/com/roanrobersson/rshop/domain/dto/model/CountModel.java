@@ -11,10 +11,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Category")
 @ToString
+@Schema(title = "Category")
 public class CountModel {
 
 	@EqualsAndHashCode.Include
+	@Schema(example = "55")
 	private Long count;
 }

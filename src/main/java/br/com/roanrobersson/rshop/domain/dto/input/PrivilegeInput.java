@@ -17,14 +17,14 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "aPrivilegeInput", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "PrivilegeInput")
 @ToString
+@Schema(title = "PrivilegeInput")
 public class PrivilegeInput {
 
 	@NotBlank
 	@Size(min = 3, max = 30)
-	@Schema(example = "EDIT_CATEGORIES", required = true)
 	@EqualsAndHashCode.Include
+	@Schema(example = "EDIT_CATEGORIES", required = true)
 	private String name;
 
 	@NotBlank

@@ -22,8 +22,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "aProductModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Product")
 @ToString(of = { "id", "name", "categories" })
+@Schema(title = "Product")
 public class ProductModel {
 
 	@EqualsAndHashCode.Include
@@ -31,7 +31,7 @@ public class ProductModel {
 	private UUID id;
 	
 	@Setter(value = AccessLevel.NONE)
-	@Singular
+	@Singular(ignoreNullCollections = true)
 	private Set<CategoryModel> categories = new HashSet<>();
 
 	@Schema(example = "KS944RUR")

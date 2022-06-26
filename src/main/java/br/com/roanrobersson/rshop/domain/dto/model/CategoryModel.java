@@ -17,8 +17,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "anCategoryModel", toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Schema(title = "Category")
 @ToString
+@Schema(title = "Category")
 public class CategoryModel {
 
 	@EqualsAndHashCode.Include
