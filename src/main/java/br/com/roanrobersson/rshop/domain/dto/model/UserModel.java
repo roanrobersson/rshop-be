@@ -34,6 +34,10 @@ public class UserModel {
 	@Singular
 	private Set<RoleBasicModel> roles = new HashSet<>();
 
+	@Setter(value = AccessLevel.NONE)
+	@Singular
+	private Set<AddressModel> addresses = new HashSet<>();
+
 	@Schema(example = "Kevin", required = true)
 	private String firstName;
 
