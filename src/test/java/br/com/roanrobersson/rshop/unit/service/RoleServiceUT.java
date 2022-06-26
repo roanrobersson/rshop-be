@@ -79,24 +79,24 @@ class RoleServiceUT {
 	void findById_ReturnRole_IdExist() {
 		Role role = anExistingRole().build();
 		UUID id = role.getId();
-		when(repository.findByIdWithPrivileges(id)).thenReturn(Optional.of(role));
+		when(repository.findById(id)).thenReturn(Optional.of(role));
 
 		Role actual = service.findById(id);
 
 		assertThat(actual).usingRecursiveComparison().isEqualTo(role);
-		verify(repository, times(1)).findByIdWithPrivileges(id);
+		verify(repository, times(1)).findById(id);
 	}
 
 	@Test
 	void findById_ThrowsRoleNotFoundException_IdDoesNotExist() {
-		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		Throwable thrown = catchThrowable(() -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
 		assertThat(thrown).isExactlyInstanceOf(RoleNotFoundException.class);
-		verify(repository, times(1)).findByIdWithPrivileges(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test
@@ -135,14 +135,14 @@ class RoleServiceUT {
 		RoleInput input = builder.buildInput();
 		Role role = builder.withId(EXISTING_ID).build();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
-		when(repository.findByIdWithPrivileges(EXISTING_ID)).thenReturn(Optional.of(role));
+		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(role));
 		when(repository.save(role)).thenReturn(role);
 
 		Role actual = service.update(EXISTING_ID, input);
 
 		assertThat(actual).usingRecursiveComparison().isEqualTo(role);
 		verify(repository, times(1)).findByName(input.getName());
-		verify(repository, times(1)).findByIdWithPrivileges(EXISTING_ID);
+		verify(repository, times(1)).findById(EXISTING_ID);
 		verify(repository, times(1)).save(role);
 	}
 
@@ -150,7 +150,7 @@ class RoleServiceUT {
 	void update_ThrowsRoleNotFoundException_IdDoesNotExist() {
 		RoleInput input = aNonExistingRole().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
-		when(repository.findByIdWithPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, input);
@@ -158,7 +158,7 @@ class RoleServiceUT {
 
 		assertThat(thrown).isExactlyInstanceOf(RoleNotFoundException.class);
 		verify(repository, times(1)).findByName(input.getName());
-		verify(repository, times(1)).findByIdWithPrivileges(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test

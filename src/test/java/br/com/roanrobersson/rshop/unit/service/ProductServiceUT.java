@@ -85,12 +85,12 @@ class ProductServiceUT {
 	void findById_ReturnProduct_IdExist() {
 		Product product = anExistingProduct().build();
 		UUID id = product.getId();
-		when(repository.findByIdWithCategories(id)).thenReturn(Optional.of(product));
+		when(repository.findById(id)).thenReturn(Optional.of(product));
 
 		Product actual = service.findById(id);
 
 		assertThat(actual).usingRecursiveComparison().isEqualTo(product);
-		verify(repository, times(1)).findByIdWithCategories(id);
+		verify(repository, times(1)).findById(id);
 	}
 
 	@Test
@@ -101,7 +101,7 @@ class ProductServiceUT {
 		});
 
 		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
-		verify(repository, times(1)).findByIdWithCategories(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test
@@ -155,14 +155,14 @@ class ProductServiceUT {
 		Product product = builder.build();
 		ProductInput input = builder.withId(EXISTING_ID).buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
-		when(repository.findByIdWithCategories(EXISTING_ID)).thenReturn(Optional.of(product));
+		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(product));
 		when(repository.save(product)).thenReturn(product);
 
 		Product actual = service.update(EXISTING_ID, input);
 
 		assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
 		verify(repository, times(1)).findByName(input.getName());
-		verify(repository, times(1)).findByIdWithCategories(EXISTING_ID);
+		verify(repository, times(1)).findById(EXISTING_ID);
 		verify(mapper, times(1)).update(input, product);
 		verify(repository, times(1)).save(product);
 	}
@@ -171,7 +171,7 @@ class ProductServiceUT {
 	void update_ThrowProductNotFoundException_IdDoesNotExist() {
 		ProductInput input = aNonExistingProduct().buildInput();
 		when(repository.findByName(input.getName())).thenReturn(Optional.empty());
-		when(repository.findByIdWithCategories(NON_EXISTING_ID)).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, input);
@@ -179,7 +179,7 @@ class ProductServiceUT {
 
 		assertThat(thrown).isExactlyInstanceOf(ProductNotFoundException.class);
 		verify(repository, times(1)).findByName(input.getName());
-		verify(repository, times(1)).findByIdWithCategories(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test

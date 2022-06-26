@@ -78,36 +78,36 @@ class UserServiceUT {
 		Pageable pageable = PageRequest.of(0, 10);
 		Page<User> page = new PageImpl<>(List.of(anExistingUser().build()));
 		when(repository.findAll(pageable)).thenReturn(page);
-		when(repository.findWithRolesAndPrivileges(userList)).thenReturn(userList);
+		when(repository.findWithRoles(userList)).thenReturn(userList);
 
 		Page<User> actual = service.list(pageable);
 
 		assertThat(actual.getContent()).containsExactlyInAnyOrder(user).usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).findAll(pageable);
-		verify(repository, times(1)).findWithRolesAndPrivileges(userList);
+		verify(repository, times(1)).findWithRoles(userList);
 	}
 
 	@Test
 	void findById_ReturnUser_IdExist() {
 		User user = anExistingUser().build();
-		when(repository.findByIdWithRolesAndPrivileges(EXISTING_ID)).thenReturn(Optional.of(user));
+		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
 
 		User actual = service.findById(EXISTING_ID);
 
 		assertThat(actual).usingRecursiveComparison().isEqualTo(user);
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(EXISTING_ID);
+		verify(repository, times(1)).findById(EXISTING_ID);
 	}
 
 	@Test
 	void findById_ThrowUserNotFoundException_IdDoesNotExist() {
-		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		Throwable thrown = catchThrowable(() -> {
 			service.findById(NON_EXISTING_ID);
 		});
 
 		assertThat(thrown).isExactlyInstanceOf(UserNotFoundException.class);
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test
@@ -149,14 +149,14 @@ class UserServiceUT {
 		UserBuilder builder = aNonExistingUser().withId(EXISTING_ID);
 		UserUpdate update = builder.buildUpdate();
 		User user = builder.build();
-		when(repository.findByIdWithRolesAndPrivileges(EXISTING_ID)).thenReturn(Optional.of(user));
+		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
 		when(repository.save(user)).thenReturn(user);
 
 		User result = service.update(EXISTING_ID, update);
 
 		assertNotNull(result);
 		assertEquals(result, user);
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(EXISTING_ID);
+		verify(repository, times(1)).findById(EXISTING_ID);
 		verify(mapper, times(1)).update(update, user);
 		verify(repository, times(1)).save(user);
 	}
@@ -164,14 +164,14 @@ class UserServiceUT {
 	@Test
 	void update_ThrowUserNotFoundException_IdDoesNotExist() {
 		UserUpdate update = anExistingUser().buildUpdate();
-		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		Throwable thrown = catchThrowable(() -> {
 			service.update(NON_EXISTING_ID, update);
 		});
 
 		assertThat(thrown).isExactlyInstanceOf(UserNotFoundException.class);
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 
 	@Test
@@ -214,7 +214,7 @@ class UserServiceUT {
 	void changePassword_DoNothing_IdExists() {
 		UserChangePasswordInput passwordInput = new UserChangePasswordInput("a3g&3Pd#");
 		User user = anUser().build();
-		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.of(user));
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.of(user));
 		when(repository.save(user)).thenReturn(user);
 
 		Throwable thrown = catchThrowable(() -> {
@@ -222,20 +222,20 @@ class UserServiceUT {
 		});
 
 		assertThat(thrown).isNull();
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 		verify(repository, times(1)).save(user);
 	}
 
 	@Test
 	void changePassword_ThrowUserNotFoundException_IdDoesNotExist() {
 		UserChangePasswordInput passwordInput = new UserChangePasswordInput("a3g&3Pd#");
-		when(repository.findByIdWithRolesAndPrivileges(NON_EXISTING_ID)).thenReturn(Optional.empty());
+		when(repository.findById(NON_EXISTING_ID)).thenReturn(Optional.empty());
 
 		Throwable thrown = catchThrowable(() -> {
 			service.changePassword(NON_EXISTING_ID, passwordInput);
 		});
 
 		assertThat(thrown).isExactlyInstanceOf(UserNotFoundException.class);
-		verify(repository, times(1)).findByIdWithRolesAndPrivileges(NON_EXISTING_ID);
+		verify(repository, times(1)).findById(NON_EXISTING_ID);
 	}
 }

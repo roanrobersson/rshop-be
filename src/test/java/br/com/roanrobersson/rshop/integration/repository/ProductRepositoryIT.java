@@ -59,7 +59,7 @@ class ProductRepositoryIT extends IT {
 	@Test
 	void findByIdWithCategories_ReturnProduct() {
 
-		Optional<Product> actual = repository.findByIdWithCategories(EXISTING_ID);
+		Optional<Product> actual = repository.findById(EXISTING_ID);
 
 		assertThat(actual.get().getCategories().size()).isEqualTo(2);
 	}

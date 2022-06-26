@@ -52,7 +52,9 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Product findById(UUID productId) {
-		return repository.findByIdWithCategories(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+		Product product = repository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+		product.getCategories().isEmpty(); // Force fetch categories
+		return product;
 	}
 
 	@Transactional

@@ -45,7 +45,9 @@ public class RoleService {
 
 	@Transactional(readOnly = true)
 	public Role findById(UUID roleId) {
-		return repository.findByIdWithPrivileges(roleId).orElseThrow(() -> new RoleNotFoundException(roleId));
+		Role role = repository.findById(roleId).orElseThrow(() -> new RoleNotFoundException(roleId));
+		role.getPrivileges().size(); // Force fetch privileges
+		return role;
 	}
 
 	@Transactional

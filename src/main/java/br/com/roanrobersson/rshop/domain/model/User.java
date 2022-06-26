@@ -59,13 +59,13 @@ public class User implements UserDetails {
 	@EqualsAndHashCode.Include
 	private UUID id;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@Setter(value = AccessLevel.NONE)
 	@Singular
 	private Set<Role> roles = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Setter(value = AccessLevel.NONE)
 	@Singular
 	private List<Address> addresses = new ArrayList<>();

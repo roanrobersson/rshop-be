@@ -67,22 +67,24 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Page<User> list(Pageable pageable) {
 		Page<User> users = userRepository.findAll(pageable);
-		userRepository.findWithRolesAndPrivileges(users.toList());
+		userRepository.findWithRoles(users.toList());
 		return users;
 	}
 
 	@Transactional(readOnly = true)
 	public User findById(UUID userId) {
-		return userRepository
-				.findByIdWithRolesAndPrivileges(userId)
-				.orElseThrow(() -> new UserNotFoundException(userId));
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+		user.getRoles().isEmpty(); // Force fetch Roles
+		return user;
 	}
 
 	@Transactional(readOnly = true)
 	public User findByEmail(String email) {
-		return userRepository
-				.findByEmailWithRolesAndPrivileges(email)
+		User user = userRepository
+				.findByEmail(email)
 				.orElseThrow(() -> new UserNotFoundException(String.format(MSG_USER_WITH_EMAIL_NOT_FOUND, email)));
+		user.getRoles().isEmpty(); // Force fetch Roles
+		return user;
 	}
 
 	@Transactional
