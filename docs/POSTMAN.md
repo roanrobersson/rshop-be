@@ -7,7 +7,7 @@
 
 ### Steps
 
-1) On the Postman, import the [collection](docs/files/rshop-v1-dev.postman_collection.json) and [environment](rshop-v1-dev.postman_environment.json) files
+1) On the Postman, import the [collection](files/rshop-v1-dev.postman_collection.json) and [environment](files/rshop-v1-dev.postman_environment.json) files
     ```
     File > Import > Upload files
     Find and upload these two files:
