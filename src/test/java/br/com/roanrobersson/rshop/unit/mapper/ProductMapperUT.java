@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,7 +78,7 @@ class ProductMapperUT {
 	void toProduct_ReturnCompatibleProduct_ProductInputAsArgument() throws Exception {
 		ProductInput input = objectMapper.readValue(JSON_PRODUCT_INPUT, ProductInput.class);
 		Product expected = objectMapper.readValue(JSON_PRODUCT, Product.class);
-		UUID[] categoriesIds = input.getCategories().stream().map(c -> UUID.fromString(c.getId())).toArray(UUID[]::new);
+		Long[] categoriesIds = input.getCategories().stream().map(c -> c.getId()).toArray(Long[]::new);
 		Category category1 = aCategory().withId(categoriesIds[0]).build();
 		Category category2 = aCategory().withId(categoriesIds[1]).build();
 		when(categoryService.findById(categoriesIds[0])).thenReturn(category1);
@@ -119,7 +118,7 @@ class ProductMapperUT {
 	@Test
 	void update_CorrectUpdateProduct_ProductInputAndProductAsArgument() throws Exception {
 		ProductInput input = objectMapper.readValue(JSON_PRODUCT_INPUT_2, ProductInput.class);
-		UUID categoryId = UUID.fromString(input.getCategories().iterator().next().getId());
+		Long categoryId = input.getCategories().iterator().next().getId();
 		Category category = aCategory().withId(categoryId).build();
 		Product actual = objectMapper.readValue(JSON_PRODUCT, Product.class);
 		when(categoryService.findById(categoryId)).thenReturn(category);

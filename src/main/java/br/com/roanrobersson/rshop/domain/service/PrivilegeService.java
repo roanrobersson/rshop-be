@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.domain.service;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +22,7 @@ public class PrivilegeService {
 	}
 
 	@Transactional(readOnly = true)
-	public Privilege findById(UUID privilegeId) {
+	public Privilege findById(Long privilegeId) {
 		return repository.findById(privilegeId).orElseThrow(() -> new PrivilegeNotFoundException(privilegeId));
 	}
 

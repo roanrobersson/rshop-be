@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -15,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -22,8 +22,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,12 +50,9 @@ public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(columnDefinition = "char(36)")
-	@Type(type = "uuid-char")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
-	private UUID id;
+	private Long id;
 
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -119,11 +114,8 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return roles
-				.stream()
-				.flatMap(role -> role.getPrivileges().stream())
-				.map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
-				.collect(Collectors.toSet());
+		return roles.stream().flatMap(role -> role.getPrivileges().stream())
+				.map(privilege -> new SimpleGrantedAuthority(privilege.getName())).collect(Collectors.toSet());
 
 	}
 
@@ -153,22 +145,11 @@ public class User implements UserDetails {
 	}
 
 	public static UserBuilder anUser() {
-		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new UserBuilder()
-				.id(uuid)
-				.firstName("Madalena")
-				.name("Madalena Bernardon")
-				.birthDate(LocalDate.parse("1993-01-16"))
-				.rg("222182428")
-				.cpf("67709960065")
-				.email("madalenabernardon@gmail.com")
-				.password("12345678")
-				.primaryTelephone("54998223654")
-				.secondaryTelephone("54334178")
-				.verifiedAt(offsetDateTime)
-				.lastLoginAt(offsetDateTime)
-				.createdAt(offsetDateTime)
-				.updatedAt(offsetDateTime);
+		return new UserBuilder().id(123L).firstName("Madalena").name("Madalena Bernardon")
+				.birthDate(LocalDate.parse("1993-01-16")).rg("222182428").cpf("67709960065")
+				.email("madalenabernardon@gmail.com").password("12345678").primaryTelephone("54998223654")
+				.secondaryTelephone("54334178").verifiedAt(offsetDateTime).lastLoginAt(offsetDateTime)
+				.createdAt(offsetDateTime).updatedAt(offsetDateTime);
 	}
 }

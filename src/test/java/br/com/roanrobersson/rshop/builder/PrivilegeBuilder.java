@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.builder;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 import br.com.roanrobersson.rshop.domain.dto.input.PrivilegeInput;
 import br.com.roanrobersson.rshop.domain.dto.model.PrivilegeModel;
@@ -12,17 +11,17 @@ import lombok.Getter;
 @Getter
 public class PrivilegeBuilder {
 
-	public static final UUID EXISTING_ID = UUID.fromString("b7705487-51a1-4092-8b62-91dccd76a41a");
-	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("91f550d9-548f-4d09-ac9c-1a95219033f7");
-	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-4000-0000-000000000000");
-	public static final UUID DEPENDENT_ID = UUID.fromString("b7705487-51a1-4092-8b62-91dccd76a41a");
+	public static final Long EXISTING_ID = 1L;
+	public static final Long ANOTHER_EXISTING_ID = 2L;
+	public static final Long NON_EXISTING_ID = 999999L;
+	public static final Long DEPENDENT_ID = 1L;
 	public static final String NON_EXISTING_NAME = "NON_EXISTING_PRIVILEGE_NAME";
 	public static final String EXISTING_NAME = "CONSULT_CATEGORIES";
 	public static final String ANOTHER_EXISTING_NAME = "EDIT_ADDRESSES";
 	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 	public static final String VALID_DESCRIPTION = "Description";
 
-	private UUID id = EXISTING_ID;
+	private Long id = EXISTING_ID;
 	private String name = EXISTING_NAME;
 
 	public static PrivilegeBuilder aPrivilege() {
@@ -43,7 +42,7 @@ public class PrivilegeBuilder {
 		return builder;
 	}
 
-	public PrivilegeBuilder withId(UUID id) {
+	public PrivilegeBuilder withId(Long id) {
 		this.id = id;
 		return this;
 	}

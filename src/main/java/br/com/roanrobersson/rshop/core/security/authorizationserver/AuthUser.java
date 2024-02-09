@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.core.security.authorizationserver;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -13,7 +12,7 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
 
 	private static final long serialVersionUID = 1L;
 
-	private UUID userId;
+	private Long userId;
 	private String fullName;
 
 	public AuthUser(User user, Collection<? extends GrantedAuthority> authorities) {

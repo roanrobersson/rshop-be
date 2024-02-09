@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.domain.exception;
 
-import java.util.UUID;
-
 public class PrivilegeNotFoundException extends EntityNotFoundException {
 
 	private static final long serialVersionUID = 1L;
@@ -10,7 +8,7 @@ public class PrivilegeNotFoundException extends EntityNotFoundException {
 		super(message);
 	}
 
-	public PrivilegeNotFoundException(UUID privilegeId) {
+	public PrivilegeNotFoundException(Long privilegeId) {
 		this(String.format("There is no privilege with the ID %s", privilegeId));
 	}
 }

@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import br.com.roanrobersson.rshop.domain.dto.input.ProductInput;
 import br.com.roanrobersson.rshop.domain.dto.model.ProductModel;
@@ -19,10 +18,10 @@ import lombok.Getter;
 @Getter
 public class ProductBuilder {
 
-	public static final UUID EXISTING_ID = UUID.fromString("ff9d39d5-717f-4714-9688-9e75797c0ec0");
-	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
-	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-4000-0000-000000000000");
-	public static final UUID DEPENDENT_ID = UUID.fromString("f758d7cf-6005-4012-93fc-23afa45bf1ed");
+	public static final Long EXISTING_ID = 1L;
+	public static final Long ANOTHER_EXISTING_ID = 2L;
+	public static final Long NON_EXISTING_ID = 999999L;
+	public static final Long DEPENDENT_ID = 1L;
 	public static final String EXISTING_NAME = "Smart TV";
 	public static final String ANOTHER_EXISTING_NAME = "PC Gamer";
 	public static final String NON_EXISTING_NAME = "Non existing name";
@@ -35,7 +34,7 @@ public class ProductBuilder {
 	public static final String VALID_URL = "https://img.com/img.png";
 	public static final String VALID_DESCRIPTION = "Description";
 
-	private UUID id = EXISTING_ID;
+	private Long id = EXISTING_ID;
 	private String name = EXISTING_NAME;
 	private String sku = EXISTING_SKU;
 	private Set<Category> categories = new HashSet<>();
@@ -63,7 +62,7 @@ public class ProductBuilder {
 		return builder;
 	}
 
-	public ProductBuilder withId(UUID id) {
+	public ProductBuilder withId(Long id) {
 		this.id = id;
 		return this;
 	}

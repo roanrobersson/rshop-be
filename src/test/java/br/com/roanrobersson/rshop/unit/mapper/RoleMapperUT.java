@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,7 +78,7 @@ class RoleMapperUT {
 	void toRole_ReturnCompatibleRole_RoleInputAsArgument() throws Exception {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT, RoleInput.class);
 		Role expected = objectMapper.readValue(JSON_ROLE, Role.class);
-		UUID[] privilegesIds = input.getPrivileges().stream().map(p -> UUID.fromString(p.getId())).toArray(UUID[]::new);
+		Long[] privilegesIds = input.getPrivileges().stream().map(p -> p.getId()).toArray(Long[]::new);
 		Privilege privilege1 = aPrivilege().id(privilegesIds[0]).build();
 		Privilege privilege2 = aPrivilege().id(privilegesIds[1]).build();
 		when(privilegeService.findById(privilege1.getId())).thenReturn(privilege1);
@@ -119,7 +118,7 @@ class RoleMapperUT {
 	@Test
 	void update_CorrectUpdateRole_RoleInputAndRoleAsArgument() throws Exception {
 		RoleInput input = objectMapper.readValue(JSON_ROLE_INPUT_2, RoleInput.class);
-		UUID privilegeId = UUID.fromString(input.getPrivileges().iterator().next().getId());
+		Long privilegeId = input.getPrivileges().iterator().next().getId();
 		Privilege privilege = aPrivilege().id(privilegeId).build();
 		Role actual = objectMapper.readValue(JSON_ROLE, Role.class);
 		when(privilegeService.findById(privilegeId)).thenReturn(privilege);

@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -62,7 +61,7 @@ public class UserService {
 	@Autowired
 	private AddressMapper addressMapper;
 
-	private UUID defaultUserRoleId = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
+	private Long defaultUserRoleId = 1L;
 
 	@Transactional(readOnly = true)
 	public Page<User> list(Pageable pageable) {
@@ -72,7 +71,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public User findById(UUID userId) {
+	public User findById(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 		user.getRoles().isEmpty(); // Force fetch Roles
 		return user;
@@ -80,8 +79,7 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public User findByEmail(String email) {
-		User user = userRepository
-				.findByEmail(email)
+		User user = userRepository.findByEmail(email)
 				.orElseThrow(() -> new UserNotFoundException(String.format(MSG_USER_WITH_EMAIL_NOT_FOUND, email)));
 		user.getRoles().isEmpty(); // Force fetch Roles
 		return user;
@@ -100,13 +98,13 @@ public class UserService {
 	}
 
 	@Transactional
-	public User update(UUID userId, UserUpdate userUpdate) {
+	public User update(Long userId, UserUpdate userUpdate) {
 		User user = findById(userId);
 		userMapper.update(userUpdate, user);
 		return userRepository.save(user);
 	}
 
-	public void delete(UUID userId) {
+	public void delete(Long userId) {
 		try {
 			userRepository.deleteById(userId);
 		} catch (EmptyResultDataAccessException e) {
@@ -122,32 +120,31 @@ public class UserService {
 	}
 
 	@Transactional
-	public void changePassword(UUID userId, UserChangePasswordInput userChangePasswordInput) {
+	public void changePassword(Long userId, UserChangePasswordInput userChangePasswordInput) {
 		User user = findById(userId);
 		user.setPassword(passwordEncoder.encode(userChangePasswordInput.getNewPassword()));
 		userRepository.save(user);
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Address> listAddresses(UUID userId, Pageable pageable) {
+	public Page<Address> listAddresses(Long userId, Pageable pageable) {
 		return addressRepository.findAllByUserId(userId, pageable);
 	}
 
 	@Transactional(readOnly = true)
-	public Address findAddressById(UUID userId, UUID addressId) {
-		return addressRepository
-				.findByUserIdAndId(userId, addressId)
+	public Address findAddressById(Long userId, Long addressId) {
+		return addressRepository.findByUserIdAndId(userId, addressId)
 				.orElseThrow(() -> new AddressNotFoundException(addressId));
 	}
 
 	@Transactional(readOnly = true)
-	public Address findMainAddress(UUID userId) {
+	public Address findMainAddress(Long userId) {
 		Optional<Address> optional = addressRepository.findFirstByUserIdAndMain(userId, true);
 		return optional.orElseThrow(() -> new AddressNotFoundException(String.format(MSG_NO_MAIN_ADDRESS, userId)));
 	}
 
 	@Transactional
-	public Address insertAddress(UUID userId, AddressInput addressInput) {
+	public Address insertAddress(Long userId, AddressInput addressInput) {
 		validateUniqueAddressInsert(userId, addressInput);
 		Address address = addressMapper.toAddress(addressInput);
 		User user = findById(userId);
@@ -157,7 +154,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public Address updateAddress(UUID userId, UUID addressId, AddressInput addressInput) {
+	public Address updateAddress(Long userId, Long addressId, AddressInput addressInput) {
 		validateUniqueAddressUpdate(userId, addressId, addressInput);
 		Address address = findAddressById(userId, addressId);
 		addressMapper.update(addressInput, address);
@@ -165,7 +162,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void deleteAddress(UUID userId, UUID addressId) {
+	public void deleteAddress(Long userId, Long addressId) {
 		try {
 			findAddressById(userId, addressId);
 			addressRepository.deleteById(addressId);
@@ -177,7 +174,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void setMainAddress(UUID userId, UUID addressId) {
+	public void setMainAddress(Long userId, Long addressId) {
 		Address address = findAddressById(userId, addressId);
 		if (Boolean.TRUE.equals(address.getMain())) {
 			return;
@@ -188,7 +185,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void unsetMainAddress(UUID userId) {
+	public void unsetMainAddress(Long userId) {
 		Address address;
 		address = findMainAddress(userId);
 		address.setMain(false);
@@ -196,13 +193,13 @@ public class UserService {
 	}
 
 	@Transactional
-	public Set<Role> listRoles(UUID userId) {
+	public Set<Role> listRoles(Long userId) {
 		User user = findById(userId);
 		return user.getRoles();
 	}
 
 	@Transactional
-	public void grantRole(UUID userId, UUID roleId) {
+	public void grantRole(Long userId, Long roleId) {
 		User user = findById(userId);
 		Role role = roleService.findById(roleId);
 		user.getRoles().add(role);
@@ -210,7 +207,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void revokeRole(UUID userId, UUID roleId) {
+	public void revokeRole(Long userId, Long roleId) {
 		User user = findById(userId);
 		Role role = roleService.findById(roleId);
 		user.getRoles().remove(role);
@@ -224,14 +221,14 @@ public class UserService {
 		}
 	}
 
-	private void validateUniqueAddressInsert(UUID userId, AddressInput addressInput) {
+	private void validateUniqueAddressInsert(Long userId, AddressInput addressInput) {
 		Optional<Address> optional = addressRepository.findByUserIdAndNick(userId, addressInput.getNick());
 		if (optional.isPresent()) {
 			throw new UniqueException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));
 		}
 	}
 
-	private void validateUniqueAddressUpdate(UUID userId, UUID addressId, AddressInput addressInput) {
+	private void validateUniqueAddressUpdate(Long userId, Long addressId, AddressInput addressInput) {
 		Optional<Address> optional = addressRepository.findByUserIdAndNick(userId, addressInput.getNick());
 		if (optional.isPresent() && !optional.get().getId().equals(addressId)) {
 			throw new UniqueException(String.format(MSG_ADDRESS_ALREADY_EXISTS, addressInput.getNick()));

@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,8 @@ public class RolePrivilegeController implements RolePrivilegeControllerOpenApi {
 	@GetMapping
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Set<UUID>> list(@PathVariable UUID roleId) {
-		Set<UUID> privilegesIds = service
+	public ResponseEntity<Set<Long>> list(@PathVariable Long roleId) {
+		Set<Long> privilegesIds = service
 				.getPrivileges(roleId)
 				.stream()
 				.map(Privilege::getId)
@@ -42,7 +41,7 @@ public class RolePrivilegeController implements RolePrivilegeControllerOpenApi {
 	@PutMapping(value = "/{privilegeId}")
 	@CheckSecurity.Role.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> link(@PathVariable UUID roleId, @PathVariable UUID privilegeId) {
+	public ResponseEntity<Void> link(@PathVariable Long roleId, @PathVariable Long privilegeId) {
 		service.linkPrivilege(roleId, privilegeId);
 		return ResponseEntity.noContent().build();
 	}
@@ -50,7 +49,7 @@ public class RolePrivilegeController implements RolePrivilegeControllerOpenApi {
 	@DeleteMapping(value = "/{privilegeId}")
 	@CheckSecurity.Role.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> unlink(@PathVariable UUID roleId, @PathVariable UUID privilegeId) {
+	public ResponseEntity<Void> unlink(@PathVariable Long roleId, @PathVariable Long privilegeId) {
 		service.unlinkPrivilege(roleId, privilegeId);
 		return ResponseEntity.noContent().build();
 	}

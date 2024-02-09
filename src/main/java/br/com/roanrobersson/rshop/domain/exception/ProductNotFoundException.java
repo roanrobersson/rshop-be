@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.domain.exception;
 
-import java.util.UUID;
-
 public class ProductNotFoundException extends EntityNotFoundException {
 
 	private static final long serialVersionUID = 1L;
@@ -10,7 +8,7 @@ public class ProductNotFoundException extends EntityNotFoundException {
 		super(message);
 	}
 
-	public ProductNotFoundException(UUID productId) {
+	public ProductNotFoundException(Long productId) {
 		this(String.format("There is no product with the ID %s", productId));
 	}
 }

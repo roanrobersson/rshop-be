@@ -1,10 +1,8 @@
 {
-	"description": "Excelent for white rooms",
-	"name": "Black table",
-	"sku": "BKTB2233",
-	"imgUrl": "url of image",
-	"price": 2190.0,
-	"categories": [
-		"3a2bf7b8-92fa-4a51-bee3a-e64a3c2286b"
-	]
+  "description": "Excelent for white rooms",
+  "name": "Black table",
+  "sku": "BKTB2233",
+  "imgUrl": "url of image",
+  "price": 2190.0,
+  "categories": [1]
 }

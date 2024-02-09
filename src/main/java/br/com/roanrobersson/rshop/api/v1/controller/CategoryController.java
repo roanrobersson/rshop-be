@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -53,7 +52,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@GetMapping(value = "/{categoryId}", produces = "application/json")
 	@CheckSecurity.Category.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CategoryModel> findById(@PathVariable("categoryId") UUID categoryId) {
+	public ResponseEntity<CategoryModel> findById(@PathVariable("categoryId") Long categoryId) {
 		Category category = service.findById(categoryId);
 		CategoryModel categoryModel = mapper.toModel(category);
 		return ResponseEntity.ok().body(categoryModel);
@@ -65,10 +64,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	public ResponseEntity<CategoryModel> insert(@Valid @RequestBody CategoryInput categoryInput) {
 		Category category = service.insert(categoryInput);
 		CategoryModel categoryModel = mapper.toModel(category);
-		URI uri = ServletUriComponentsBuilder
-				.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(categoryModel.getId())
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoryModel.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(categoryModel);
 	}
@@ -76,7 +72,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@PutMapping(value = "/{categoryId}", produces = "application/json")
 	@CheckSecurity.Category.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CategoryModel> update(@PathVariable UUID categoryId,
+	public ResponseEntity<CategoryModel> update(@PathVariable Long categoryId,
 			@Valid @RequestBody CategoryInput categoryInput) {
 		Category category = service.update(categoryId, categoryInput);
 		CategoryModel categoryModel = mapper.toModel(category);
@@ -86,7 +82,7 @@ public class CategoryController implements CategoryControllerOpenApi {
 	@DeleteMapping(value = "/{categoryId}")
 	@CheckSecurity.Category.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> delete(@PathVariable UUID categoryId) {
+	public ResponseEntity<Void> delete(@PathVariable Long categoryId) {
 		service.delete(categoryId);
 		return ResponseEntity.noContent().build();
 	}

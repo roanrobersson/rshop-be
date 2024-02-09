@@ -1,13 +1,13 @@
 name,categories,expectedProductCount
-"","", 25
-" ","", 25
+"","",25
+" ","",25
 pc gAMeR,"",21
 PC G,"",21
 PC Gamer,"",21
 Non existing name,"",0
-"","753dad79-2a1f-4f5c-bbd1-317a53587518", 1
-"","753dad79-2a1f-4f5c-bbd1-317a53587518, 431d856e-caf2-4367-823a-924ce46b2e02", 4
-"Smart TV","753dad79-2a1f-4f5c-bbd1-317a53587518, 431d856e-caf2-4367-823a-924ce46b2e02", 1
-"PC Gamer","753dad79-2a1f-4f5c-bbd1-317a53587518", 0
-"", "5227c10f-c81a-4885-b460-dbfee6dcc019", 0
-"", "00000000-0000-4000-0000-000000000000", 0
+"",1,1
+"","1,2",4
+"Smart TV","1,2",1
+"PC Gamer",1,0
+"",4,0
+"",999999999999,0

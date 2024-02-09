@@ -1,7 +1,7 @@
 {
-	"id": "b7705487-51a1-4092-8b62-91dccd76a41a",
-	"name": "CONSULT_CATEGORIES",
-	"description": "Allow consult categories",
-	"createdAt": "2020-10-20T03:00Z",
-	"updatedAt": "2020-10-20T03:00Z"
+  "id": 1,
+  "name": "CONSULT_CATEGORIES",
+  "description": "Allow consult categories",
+  "createdAt": "2020-10-20T03:00Z",
+  "updatedAt": "2020-10-20T03:00Z"
 }

@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,13 +68,12 @@ class ProductServiceUT {
 		Product product = anExistingProduct().build();
 		List<Product> productList = List.of(product);
 		PageImpl<Product> products = new PageImpl<>(productList);
-		Set<UUID> categories = Set.of(CategoryBuilder.EXISTING_ID, CategoryBuilder.ANOTHER_EXISTING_ID);
+		Set<Long> categories = Set.of(CategoryBuilder.EXISTING_ID, CategoryBuilder.ANOTHER_EXISTING_ID);
 		when(repository.search(categories, "", DEFAULT_PAGEABLE)).thenReturn(products);
 
 		Page<Product> actual = service.list(categories, "", DEFAULT_PAGEABLE);
 
-		assertThat(actual.getContent())
-				.containsExactlyInAnyOrder(product)
+		assertThat(actual.getContent()).containsExactlyInAnyOrder(product)
 				.usingRecursiveFieldByFieldElementComparator();
 		verify(repository, times(1)).search(categories, "", DEFAULT_PAGEABLE);
 		verify(repository, times(1)).findWithCategories(products.toList());
@@ -84,7 +82,7 @@ class ProductServiceUT {
 	@Test
 	void findById_ReturnProduct_IdExist() {
 		Product product = anExistingProduct().build();
-		UUID id = product.getId();
+		Long id = product.getId();
 		when(repository.findById(id)).thenReturn(Optional.of(product));
 
 		Product actual = service.findById(id);

@@ -1,25 +1,25 @@
 {
-	"id": "821e3c67-7f22-46af-978c-b6269cb15387",
-	"roles": [
-		{
-			"id": "18aace1e-f36a-4d71-b4d1-124387d9b63a",
-			"name": "CLIENT"
-		},
-		{
-			"id": "5e0b121c-9f12-4fd3-a7e6-179b5007149a",
-			"name": "ADMIN"
-		}
-	],
-	"firstName": "Maria",
-	"name": "Maria Green",
-	"birthDate": "2001-01-14",
-	"cpf": "67709960065",
-	"rg": "355144724",
-	"email": "alex@gmail.com",
-	"primaryTelephone": "54991200038",
-	"secondaryTelephone": null,
-	"createdAt": "2020-10-20T03:00Z",
-	"updatedAt": "2020-10-20T03:00Z",
-	"verifiedAt": "2020-10-20T03:00Z",
-	"lastLoginAt": "2020-10-20T03:00Z"
+  "id": 1,
+  "roles": [
+    {
+      "id": 1,
+      "name": "CLIENT"
+    },
+    {
+      "id": 3,
+      "name": "ADMIN"
+    }
+  ],
+  "firstName": "Maria",
+  "name": "Maria Green",
+  "birthDate": "2001-01-14",
+  "cpf": "67709960065",
+  "rg": "355144724",
+  "email": "alex@gmail.com",
+  "primaryTelephone": "54991200038",
+  "secondaryTelephone": null,
+  "createdAt": "2020-10-20T03:00Z",
+  "updatedAt": "2020-10-20T03:00Z",
+  "verifiedAt": "2020-10-20T03:00Z",
+  "lastLoginAt": "2020-10-20T03:00Z"
 }

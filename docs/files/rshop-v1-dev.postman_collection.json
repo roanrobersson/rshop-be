@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "2ba7d419-c7af-406d-a970-8525bf1a615e",
-		"name": "rShop v1 - dev",
+		"name": "rShop v1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "15985346"
 	},
@@ -181,14 +181,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+							"raw": "{{host}}/v1/categories/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"categories",
-								"753dad79-2a1f-4f5c-bbd1-317a53587518"
+								"1"
 							]
 						}
 					},
@@ -236,14 +236,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/v1/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+							"raw": "{{host}}/v1/categories/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"categories",
-								"753dad79-2a1f-4f5c-bbd1-317a53587518"
+								"1"
 							]
 						}
 					},
@@ -255,14 +255,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+							"raw": "{{host}}/v1/categories/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"categories",
-								"753dad79-2a1f-4f5c-bbd1-317a53587518"
+								"1"
 							]
 						}
 					},
@@ -301,14 +301,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/roles/5e0b121c-9f12-4fd3-a7e6-179b5007149a/privileges?page=0&size=15&sort=name,asc",
+									"raw": "{{host}}/v1/roles/2/privileges?page=0&size=15&sort=name,asc",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"roles",
-										"5e0b121c-9f12-4fd3-a7e6-179b5007149a",
+										"2",
 										"privileges"
 									],
 									"query": [
@@ -335,16 +335,16 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/roles/5e0b121c-9f12-4fd3-a7e6-179b5007149a/privileges/585a242f-1058-476c-8656-eafe1fed5812",
+									"raw": "{{host}}/v1/roles/1/privileges/5",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"roles",
-										"5e0b121c-9f12-4fd3-a7e6-179b5007149a",
+										"1",
 										"privileges",
-										"585a242f-1058-476c-8656-eafe1fed5812"
+										"5"
 									]
 								}
 							},
@@ -356,16 +356,16 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/roles/5e0b121c-9f12-4fd3-a7e6-179b5007149a/privileges/585a242f-1058-476c-8656-eafe1fed5812",
+									"raw": "{{host}}/v1/roles/2/privileges/4",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"roles",
-										"5e0b121c-9f12-4fd3-a7e6-179b5007149a",
+										"2",
 										"privileges",
-										"585a242f-1058-476c-8656-eafe1fed5812"
+										"4"
 									]
 								}
 							},
@@ -411,14 +411,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+							"raw": "{{host}}/v1/roles/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"roles",
-								"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+								"1"
 							]
 						}
 					},
@@ -466,14 +466,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/v1/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+							"raw": "{{host}}/v1/roles/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"roles",
-								"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+								"1"
 							]
 						}
 					},
@@ -485,14 +485,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/roles/650861b5-a749-4ed1-964b-c72a1d4c5f0e",
+							"raw": "{{host}}/v1/roles/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"roles",
-								"650861b5-a749-4ed1-964b-c72a1d4c5f0e"
+								"1"
 							]
 						}
 					},
@@ -552,14 +552,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/privileges/b7e8b3c9-d426-42f0-8594-5c46cd112aae",
+							"raw": "{{host}}/v1/privileges/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"privileges",
-								"b7e8b3c9-d426-42f0-8594-5c46cd112aae"
+								"1"
 							]
 						}
 					},
@@ -601,14 +601,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5/categories",
+									"raw": "{{host}}/v1/products/3/categories",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"products",
-										"c8a0c055-030a-4e47-8aca-cf4634b98be5",
+										"3",
 										"categories"
 									]
 								}
@@ -621,16 +621,15 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+									"raw": "{{host}}/v1/products/3categories/1",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"products",
-										"c8a0c055-030a-4e47-8aca-cf4634b98be5",
-										"categories",
-										"753dad79-2a1f-4f5c-bbd1-317a53587518"
+										"3categories",
+										"1"
 									]
 								}
 							},
@@ -642,16 +641,16 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5/categories/753dad79-2a1f-4f5c-bbd1-317a53587518",
+									"raw": "{{host}}/v1/products/3/categories/2",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"products",
-										"c8a0c055-030a-4e47-8aca-cf4634b98be5",
+										"3",
 										"categories",
-										"753dad79-2a1f-4f5c-bbd1-317a53587518"
+										"2"
 									]
 								}
 							},
@@ -668,7 +667,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/products?page=0&size=15&sort=name,asc&q=tv&categories=753dad79-2a1f-4f5c-bbd1-317a53587518, 431d856e-caf2-4367-823a-924ce46b2e02",
+							"raw": "{{host}}/v1/products?page=0&size=15&sort=name,asc&q=tv&categories=1,3",
 							"host": [
 								"{{host}}"
 							],
@@ -695,7 +694,7 @@
 								},
 								{
 									"key": "categories",
-									"value": "753dad79-2a1f-4f5c-bbd1-317a53587518, 431d856e-caf2-4367-823a-924ce46b2e02"
+									"value": "1,3"
 								}
 							]
 						}
@@ -711,14 +710,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/products/c8a0c055-030a-4e47-8aca-cf4634b98be5",
+							"raw": "{{host}}/v1/products/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"products",
-								"c8a0c055-030a-4e47-8aca-cf4634b98be5"
+								"1"
 							]
 						}
 					},
@@ -758,7 +757,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Updated product name\",\r\n    \"description\": \"Updated product description\",\r\n    \"sku\": \"NESK0100\",\r\n    \"price\": 600.0,\r\n    \"imgUrl\": \"new url\",\r\n    \"categories\": [\r\n        \"5c2b2b98-7b72-42dd-8add-9e97a2967e11\",\r\n        \"753dad79-2a1f-4f5c-bbd1-317a53587518\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"Updated product name\",\r\n    \"description\": \"Updated product description\",\r\n    \"sku\": \"NESK0100\",\r\n    \"price\": 600.0,\r\n    \"imgUrl\": \"new url\",\r\n    \"categories\": [3,1]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -766,14 +765,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/v1/products/7c4125cc-8116-4f11-8fc3-f40a0775aec7",
+							"raw": "{{host}}/v1/products/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"products",
-								"7c4125cc-8116-4f11-8fc3-f40a0775aec7"
+								"1"
 							]
 						}
 					},
@@ -785,14 +784,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/products/638a3d4c-095f-48dc-ae7f-16ca3d3b4751",
+							"raw": "{{host}}/v1/products/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"products",
-								"638a3d4c-095f-48dc-ae7f-16ca3d3b4751"
+								"1"
 							]
 						}
 					},
@@ -831,14 +830,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses?page=0&size=15&sort=nick,asc",
+									"raw": "{{host}}/v1/users/3/addresses?page=0&size=15&sort=nick,asc",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"addresses"
 									],
 									"query": [
@@ -865,16 +864,16 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/6353293a-d2b6-400f-997d-d6935032a52f",
+									"raw": "{{host}}/v1/users/3/addresses/4",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"addresses",
-										"6353293a-d2b6-400f-997d-d6935032a52f"
+										"4"
 									]
 								}
 							},
@@ -886,14 +885,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/main",
+									"raw": "{{host}}/v1/users/3/addresses/main",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"addresses",
 										"main"
 									]
@@ -916,15 +915,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses",
+									"raw": "{{host}}/v1/users/3/roles/1",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
-										"addresses"
+										"3",
+										"roles",
+										"1"
 									]
 								}
 							},
@@ -945,16 +945,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/0209f0c1-c596-4672-8bfb-c385626c73fb",
+									"raw": "{{host}}/v1/users/3/addresses/4",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"addresses",
-										"0209f0c1-c596-4672-8bfb-c385626c73fb"
+										"4"
 									]
 								}
 							},
@@ -966,16 +966,16 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/6353293a-d2b6-400f-997d-d6935032a52f",
+									"raw": "{{host}}/v1/users/3/addresses/4",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"addresses",
-										"6353293a-d2b6-400f-997d-d6935032a52f"
+										"4"
 									]
 								}
 							},
@@ -987,16 +987,16 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/6353293a-d2b6-400f-997d-d6935032a52f/main",
+									"raw": "{{host}}/v1/users/3/addresses/4/main",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"addresses",
-										"6353293a-d2b6-400f-997d-d6935032a52f",
+										"4",
 										"main"
 									]
 								}
@@ -1009,14 +1009,14 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/addresses/main",
+									"raw": "{{host}}/v1/users/3/addresses/main",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"addresses",
 										"main"
 									]
@@ -1035,14 +1035,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/roles",
+									"raw": "{{host}}/v1/users/3/roles",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"roles"
 									]
 								}
@@ -1055,16 +1055,16 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+									"raw": "{{host}}/v1/users/3/roles/1",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"roles",
-										"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+										"1"
 									]
 								}
 							},
@@ -1076,16 +1076,16 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/roles/18aace1e-f36a-4d71-b4d1-124387d9b63a",
+									"raw": "{{host}}/v1/users/3/roles/1",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
 										"v1",
 										"users",
-										"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+										"3",
 										"roles",
-										"18aace1e-f36a-4d71-b4d1-124387d9b63a"
+										"1"
 									]
 								}
 							},
@@ -1151,14 +1151,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/users/821e3c67-7f22-46af-978c-b6269cb15387",
+							"raw": "{{host}}/v1/users/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"users",
-								"821e3c67-7f22-46af-978c-b6269cb15387"
+								"1"
 							]
 						}
 					},
@@ -1216,14 +1216,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
+							"raw": "{{host}}/v1/users/3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"users",
-								"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b"
+								"3"
 							]
 						}
 					},
@@ -1244,15 +1244,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/v1/users/3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b/password",
+							"raw": "{{host}}/v1/users/3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"users",
-								"3a2bf7b8-92fa-4a51-bee3-ae64a3c2286b",
-								"password"
+								"3"
 							]
 						}
 					},
@@ -1264,14 +1263,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/users/d16c83fe-3a2e-42b6-97b4-503b203647f6",
+							"raw": "{{host}}/v1/users/2",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"users",
-								"d16c83fe-3a2e-42b6-97b4-503b203647f6"
+								"2"
 							]
 						}
 					},

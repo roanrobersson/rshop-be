@@ -2,16 +2,14 @@ package br.com.roanrobersson.rshop.domain.model;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
@@ -33,12 +31,9 @@ public class Image implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(columnDefinition = "char(36)")
-	@Type(type = "uuid-char")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
-	private UUID id;
+	private Long id;
 
 	@Column(nullable = false, length = 255)
 	private String fileName;
@@ -60,15 +55,8 @@ public class Image implements Serializable {
 	private OffsetDateTime updatedAt;
 
 	public static ImageBuilder anImage() {
-		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
-		return new ImageBuilder()
-				.id(uuid)
-				.fileName("product")
-				.originalFileName("product.jpeg")
-				.contentType("image/jpeg")
-				.fileSize(1500000)
-				.createdAt(offsetDateTime)
-				.updatedAt(offsetDateTime);
+		return new ImageBuilder().id(123L).fileName("product").originalFileName("product.jpeg")
+				.contentType("image/jpeg").fileSize(1500000).createdAt(offsetDateTime).updatedAt(offsetDateTime);
 	}
 }

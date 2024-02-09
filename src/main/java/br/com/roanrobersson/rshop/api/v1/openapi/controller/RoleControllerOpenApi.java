@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
-import java.util.UUID;
-
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +34,7 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Role not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<RoleModel> findById(
-			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId);
+			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") Long roleId);
 
 	@Operation(summary = "Creates a new role", security = @SecurityRequirement(name = "basicAuth"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Role created with success"),
@@ -54,7 +52,7 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<RoleModel> update(
-			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId,
+			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") Long roleId,
 			@Parameter(description = "Representation of a role with the new data") RoleInput roleInputDTO);
 
 	@Operation(summary = "Remove an existing role", security = @SecurityRequirement(name = "basicAuth"))
@@ -63,7 +61,7 @@ public interface RoleControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Role not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Void> delete(
-			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") UUID roleId);
+			@Parameter(description = "ID of a role", example = "5e0b121c-9f12-4fd3-a7e6-179b5007149a") Long roleId);
 
 	@Operation(summary = "Returns the role count", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Role count retrived with success"),

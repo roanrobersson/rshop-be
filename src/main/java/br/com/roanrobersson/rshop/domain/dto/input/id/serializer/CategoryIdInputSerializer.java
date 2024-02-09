@@ -23,6 +23,6 @@ public class CategoryIdInputSerializer extends StdSerializer<CategoryIdInput> {
 	@Override
 	public void serialize(CategoryIdInput value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
 
-		jgen.writeString(value.getId());
+		jgen.writeNumber(value.getId());
 	}
 }

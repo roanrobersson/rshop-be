@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -47,11 +46,11 @@ public class ProductController implements ProductControllerOpenApi {
 	@CheckSecurity.Product.CanConsult
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Page<ProductModel>> list(
-			@RequestParam(value = "categories", required = false) UUID[] categories,
+			@RequestParam(value = "categories", required = false) Long[] categories,
 			@RequestParam(value = "q", defaultValue = "") String name,
 			@PageableDefault(sort = "name") Pageable pageable) {
 		if (categories == null)
-			categories = new UUID[0];
+			categories = new Long[0];
 		Page<Product> products = service.list(Set.of(categories), name.trim(), pageable);
 		Page<ProductModel> productModels = mapper.toModelPage(products);
 		return ResponseEntity.ok().body(productModels);
@@ -59,7 +58,7 @@ public class ProductController implements ProductControllerOpenApi {
 
 	@GetMapping(value = "/{productId}", produces = "application/json")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ProductModel> findById(@PathVariable UUID productId) {
+	public ResponseEntity<ProductModel> findById(@PathVariable Long productId) {
 		Product product = service.findById(productId);
 		ProductModel productModel = mapper.toModel(product);
 		return ResponseEntity.ok().body(productModel);
@@ -82,7 +81,7 @@ public class ProductController implements ProductControllerOpenApi {
 	@PutMapping(value = "/{productId}", produces = "application/json")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<ProductModel> update(@PathVariable UUID productId,
+	public ResponseEntity<ProductModel> update(@PathVariable Long productId,
 			@Valid @RequestBody ProductInput productInput) {
 		Product product = service.update(productId, productInput);
 		ProductModel productModel = mapper.toModel(product);
@@ -92,7 +91,7 @@ public class ProductController implements ProductControllerOpenApi {
 	@DeleteMapping(value = "/{productId}")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> delete(@PathVariable UUID productId) {
+	public ResponseEntity<Void> delete(@PathVariable Long productId) {
 		service.delete(productId);
 		return ResponseEntity.noContent().build();
 	}

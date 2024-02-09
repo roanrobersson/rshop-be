@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.mapper;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -41,7 +40,7 @@ public abstract class ProductMapper {
 	protected Set<Category> categoriesIdsToCategories(Set<CategoryIdInput> categoriesIds) {
 		Set<Category> categories = new HashSet<>();
 		for (CategoryIdInput input : categoriesIds) {
-			UUID id = UUID.fromString(input.getId());
+			Long id = input.getId();
 			Category category = categoryService.findById(id);
 			categories.add(category);
 		}

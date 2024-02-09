@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.domain.repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,13 +10,13 @@ import org.springframework.stereotype.Repository;
 import br.com.roanrobersson.rshop.domain.model.Address;
 
 @Repository
-public interface AddressRepository extends JpaRepository<Address, UUID> {
+public interface AddressRepository extends JpaRepository<Address, Long> {
 
-	Page<Address> findAllByUserId(UUID userId, Pageable pageable);
+	Page<Address> findAllByUserId(Long userId, Pageable pageable);
 
-	Optional<Address> findFirstByUserIdAndMain(UUID userId, boolean main);
+	Optional<Address> findFirstByUserIdAndMain(Long userId, boolean main);
 
-	Optional<Address> findByUserIdAndId(UUID userId, UUID id);
+	Optional<Address> findByUserIdAndId(Long userId, Long id);
 
-	Optional<Address> findByUserIdAndNick(UUID userId, String nick);
+	Optional<Address> findByUserIdAndNick(Long userId, String nick);
 }

@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.mapper;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -43,7 +42,7 @@ public abstract class RoleMapper {
 	protected Set<Privilege> privilegesIdsToPrivileges(Set<PrivilegeIdInput> privilegesIds) {
 		Set<Privilege> privileges = new HashSet<>();
 		for (PrivilegeIdInput input : privilegesIds) {
-			UUID id = UUID.fromString(input.getId());
+			Long id = input.getId();
 			Privilege privilege = privilegeService.findById(id);
 			privileges.add(privilege);
 		}

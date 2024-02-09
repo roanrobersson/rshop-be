@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +42,7 @@ public class PrivilegeController implements PrivilegeControllerOpenApi {
 	@GetMapping(value = "/{privilegeId}", produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<PrivilegeModel> findById(@PathVariable("privilegeId") UUID id) {
+	public ResponseEntity<PrivilegeModel> findById(@PathVariable("privilegeId") Long id) {
 		Privilege privilege = service.findById(id);
 		PrivilegeModel privilegeModel = mapper.toModel(privilege);
 		return ResponseEntity.ok().body(privilegeModel);

@@ -8,11 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.integration.IT;
-import br.com.roanrobersson.rshop.util.StringToUUIDSetConverter;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -35,13 +33,11 @@ class ProductRepositoryIT extends IT {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/csv/product-search-filters.csv", numLinesToSkip = 1)
-	void search_ReturnProducts_AppliedFilters(String productName,
-			@ConvertWith(StringToUUIDSetConverter.class) Set<UUID> categories, long expectedResultCount) {
-		if (categories.isEmpty()) {
-			categories = null;
-		}
+	void search_ReturnProducts_AppliedFilters(String productName, String categories, long expectedResultCount) {
+		Set<Long> categoriesSet = categories.isEmpty() ? Set.of()
+				: Set.of(categories.split(",")).stream().map(x -> Long.valueOf(x)).collect(Collectors.toSet());
 
-		Page<Product> actual = repository.search(categories, productName, PageRequest.of(0, 10));
+		Page<Product> actual = repository.search(categoriesSet, productName, PageRequest.of(0, 10));
 
 		assertThat(actual.getTotalElements()).isEqualTo(expectedResultCount);
 	}

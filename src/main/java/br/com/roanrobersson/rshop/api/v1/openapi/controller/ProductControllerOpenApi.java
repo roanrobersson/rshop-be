@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
-import java.util.UUID;
-
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +26,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(responseCode = "403", description = "Access denied", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Page<ProductModel>> list(
-			@Parameter(description = "Category array", example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]") UUID[] categories,
+			@Parameter(description = "Category array", example = "[5c2b2b98-7b72-42dd-8add-9e97a2967e11, 431d856e-caf2-4367-823a-924ce46b2e02]") Long[] categories,
 			@Parameter(description = "Product's name", example = "Computer", required = false) String name,
 			@ParameterObject Pageable pageable);
 
@@ -39,7 +37,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Product not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<ProductModel> findById(
-			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId);
+			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") Long productId);
 
 	@Operation(summary = "Creates a new product", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Product created with success"),
@@ -57,7 +55,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<ProductModel> update(
-			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId,
+			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") Long productId,
 			@Parameter(description = "Representation of a product with the new data") ProductInput productInputDTO);
 
 	@Operation(summary = "Remove an existing product", security = @SecurityRequirement(name = "OAuth2"))
@@ -66,7 +64,7 @@ public interface ProductControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Product not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Void> delete(
-			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") UUID productId);
+			@Parameter(description = "ID of a product", example = "7c4125cc-8116-4f11-8fc3-f40a0775aec7") Long productId);
 
 	@Operation(summary = "Returns the product count", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Product count retrived with success"),

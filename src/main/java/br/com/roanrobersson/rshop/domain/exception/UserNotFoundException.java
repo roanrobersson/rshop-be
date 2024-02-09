@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.domain.exception;
 
-import java.util.UUID;
-
 public class UserNotFoundException extends EntityNotFoundException {
 
 	private static final long serialVersionUID = 1L;
@@ -10,7 +8,7 @@ public class UserNotFoundException extends EntityNotFoundException {
 		super(message);
 	}
 
-	public UserNotFoundException(UUID userId) {
+	public UserNotFoundException(Long userId) {
 		this(String.format("There is no user with the ID %s", userId));
 	}
 }

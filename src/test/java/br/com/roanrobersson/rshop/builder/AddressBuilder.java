@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.builder;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 import br.com.roanrobersson.rshop.domain.dto.input.AddressInput;
 import br.com.roanrobersson.rshop.domain.dto.model.AddressModel;
@@ -11,15 +10,15 @@ import br.com.roanrobersson.rshop.domain.model.User;
 
 public class AddressBuilder {
 
-	public static final UUID EXISTING_ID = UUID.fromString("37783d1e-f631-408f-8796-e4da82c275e0");
-	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("7e88c136-b11c-4879-920f-1193db6fef0f");
-	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	public static final Long EXISTING_ID = 1L;
+	public static final Long ANOTHER_EXISTING_ID = 2L;
+	public static final Long NON_EXISTING_ID = 999999L;
 	public static final String EXISTING_NICK = "Home";
 	public static final String ANOTHER_EXISTING_NICK = "Work";
 	public static final String NON_EXISTING_NICK = "Non existing nick";
 	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
-	private UUID id = EXISTING_ID;
+	private Long id = EXISTING_ID;
 	private User user = null;
 	private String nick = EXISTING_NICK;
 	private Boolean main = true;

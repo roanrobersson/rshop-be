@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -55,7 +54,7 @@ public class RoleController implements RoleControllerOpenApi {
 	@GetMapping(value = "/{roleId}", produces = "application/json")
 	@CheckSecurity.Role.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<RoleModel> findById(@PathVariable UUID roleId) {
+	public ResponseEntity<RoleModel> findById(@PathVariable Long roleId) {
 		Role role = service.findById(roleId);
 		RoleModel roleModel = mapper.toModel(role);
 		return ResponseEntity.ok().body(roleModel);
@@ -82,7 +81,7 @@ public class RoleController implements RoleControllerOpenApi {
 	@PutMapping(value = "/{roleId}", produces = "application/json")
 	@CheckSecurity.Role.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<RoleModel> update(@PathVariable UUID roleId, @Valid @RequestBody RoleInput roleInput) {
+	public ResponseEntity<RoleModel> update(@PathVariable Long roleId, @Valid @RequestBody RoleInput roleInput) {
 		try {
 			Role role = service.update(roleId, roleInput);
 			RoleModel roleModel = mapper.toModel(role);
@@ -95,7 +94,7 @@ public class RoleController implements RoleControllerOpenApi {
 	@DeleteMapping(value = "/{roleId}")
 	@CheckSecurity.Role.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> delete(@PathVariable UUID roleId) {
+	public ResponseEntity<Void> delete(@PathVariable Long roleId) {
 		service.delete(roleId);
 		return ResponseEntity.noContent().build();
 	}

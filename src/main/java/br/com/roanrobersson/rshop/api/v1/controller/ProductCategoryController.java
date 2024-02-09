@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,14 +31,14 @@ public class ProductCategoryController implements ProductCategoryControllerOpenA
 	@GetMapping
 	@CheckSecurity.Product.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Set<UUID>> list(@PathVariable UUID productId) {
+	public ResponseEntity<Set<Long>> list(@PathVariable Long productId) {
 		return ResponseEntity.ok().body(categoryMapper.toIdSet(service.getCategories(productId)));
 	}
 
 	@PutMapping(value = "/{categoryId}")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> link(@PathVariable UUID productId, @PathVariable UUID categoryId) {
+	public ResponseEntity<Void> link(@PathVariable Long productId, @PathVariable Long categoryId) {
 		service.linkCategory(productId, categoryId);
 		return ResponseEntity.noContent().build();
 	}
@@ -47,7 +46,7 @@ public class ProductCategoryController implements ProductCategoryControllerOpenA
 	@DeleteMapping(value = "/{categoryId}")
 	@CheckSecurity.Product.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> unlink(@PathVariable UUID productId, @PathVariable UUID categoryId) {
+	public ResponseEntity<Void> unlink(@PathVariable Long productId, @PathVariable Long categoryId) {
 		service.unlinkCategory(productId, categoryId);
 		return ResponseEntity.noContent().build();
 	}

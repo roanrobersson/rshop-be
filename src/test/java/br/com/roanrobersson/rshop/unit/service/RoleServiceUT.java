@@ -5,6 +5,7 @@ import static br.com.roanrobersson.rshop.builder.RoleBuilder.aRole;
 import static br.com.roanrobersson.rshop.builder.RoleBuilder.anExistingRole;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -13,7 +14,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,9 +55,9 @@ class RoleServiceUT {
 	@Mock
 	private RoleMapper mapper;
 
-	private final UUID EXISTING_ID = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
-	private final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
-	private final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
+	private final Long EXISTING_ID = 1L;
+	private final Long NON_EXISTING_ID = 999999L;
+	private final Long DEPENDENT_ID = 1L;
 	private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.by(Order.asc("id")));
 
 	@Test
@@ -78,7 +78,7 @@ class RoleServiceUT {
 	@Test
 	void findById_ReturnRole_IdExist() {
 		Role role = anExistingRole().build();
-		UUID id = role.getId();
+		Long id = role.getId();
 		when(repository.findById(id)).thenReturn(Optional.of(role));
 
 		Role actual = service.findById(id);
@@ -163,8 +163,9 @@ class RoleServiceUT {
 
 	@Test
 	void update_ThrowsUniqueException_NameAlreadyInUse() {
-		RoleInput input = aNonExistingRole().withExistingName().buildInput();
-		when(repository.findByName(input.getName())).thenReturn(Optional.of(aRole().build()));
+		RoleInput input = aRole().buildInput();
+		when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(aRole().withId(EXISTING_ID).build()));
+		when(repository.findByName(anyString())).thenReturn(Optional.of(aRole().withId(555L).build()));
 
 		Throwable thrown = catchThrowable(() -> {
 			service.update(EXISTING_ID, input);

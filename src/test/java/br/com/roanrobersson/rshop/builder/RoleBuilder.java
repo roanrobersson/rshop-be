@@ -6,7 +6,6 @@ import static br.com.roanrobersson.rshop.builder.PrivilegeBuilder.anExistingPriv
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import br.com.roanrobersson.rshop.domain.dto.input.RoleInput;
 import br.com.roanrobersson.rshop.domain.dto.model.RoleModel;
@@ -18,16 +17,16 @@ import lombok.Getter;
 @Getter
 public class RoleBuilder {
 
-	public static final UUID EXISTING_ID = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
-	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("eb1ffb79-5dfb-4b13-b615-eae094a06207");
-	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-4000-0000-000000000000");
-	public static final UUID DEPENDENT_ID = UUID.fromString("18aace1e-f36a-4d71-b4d1-124387d9b63a");
+	public static final Long EXISTING_ID = 1L;
+	public static final Long ANOTHER_EXISTING_ID = 2L;
+	public static final Long NON_EXISTING_ID = 999999L;
+	public static final Long DEPENDENT_ID = 3L;
 	public static final String NON_EXISTING_NAME = "NON EXISTING ROLE NAME";
 	public static final String EXISTING_NAME = "CLIENT";
 	public static final String ANOTHER_EXISTING_NAME = "OPERATOR";
 	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
-	private UUID id = EXISTING_ID;
+	private Long id = EXISTING_ID;
 	private String name = EXISTING_NAME;
 	private Set<Privilege> privileges = new HashSet<>();
 
@@ -51,7 +50,7 @@ public class RoleBuilder {
 		return builder;
 	}
 
-	public RoleBuilder withId(UUID id) {
+	public RoleBuilder withId(Long id) {
 		this.id = id;
 		return this;
 	}

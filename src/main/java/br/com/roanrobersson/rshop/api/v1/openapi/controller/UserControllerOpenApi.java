@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
-import java.util.UUID;
-
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +36,7 @@ public interface UserControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<UserModel> findById(
-			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") Long userId);
 
 	@Operation(summary = "Creates a new user")
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "User created with success"),
@@ -56,7 +54,7 @@ public interface UserControllerOpenApi {
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<UserModel> update(
-			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") Long userId,
 			@Parameter(description = "Representation of a user with the new data") UserUpdate userUpdateDTO);
 
 	@Operation(summary = "Removes an existing user", security = @SecurityRequirement(name = "OAuth2"))
@@ -65,7 +63,7 @@ public interface UserControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Resource not found"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<Void> delete(
-			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId);
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") Long userId);
 
 	@Operation(summary = "Changes a user's password", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "User password changed with success"),
@@ -73,7 +71,7 @@ public interface UserControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Void> changePassword(
-			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") UUID userId,
+			@Parameter(description = "ID of a user", example = "821e3c67-7f22-46af-978c-b6269cb15387") Long userId,
 			@Parameter(description = "Representation of user new password") UserChangePasswordInput userChangePasswordDTO);
 
 	@Operation(summary = "Returns the user count", security = @SecurityRequirement(name = "OAuth2"))

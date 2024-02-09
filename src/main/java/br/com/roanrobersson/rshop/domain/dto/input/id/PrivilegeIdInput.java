@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import br.com.roanrobersson.rshop.core.validation.UUIDValid;
 import br.com.roanrobersson.rshop.domain.dto.input.id.serializer.PrivilegeIdInputSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -24,8 +23,7 @@ import lombok.ToString;
 public class PrivilegeIdInput {
 
 	@NotNull
-	@UUIDValid
 	@EqualsAndHashCode.Include
-	@Schema(example = "753dad79-2a1f-4f5c-bbd1-317a53587518")
-	private String id;
+	@Schema(example = "123")
+	private Long id;
 }

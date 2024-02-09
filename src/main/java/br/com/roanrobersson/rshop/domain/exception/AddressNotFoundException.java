@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.domain.exception;
 
-import java.util.UUID;
-
 public class AddressNotFoundException extends EntityNotFoundException {
 
 	private static final long serialVersionUID = 1L;
@@ -10,7 +8,7 @@ public class AddressNotFoundException extends EntityNotFoundException {
 		super(message);
 	}
 
-	public AddressNotFoundException(UUID addressId) {
+	public AddressNotFoundException(Long addressId) {
 		this(String.format("There is no address with the ID %s", addressId));
 	}
 }

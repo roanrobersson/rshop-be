@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -37,7 +36,7 @@ public class CategoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public Category findById(UUID categoryId) {
+	public Category findById(Long categoryId) {
 		return repository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
 	}
 
@@ -49,14 +48,14 @@ public class CategoryService {
 	}
 
 	@Transactional
-	public Category update(UUID categoryId, CategoryInput categoryInput) {
+	public Category update(Long categoryId, CategoryInput categoryInput) {
 		validateUniqueUpdate(categoryId, categoryInput);
 		Category category = findById(categoryId);
 		mapper.update(categoryInput, category);
 		return repository.save(category);
 	}
 
-	public void delete(UUID categoryId) {
+	public void delete(Long categoryId) {
 		try {
 			repository.deleteById(categoryId);
 		} catch (EmptyResultDataAccessException e) {
@@ -78,7 +77,7 @@ public class CategoryService {
 		}
 	}
 
-	private void validateUniqueUpdate(UUID categoryId, CategoryInput categoryInput) {
+	private void validateUniqueUpdate(Long categoryId, CategoryInput categoryInput) {
 		Optional<Category> optional = repository.findByName(categoryInput.getName());
 		if (optional.isPresent() && !optional.get().getId().equals(categoryId)) {
 			throw new UniqueException(String.format(MSG_CATEGORY_ALREADY_EXISTS, categoryInput.getName()));

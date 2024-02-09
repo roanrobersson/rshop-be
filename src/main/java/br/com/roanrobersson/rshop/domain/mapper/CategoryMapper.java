@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.domain.mapper;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -29,7 +28,7 @@ public abstract class CategoryMapper {
 		return categories.map(x -> this.toModel(x));
 	};
 
-	public Set<UUID> toIdSet(Set<Category> categories) {
+	public Set<Long> toIdSet(Set<Category> categories) {
 		return categories.stream().map(Category::getId).collect(Collectors.toSet());
 	}
 

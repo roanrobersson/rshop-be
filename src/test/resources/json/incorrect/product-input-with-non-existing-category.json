@@ -1,11 +1,8 @@
 {
-    "description": "The new generation Xbox video game",
-    "name": "Xbox Series X",
-    "sku": "XBSO0200",
-    "imgUrl": "url of image",
-    "price": 900.0,
-    "categories": [
-        "753dad79-2a1f-4f5c-bbd1-317a53587518", 
-        "00000000-0000-0000-0000-000000000000"
-    ]
+  "description": "The new generation Xbox video game",
+  "name": "Xbox Series X",
+  "sku": "XBSO0200",
+  "imgUrl": "url of image",
+  "price": 900.0,
+  "categories": [1, 999999]
 }

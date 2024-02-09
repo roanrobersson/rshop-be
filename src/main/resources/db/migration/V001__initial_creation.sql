@@ -1,9 +1,9 @@
 create table address (
-  id char(36) not null,
+  id int not null auto_increment,
   address_line varchar(75) not null,
   city varchar(75) not null,
   complement varchar(75),
-  created_at datetime(6),
+  created_at datetime (6),
   main bit not null,
   neighborhood varchar(30) not null,
   nick varchar(20) not null,
@@ -13,100 +13,100 @@ create table address (
   state varchar(75) not null,
   telephone varchar(11) not null,
   uf char(2) not null,
-  updated_at datetime(6),
-  user_id char(36) not null,
+  updated_at datetime (6),
+  user_id int not null,
   primary key (id)
 ) engine = InnoDB;
 
 create table category (
-  id char(36) not null,
-  created_at datetime(6),
+  id int not null auto_increment,
+  created_at datetime (6),
   name varchar(127) not null,
-  updated_at datetime(6),
+  updated_at datetime (6),
   primary key (id)
 ) engine = InnoDB;
 
 create table image (
-  id char(36) not null,
+  id int not null auto_increment,
   content_type varchar(50) not null,
-  created_at datetime(6),
+  created_at datetime (6),
   file_name varchar(255) not null,
   file_size integer not null,
   original_file_name varchar(255) not null,
-  updated_at datetime(6),
+  updated_at datetime (6),
   primary key (id)
 ) engine = InnoDB;
 
 create table privilege (
-  id char(36) not null,
-  created_at datetime(6),
+  id int not null auto_increment,
+  created_at datetime (6),
   description varchar(100) not null,
   name varchar(30) not null,
-  updated_at datetime(6),
+  updated_at datetime (6),
   primary key (id)
 ) engine = InnoDB;
 
 create table product (
-  id char(36) not null,
-  created_at datetime(6),
+  id int not null auto_increment,
+  created_at datetime (6),
   description text,
   img_url varchar(255) not null,
   name varchar(127) not null,
   price decimal(10, 2) not null,
   sku varchar(12) not null,
-  updated_at datetime(6),
+  updated_at datetime (6),
   primary key (id)
 ) engine = InnoDB;
 
 create table product_category (
-  product_id char(36) not null,
-  category_id char(36) not null,
+  product_id int not null,
+  category_id int not null,
   primary key (product_id, category_id)
 ) engine = InnoDB;
 
 create table role (
-  id char(36) not null,
-  created_at datetime(6),
+  id int not null auto_increment,
+  created_at datetime (6),
   name varchar(30) not null,
-  updated_at datetime(6),
+  updated_at datetime (6),
   primary key (id)
 ) engine = InnoDB;
 
 create table role_privilege (
-  role_id char(36) not null,
-  privilege_id char(36) not null,
+  role_id int not null,
+  privilege_id int not null,
   primary key (role_id, privilege_id)
 ) engine = InnoDB;
 
 create table user (
-  id char(36) not null,
+  id int not null auto_increment,
   birth_date date not null,
   cpf char(11) not null,
-  created_at datetime(6),
+  created_at datetime (6),
   email varchar(50) not null,
   first_name varchar(50) not null,
-  last_login_at datetime(6),
+  last_login_at datetime (6),
   name varchar(100) not null,
   password varchar(255) not null,
   primary_telephone varchar(11) not null,
   rg varchar(14) not null,
   secondary_telephone varchar(11) not null,
-  updated_at datetime(6),
-  verified_at datetime(6),
+  updated_at datetime (6),
+  verified_at datetime (6),
   primary key (id)
 ) engine = InnoDB;
 
 create table user_role (
-  user_id char(36) not null,
-  role_id char(36) not null,
+  user_id int not null,
+  role_id int not null,
   primary key (user_id, role_id)
 ) engine = InnoDB;
 
 create table value_type (
-  id char(36) not null,
-  created_at datetime(6),
+  id int not null auto_increment,
+  created_at datetime (6),
   name varchar(15) not null,
-  updated_at datetime(6),
+  updated_at datetime (6),
   primary key (id)
 ) engine = InnoDB;
 

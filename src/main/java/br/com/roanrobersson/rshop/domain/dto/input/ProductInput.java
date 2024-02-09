@@ -35,7 +35,7 @@ public class ProductInput {
 	@Valid
 	@NotEmpty
 	@Setter(value = AccessLevel.NONE)
-	@Schema(example = "[\"753dad79-2a1f-4f5c-bbd1-317a53587518\", \"5227c10f-c81a-4885-b460-dbfee6dcc019\"]")
+	@Schema(example = "[\"123\", \"456\"]")
 	@Singular(ignoreNullCollections = true)
 	private Set<CategoryIdInput> categories = new HashSet<>();
 

@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +33,7 @@ public class UserRoleController implements UserRoleControllerOpenApi {
 	@GetMapping
 	@CheckSecurity.UserRole.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Set<RoleModel>> list(@PathVariable UUID userId) {
+	public ResponseEntity<Set<RoleModel>> list(@PathVariable Long userId) {
 		Set<Role> roles = service.listRoles(userId);
 		Set<RoleModel> roleModels = roleMapper.toModelSet(roles);
 		return ResponseEntity.ok().body(roleModels);
@@ -43,7 +42,7 @@ public class UserRoleController implements UserRoleControllerOpenApi {
 	@PutMapping(value = "/{roleId}")
 	@CheckSecurity.UserRole.CanGrantAndRevoke
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> grant(@PathVariable UUID userId, @PathVariable UUID roleId) {
+	public ResponseEntity<Void> grant(@PathVariable Long userId, @PathVariable Long roleId) {
 		service.grantRole(userId, roleId);
 		return ResponseEntity.noContent().build();
 	}
@@ -51,7 +50,7 @@ public class UserRoleController implements UserRoleControllerOpenApi {
 	@DeleteMapping(value = "/{roleId}")
 	@CheckSecurity.UserRole.CanGrantAndRevoke
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> revoke(@PathVariable UUID userId, @PathVariable UUID roleId) {
+	public ResponseEntity<Void> revoke(@PathVariable Long userId, @PathVariable Long roleId) {
 		service.revokeRole(userId, roleId);
 		return ResponseEntity.noContent().build();
 	}

@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.domain.service;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ public class AuthService {
 	private UserRepository repository;
 
 	@Transactional(readOnly = true)
-	public UUID getUserId() {
+	public Long getUserId() {
 		try {
 			String email = SecurityContextHolder.getContext().getAuthentication().getName();
 			User user = repository
@@ -46,7 +44,7 @@ public class AuthService {
 	}
 
 	@Transactional(readOnly = true)
-	public boolean authenticatedUserIdEquals(UUID userId) {
+	public boolean authenticatedUserIdEquals(Long userId) {
 		return getUserId().equals(userId);
 	}
 }

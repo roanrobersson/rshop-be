@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,7 +40,7 @@ public class ProductService {
 	private ProductMapper mapper;
 
 	@Transactional(readOnly = true)
-	public Page<Product> list(Set<UUID> categoriesIds, String name, Pageable pageable) {
+	public Page<Product> list(Set<Long> categoriesIds, String name, Pageable pageable) {
 		if (categoriesIds.isEmpty()) {
 			categoriesIds = null;
 		}
@@ -51,7 +50,7 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public Product findById(UUID productId) {
+	public Product findById(Long productId) {
 		Product product = repository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
 		product.getCategories().isEmpty(); // Force fetch categories
 		return product;
@@ -70,7 +69,7 @@ public class ProductService {
 	}
 
 	@Transactional
-	public Product update(UUID productId, ProductInput productInput) {
+	public Product update(Long productId, ProductInput productInput) {
 		try {
 			validateUniqueUpdate(productId, productInput);
 			Product product = findById(productId);
@@ -81,7 +80,7 @@ public class ProductService {
 		}
 	}
 
-	public void delete(UUID productId) {
+	public void delete(Long productId) {
 		try {
 			repository.deleteById(productId);
 		} catch (EmptyResultDataAccessException e) {
@@ -97,12 +96,12 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public Set<Category> getCategories(UUID productId) {
+	public Set<Category> getCategories(Long productId) {
 		return findById(productId).getCategories();
 	}
 
 	@Transactional
-	public void linkCategory(UUID productId, UUID categoryId) {
+	public void linkCategory(Long productId, Long categoryId) {
 		Product product = findById(productId);
 		Category category = categoryService.findById(categoryId);
 		if (product.getCategories().contains(category)) {
@@ -113,7 +112,7 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void unlinkCategory(UUID productId, UUID categoryId) {
+	public void unlinkCategory(Long productId, Long categoryId) {
 		Product product = findById(productId);
 		if (product.getCategories().size() <= 1) {
 			throw new BusinessException(MSG_PRODUCT_WITH_ONE_CATEGORY);
@@ -134,7 +133,7 @@ public class ProductService {
 		}
 	}
 
-	private void validateUniqueUpdate(UUID productId, ProductInput productInput) {
+	private void validateUniqueUpdate(Long productId, ProductInput productInput) {
 		Optional<Product> optional = repository.findByName(productInput.getName());
 		if (optional.isPresent() && !optional.get().getId().equals(productId)) {
 			throw new UniqueException(String.format(MSG_PRODUCT_NAME_ALREADY_EXISTS, productInput.getName()));

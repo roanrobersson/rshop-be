@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -28,16 +27,16 @@ import lombok.Getter;
 public class UserBuilder {
 
 	private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	public static final UUID EXISTING_ID = UUID.fromString("7c4125cc-8116-4f11-8fc3-f40a0775aec7");
-	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("d16c83fe-3a2e-42b6-97b4-503b203647f6");
-	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
-	public static final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
+	public static final Long EXISTING_ID = 1L;
+	public static final Long ANOTHER_EXISTING_ID = 2L;
+	public static final Long NON_EXISTING_ID = 999999L;
+	public static final Long DEPENDENT_ID = 1L;
 	public static final String EXISTING_EMAIL = "client@gmail.com";
 	public static final String ANOTHER_EXISTING_EMAIL = "operator@gmail.com";
 	public static final String NON_EXISTING_EMAIL = "nonexistingemail@gmail.com";
 	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
-	private UUID id = EXISTING_ID;
+	private Long id = EXISTING_ID;
 	private Set<Role> roles = new HashSet<>();
 	private List<Address> addresses = new ArrayList<>();
 	private String firstName = "Operator";
@@ -73,7 +72,7 @@ public class UserBuilder {
 		return builder;
 	}
 
-	public UserBuilder withId(UUID id) {
+	public UserBuilder withId(Long id) {
 		this.id = id;
 		return this;
 	}

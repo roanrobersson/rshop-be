@@ -17,7 +17,6 @@ import static org.mockito.quality.Strictness.STRICT_STUBS;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,7 @@ import br.com.roanrobersson.rshop.domain.service.CategoryService;
 @MockitoSettings(strictness = STRICT_STUBS)
 class CategoryServiceUT {
 
-	private static final UUID CATEGORY_ID = UUID.fromString("11111111-1111-4111-1111-111111111111");
+	private static final Long CATEGORY_ID = 1L;
 	private static final String CATEGORY_NAME = "Category name";
 	private static final String NEW_CATEGORY_NAME = "New category name";
 
@@ -72,7 +71,7 @@ class CategoryServiceUT {
 		return category;
 	};
 
-	private static Function<UUID, Answer<Category>> repositorySaveInsertedCategoryAnswer = (UUID id) -> invocation -> {
+	private static Function<Long, Answer<Category>> repositorySaveInsertedCategoryAnswer = (Long id) -> invocation -> {
 		Category category = invocation.getArgument(0, Category.class);
 		category.setId(id);
 		return category;
@@ -247,7 +246,7 @@ class CategoryServiceUT {
 
 	@Test
 	void update_NotSaveCategoryInput_CategoryNameAlreadyInUse() throws Throwable {
-		final UUID ANOTHER_CATEGORY_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		final Long ANOTHER_CATEGORY_ID = 2L;
 		CategoryInput categoryInput = aCategoryInput().build();
 		Category category = aCategory().id(ANOTHER_CATEGORY_ID).name(CATEGORY_NAME).build();
 		when(repository.findByName(any())).thenReturn(Optional.of(category));

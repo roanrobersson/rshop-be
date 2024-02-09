@@ -2,7 +2,6 @@ package br.com.roanrobersson.rshop.domain.service;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -44,7 +43,7 @@ public class RoleService {
 	}
 
 	@Transactional(readOnly = true)
-	public Role findById(UUID roleId) {
+	public Role findById(Long roleId) {
 		Role role = repository.findById(roleId).orElseThrow(() -> new RoleNotFoundException(roleId));
 		role.getPrivileges().size(); // Force fetch privileges
 		return role;
@@ -59,14 +58,14 @@ public class RoleService {
 	}
 
 	@Transactional
-	public Role update(UUID roleId, RoleInput roleInput) {
+	public Role update(Long roleId, RoleInput roleInput) {
 		validateUniqueUpdate(roleId, roleInput);
 		Role role = findById(roleId);
 		mapper.update(roleInput, role);
 		return repository.save(role);
 	}
 
-	public void delete(UUID roleId) {
+	public void delete(Long roleId) {
 		try {
 			repository.deleteById(roleId);
 		} catch (EmptyResultDataAccessException e) {
@@ -82,12 +81,12 @@ public class RoleService {
 	}
 
 	@Transactional(readOnly = true)
-	public Set<Privilege> getPrivileges(UUID roleId) {
+	public Set<Privilege> getPrivileges(Long roleId) {
 		return findById(roleId).getPrivileges();
 	}
 
 	@Transactional
-	public void linkPrivilege(UUID roleId, UUID privilegeId) {
+	public void linkPrivilege(Long roleId, Long privilegeId) {
 		Role role = findById(roleId);
 		Privilege privilege = privilegeService.findById(privilegeId);
 		role.getPrivileges().add(privilege);
@@ -95,7 +94,7 @@ public class RoleService {
 	}
 
 	@Transactional
-	public void unlinkPrivilege(UUID roleId, UUID privilegeId) {
+	public void unlinkPrivilege(Long roleId, Long privilegeId) {
 		Role role = findById(roleId);
 		Privilege privilege = privilegeService.findById(privilegeId);
 		role.getPrivileges().remove(privilege);
@@ -109,9 +108,9 @@ public class RoleService {
 		}
 	}
 
-	private void validateUniqueUpdate(UUID categoryId, RoleInput roleInput) {
+	private void validateUniqueUpdate(Long roleId, RoleInput roleInput) {
 		Optional<Role> optional = repository.findByName(roleInput.getName());
-		if (optional.isPresent() && !optional.get().getId().equals(categoryId)) {
+		if (optional.isPresent() && !optional.get().getId().equals(roleId)) {
 			throw new UniqueException(String.format(MSG_ROLE_ALREADY_EXISTS, roleInput.getName()));
 		}
 	}

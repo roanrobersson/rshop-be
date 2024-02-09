@@ -1,7 +1,5 @@
 package br.com.roanrobersson.rshop.api.v1.openapi.controller;
 
-import java.util.UUID;
-
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +33,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Category not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<CategoryModel> findById(
-			@Parameter(description = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId);
+			@Parameter(description = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") Long categoryId);
 
 	@Operation(summary = "Creates a new category", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Category created with success"),
@@ -53,7 +51,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(responseCode = "422", description = "Unprocessable entity", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<CategoryModel> update(
-			@Parameter(description = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId,
+			@Parameter(description = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") Long categoryId,
 			@Parameter(description = "Representation of a category with the new data") CategoryInput categoryInputDTO);
 
 	@Operation(summary = "Remove an existing category", security = @SecurityRequirement(name = "OAuth2"))
@@ -62,7 +60,7 @@ public interface CategoryControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Category not found", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	public ResponseEntity<Void> delete(
-			@Parameter(description = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") UUID categoryId);
+			@Parameter(description = "ID of a category", example = "753dad79-2a1f-4f5c-bbd1-317a53587518") Long categoryId);
 
 	@Operation(summary = "Returns the category count", security = @SecurityRequirement(name = "OAuth2"))
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Category count retrived with success"),

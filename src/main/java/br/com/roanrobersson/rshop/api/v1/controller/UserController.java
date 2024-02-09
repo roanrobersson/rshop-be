@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -56,7 +55,7 @@ public class UserController implements UserControllerOpenApi {
 	@GetMapping(value = "/{userId}", produces = "application/json")
 	@CheckSecurity.User.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<UserModel> findById(@PathVariable UUID userId) {
+	public ResponseEntity<UserModel> findById(@PathVariable Long userId) {
 		User user = service.findById(userId);
 		UserModel userModel = mapper.toModel(user);
 		return ResponseEntity.ok(userModel);
@@ -74,7 +73,7 @@ public class UserController implements UserControllerOpenApi {
 	@PatchMapping(value = "/{userId}", produces = "application/json")
 	@CheckSecurity.User.CanEdit
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<UserModel> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdate userUpdate) {
+	public ResponseEntity<UserModel> update(@PathVariable Long userId, @Valid @RequestBody UserUpdate userUpdate) {
 		User user = service.update(userId, userUpdate);
 		UserModel userModel = mapper.toModel(user);
 		return ResponseEntity.ok(userModel);
@@ -83,7 +82,7 @@ public class UserController implements UserControllerOpenApi {
 	@DeleteMapping(value = "/{userId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CheckSecurity.User.CanEdit
-	public ResponseEntity<Void> delete(@PathVariable UUID userId) {
+	public ResponseEntity<Void> delete(@PathVariable Long userId) {
 		service.delete(userId);
 		return ResponseEntity.noContent().build();
 	}
@@ -99,7 +98,7 @@ public class UserController implements UserControllerOpenApi {
 	@PutMapping(value = "/{userId}/password")
 	@CheckSecurity.User.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> changePassword(@PathVariable UUID userId,
+	public ResponseEntity<Void> changePassword(@PathVariable Long userId,
 			@Valid @RequestBody UserChangePasswordInput userChangePasswordInput) {
 		service.changePassword(userId, userChangePasswordInput);
 		return ResponseEntity.noContent().build();

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -27,8 +26,8 @@ import lombok.ToString;
 public class UserModel {
 
 	@EqualsAndHashCode.Include
-	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
-	private UUID id;
+	@Schema(example = "123")
+	private Long id;
 
 	@Setter(value = AccessLevel.NONE)
 	@Singular(ignoreNullCollections = true)
@@ -75,10 +74,9 @@ public class UserModel {
 	private OffsetDateTime updatedAt;
 
 	public static UserModelBuilder anUserModel() {
-		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 		return new UserModelBuilder()
-				.id(uuid)
+				.id(123L)
 				.firstName("Madalena")
 				.name("Madalena Bernardon")
 				.birthDate(LocalDate.parse("1993-01-16"))

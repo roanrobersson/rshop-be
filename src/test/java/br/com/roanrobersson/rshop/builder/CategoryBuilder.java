@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.builder;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 import br.com.roanrobersson.rshop.domain.dto.input.CategoryInput;
 import br.com.roanrobersson.rshop.domain.dto.model.CategoryModel;
@@ -12,16 +11,16 @@ import lombok.Getter;
 @Getter
 public class CategoryBuilder {
 
-	public static final UUID EXISTING_ID = UUID.fromString("753dad79-2a1f-4f5c-bbd1-317a53587518");
-	public static final UUID ANOTHER_EXISTING_ID = UUID.fromString("5c2b2b98-7b72-42dd-8add-9e97a2967e11");
-	public static final UUID NON_EXISTING_ID = UUID.fromString("00000000-0000-4000-0000-000000000000");
-	public static final UUID DEPENDENT_ID = UUID.fromString("821e3c67-7f22-46af-978c-b6269cb15387");
+	public static final Long EXISTING_ID = 1L;
+	public static final Long ANOTHER_EXISTING_ID = 2L;
+	public static final Long NON_EXISTING_ID = 999999L;
+	public static final Long DEPENDENT_ID = 3L;
 	public static final String NON_EXISTING_NAME = "Non existing category name";
 	public static final String EXISTING_NAME = "Books";
 	public static final String ANOTHER_EXISTING_NAME = "Computers";
 	public static final OffsetDateTime VALID_DATETIME = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 
-	private UUID id = EXISTING_ID;
+	private Long id = EXISTING_ID;
 	private String name = EXISTING_NAME;
 
 	public static CategoryBuilder aCategory() {
@@ -42,7 +41,7 @@ public class CategoryBuilder {
 		return builder;
 	}
 
-	public CategoryBuilder withId(UUID id) {
+	public CategoryBuilder withId(Long id) {
 		this.id = id;
 		return this;
 	}

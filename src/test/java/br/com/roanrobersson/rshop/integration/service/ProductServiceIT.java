@@ -11,11 +11,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +32,6 @@ import br.com.roanrobersson.rshop.domain.model.Product;
 import br.com.roanrobersson.rshop.domain.repository.ProductRepository;
 import br.com.roanrobersson.rshop.domain.service.ProductService;
 import br.com.roanrobersson.rshop.integration.IT;
-import br.com.roanrobersson.rshop.util.StringToUUIDSetConverter;
 
 @SpringBootTest
 @Transactional
@@ -47,15 +45,16 @@ class ProductServiceIT extends IT {
 
 	private static final long COUNT_TOTAL_PRODUCTS = 25L;
 	private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.by(Order.asc("id")));
-	private static final Set<UUID> EMPTY_SET = Set.of();
+	private static final Set<Long> EMPTY_SET = Set.of();
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/csv/product-search-filters.csv", numLinesToSkip = 1)
-	void findAllPaged_ReturnProductPage_AppliedFilters(String productName,
-			@ConvertWith(StringToUUIDSetConverter.class) Set<UUID> categories, long expectedResultCount)
+	void findAllPaged_ReturnProductPage_AppliedFilters(String productName, String categories, long expectedResultCount)
 			throws Exception {
+		Set<Long> categoriesSet = categories.isEmpty() ? Set.of()
+				: Set.of(categories.split(",")).stream().map(x -> Long.valueOf(x)).collect(Collectors.toSet());
 
-		Page<Product> actual = service.list(categories, productName, DEFAULT_PAGEABLE);
+		Page<Product> actual = service.list(categoriesSet, productName, DEFAULT_PAGEABLE);
 
 		assertThat(actual.getTotalElements()).isEqualTo(expectedResultCount);
 	}

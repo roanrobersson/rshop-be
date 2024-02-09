@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.domain.dto.model;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 import javax.validation.constraints.Size;
 
@@ -24,8 +23,8 @@ import lombok.ToString;
 public class PrivilegeModel {
 
 	@EqualsAndHashCode.Include
-	@Schema(example = "821e3c67-7f22-46af-978c-b6269cb15387")
-	private UUID id;
+	@Schema(example = "123")
+	private Long id;
 
 	@Size(min = 3, max = 30, message = "Must be between 3 and 30 characters")
 	@Schema(example = "EDIT_CATEGORIES")
@@ -42,10 +41,9 @@ public class PrivilegeModel {
 	private OffsetDateTime updatedAt;
 
 	public static PrivilegeModelBuilder aPrivilegeModel() {
-		UUID uuid = UUID.fromString("00000000-0000-4000-0000-000000000000");
 		OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-10-20T03:00:00Z");
 		return new PrivilegeModelBuilder()
-				.id(uuid)
+				.id(123L)
 				.name("EDIT_CATEGORIES")
 				.description("Allow edit categories")
 				.createdAt(offsetDateTime)

@@ -33,7 +33,7 @@ public class RoleInput {
 	@NotEmpty
 	@Setter(value = AccessLevel.NONE)
 	@Singular(ignoreNullCollections = true)
-	@Schema(example = "[\"91f550d9-548f-4d09-ac9c-1a95219033f7\", \"b7705487-51a1-4092-8b62-91dccd76a41a\"]", required = true)
+	@Schema(example = "[\"123\", \"456\"]", required = true)
 	private Set<PrivilegeIdInput> privileges = new HashSet<>();
 
 	@NotBlank

@@ -1,7 +1,6 @@
 package br.com.roanrobersson.rshop.api.v1.controller;
 
 import java.net.URI;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -42,7 +41,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@GetMapping(produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Page<AddressModel>> list(@PathVariable UUID userId, Pageable pageable) {
+	public ResponseEntity<Page<AddressModel>> list(@PathVariable Long userId, Pageable pageable) {
 		Page<Address> addresses = service.listAddresses(userId, pageable);
 		Page<AddressModel> addressModels = mapper.toModelPage(addresses);
 		return ResponseEntity.ok(addressModels);
@@ -51,7 +50,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@GetMapping(value = "/{addressId}", produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<AddressModel> findById(@PathVariable UUID userId, @PathVariable UUID addressId) {
+	public ResponseEntity<AddressModel> findById(@PathVariable Long userId, @PathVariable Long addressId) {
 		Address address = service.findAddressById(userId, addressId);
 		AddressModel addressModel = mapper.toModel(address);
 		return ResponseEntity.ok().body(addressModel);
@@ -60,7 +59,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@GetMapping(value = "/main", produces = "application/json")
 	@CheckSecurity.Address.CanConsult
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<AddressModel> findMain(@PathVariable UUID userId) {
+	public ResponseEntity<AddressModel> findMain(@PathVariable Long userId) {
 		Address address = service.findMainAddress(userId);
 		AddressModel addressModel = mapper.toModel(address);
 		return ResponseEntity.ok().body(addressModel);
@@ -69,7 +68,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@PostMapping(produces = "application/json")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<AddressModel> insert(@PathVariable UUID userId,
+	public ResponseEntity<AddressModel> insert(@PathVariable Long userId,
 			@Valid @RequestBody AddressInput addressInput) {
 		Address address = service.insertAddress(userId, addressInput);
 		AddressModel addressModel = mapper.toModel(address);
@@ -84,7 +83,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@PutMapping(value = "/{addressId}", produces = "application/json")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<AddressModel> update(@PathVariable UUID userId, @PathVariable UUID addressId,
+	public ResponseEntity<AddressModel> update(@PathVariable Long userId, @PathVariable Long addressId,
 			@Valid @RequestBody AddressInput addressInput) {
 		Address address = service.updateAddress(userId, addressId, addressInput);
 		AddressModel addressModel = mapper.toModel(address);
@@ -94,7 +93,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@DeleteMapping(value = "/{addressId}")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> delete(@PathVariable UUID userId, @PathVariable UUID addressId) {
+	public ResponseEntity<Void> delete(@PathVariable Long userId, @PathVariable Long addressId) {
 		service.deleteAddress(userId, addressId);
 		return ResponseEntity.noContent().build();
 	}
@@ -102,7 +101,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@PutMapping(value = "/{addressId}/main")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CheckSecurity.Address.CanEdit
-	public ResponseEntity<Void> setMain(@PathVariable UUID userId, @PathVariable UUID addressId) {
+	public ResponseEntity<Void> setMain(@PathVariable Long userId, @PathVariable Long addressId) {
 		service.setMainAddress(userId, addressId);
 		return ResponseEntity.noContent().build();
 	}
@@ -110,7 +109,7 @@ public class UserAddressController implements UserAddressControllerOpenApi {
 	@DeleteMapping(value = "/main")
 	@CheckSecurity.Address.CanEdit
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> unsetMain(@PathVariable UUID userId) {
+	public ResponseEntity<Void> unsetMain(@PathVariable Long userId) {
 		service.unsetMainAddress(userId);
 		return ResponseEntity.noContent().build();
 	}

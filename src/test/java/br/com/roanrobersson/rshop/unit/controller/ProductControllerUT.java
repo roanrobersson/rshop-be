@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -219,7 +219,7 @@ class ProductControllerUT implements UT {
 				.withExistingCategory();
 		String jsonBody = objectMapper.writeValueAsString(builder.buildInput());
 		String expectedJsonBody = objectMapper.writeValueAsString(builder.buildModel());
-		when(service.update(any(UUID.class), any(ProductInput.class))).thenReturn(builder.build());
+		when(service.update(any(Long.class), any(ProductInput.class))).thenReturn(builder.build());
 
 		ResultActions actual = mockMvc
 				.perform(put("/v1/products/{productId}", EXISTING_ID)
@@ -237,7 +237,7 @@ class ProductControllerUT implements UT {
 		String accessToken = tokenUtil.obtainAccessToken(mockMvc, ADMINSTRATOR);
 		ProductInput input = aProduct().withExistingCategory().buildInput();
 		String jsonBody = objectMapper.writeValueAsString(input);
-		when(service.update(any(UUID.class), any(ProductInput.class))).thenThrow(ProductNotFoundException.class);
+		when(service.update(any(Long.class), any(ProductInput.class))).thenThrow(ProductNotFoundException.class);
 
 		ResultActions actual = mockMvc
 				.perform(put("/v1/products/{productId}", NON_EXISTING_ID)
