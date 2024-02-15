@@ -1,0 +1,32 @@
+version: "1.0"
+
+networks:
+  rshop-network:
+    driver: bridge
+
+services:
+  rshop-mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: ""
+    ports:
+      - "3306:3306"
+    networks:
+      - rshop-network
+
+  rshop-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["/wait-for-it.sh", "rshop-mysql:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      RSHOP_DATASOURCE_HOST: rshop-mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - rshop-network
+    depends_on:
+      - rshop-mysql
